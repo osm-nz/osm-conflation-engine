@@ -1,0 +1,20 @@
+import { promises as fs } from "fs";
+import { join } from "path";
+import { Config } from "../types";
+
+export async function withConfig<T>(
+  tempFolder: string,
+  cb: (config: Config) => T | Promise<T>
+): Promise<T> {
+  const configFilePath = join(tempFolder, "config.json");
+
+  const config = await fs
+    .readFile(configFilePath, "utf8")
+    .then((str): Config => JSON.parse(str))
+    .catch((): Config => ({}));
+
+  const result = await cb(config);
+
+  await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
+  return result;
+}

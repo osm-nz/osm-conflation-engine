@@ -1,0 +1,35 @@
+{
+  "name": "osm-gtfs-sync",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Kyle Hensel",
+  "scripts": {
+    "start": "ts-node src",
+    "lint": "eslint --ignore-path .gitignore . && tsc"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.10",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/node-fetch": "^2.6.3",
+    "@types/unzip-stream": "^0.3.1",
+    "eslint": "^8.37.0",
+    "eslint-config-kyle": "^11.4.1",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "gtfs-types": "^2.2.0",
+    "osm-api": "^1.0.5",
+    "ts-node": "^10.9.1",
+    "unzip-stream": "^0.3.1"
+  },
+  "eslintConfig": {
+    "extends": "kyle",
+    "rules": {
+      "no-param-reassign": "off"
+    }
+  }
+}
