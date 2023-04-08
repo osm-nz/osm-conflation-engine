@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import { join } from "path";
 import { Config } from "../types";
 
+// eslint-disable-next-line consistent-return -- false positive because exit() never returns
 export async function withConfig<T>(
   tempFolder: string,
   cb: (config: Config) => T | Promise<T>
@@ -13,8 +14,13 @@ export async function withConfig<T>(
     .then((str): Config => JSON.parse(str))
     .catch((): Config => ({}));
 
-  const result = await cb(config);
+  try {
+    const result = await cb(config);
 
-  await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
-  return result;
+    await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
+    return result;
+  } catch (ex) {
+    console.error((ex as Error).stack?.red || ex);
+    process.exit(1);
+  }
 }

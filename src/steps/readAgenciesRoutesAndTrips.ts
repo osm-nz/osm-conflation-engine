@@ -1,10 +1,11 @@
 import { join } from "path";
 import { promises as fs } from "fs";
-import { Agency, Route, Trip } from "gtfs-types";
+import { Agency, Route, Trip, VehicleType } from "gtfs-types";
 import { csvToJsonObject, withConfig } from "../util";
 
 export type RSNOutput = {
   [rsn: string]: {
+    vehicleType: VehicleType;
     operators: string[];
     tripIds: string[];
   };
@@ -36,6 +37,7 @@ export async function readAgenciesRoutesAndTrips(tempFolder: string) {
     for (const [route] of Object.values(routes)) {
       const rsn = route.route_short_name!;
       output[rsn] ||= {
+        vehicleType: +route.route_type,
         operators: [],
         tripIds: [],
       };
@@ -57,7 +59,7 @@ export async function readAgenciesRoutesAndTrips(tempFolder: string) {
           }
         }
       } else {
-        console.warn(`\tNo trips for route ${rsn} (${route.route_id})`);
+        console.warn(`\tNo trips for route ${rsn} (${route.route_id})`.yellow);
       }
 
       if (!output[rsn].operators.includes(operatorString)) {

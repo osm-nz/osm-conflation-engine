@@ -1,19 +1,32 @@
 import csv from "csv-parser";
 import { createReadStream, promises as fs } from "fs";
 import { join } from "path";
-import { Alight, StopTime } from "gtfs-types";
+import { Alight, StopTime, VehicleType } from "gtfs-types";
 import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
 
-type FinalGTFSOutput = {
+export type FinalGTFSOutput = {
   [rsn: string]: {
+    vehicleType: VehicleType;
     operators: string[];
-    stopIds: Record<string, ("B" | "D" | "P")[]>;
+    stopIds: {
+      [stopId: string]: "stop" | "stop_exit_only" | "stop_entry_only";
+    };
+  };
+};
+
+type PreFinalGTFSOutput = {
+  [rsn: string]: {
+    vehicleType: VehicleType;
+    operators: string[];
+    stopIds: {
+      [stopId: string]: ("B" | "D" | "P")[];
+    };
   };
 };
 
 export async function processStopTimes(tempFolder: string) {
   console.log("processing stop times...");
-  const output: FinalGTFSOutput = {};
+  const output: PreFinalGTFSOutput = {};
 
   const rsnData: RSNOutput = JSON.parse(
     await fs.readFile(join(tempFolder, "rsn.json"), "utf8")
@@ -33,6 +46,7 @@ export async function processStopTimes(tempFolder: string) {
       .on("data", (data: StopTime) => {
         const rsn = tripIdToRSNMap[data.trip_id];
         output[rsn] ||= {
+          vehicleType: rsnData[rsn].vehicleType,
           operators: rsnData[rsn].operators,
           stopIds: {},
         };
@@ -60,8 +74,7 @@ export async function processStopTimes(tempFolder: string) {
       const B = existing.includes("B");
       const D = existing.includes("D");
       const P = existing.includes("P");
-      // @ts-expect-error -- yeah this is a hack
-      output[rsn].stopIds[stopId] =
+      (output as never as FinalGTFSOutput)[rsn].stopIds[stopId] =
         B || (D && P) ? "stop" : D ? "stop_exit_only" : "stop_entry_only";
     }
   }

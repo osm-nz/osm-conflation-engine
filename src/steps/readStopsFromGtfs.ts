@@ -7,7 +7,7 @@ import { csvToJsonObject, withConfig } from "../util";
 export type StopsStationsOutput = {
   stops: {
     [ref: string]: {
-      stopId: string;
+      stopIds: string[];
       name: string;
       lat: number;
       lng: number;
@@ -50,22 +50,24 @@ export async function readStopsFromGtfs(tempFolder: string) {
     switch (+stop.location_type!) {
       case LocationType.STOP: {
         if (output.stops[stop.stop_code!]) {
-          console.warn("\tDuplicate stop", stop.stop_code);
+          console.warn(`\tDuplicate stop ${stop.stop_code}`.yellow);
+          output.stops[stop.stop_code!].stopIds.push(stop.stop_id);
+        } else {
+          output.stops[stop.stop_code!] = {
+            lat: +stop.stop_lat!,
+            lng: +stop.stop_lon!,
+            name: stop.stop_name!,
+            parentStationId: stop.parent_station,
+            stopIds: [stop.stop_id],
+            locRef: stop.platform_code,
+          };
         }
-        output.stops[stop.stop_code!] = {
-          lat: +stop.stop_lat!,
-          lng: +stop.stop_lon!,
-          name: stop.stop_name!,
-          parentStationId: stop.parent_station,
-          stopId: stop.stop_id,
-          locRef: stop.platform_code,
-        };
         break;
       }
 
       case LocationType.STATION: {
         if (output.stations[stop.stop_code!]) {
-          console.warn("\tDuplicate station", stop.stop_code);
+          console.warn(`\tDuplicate station ${stop.stop_code}`.yellow);
         }
         output.stations[stop.stop_code!] = {
           name: stop.stop_name!,
@@ -75,7 +77,7 @@ export async function readStopsFromGtfs(tempFolder: string) {
       }
 
       default:
-        console.log("\tSkipping node", stop.location_type);
+        console.log(`\tSkipping node ${stop.location_type}`.yellow);
         break;
     }
   }

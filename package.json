@@ -20,6 +20,7 @@
     "typescript": "^5.0.3"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "csv-parser": "^3.0.0",
     "gtfs-types": "^2.2.0",
     "osm-api": "^1.0.5",

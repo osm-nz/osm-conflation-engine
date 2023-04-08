@@ -11,8 +11,10 @@ const query = (bbox: BBox) => `
 [out:json][timeout:25];
 (
   node[highway=bus_stop](${bboxToString(bbox)});
+  nwr[public_transport=platform](${bboxToString(bbox)});
+  node[public_transport=stop_position](${bboxToString(bbox)});
   relation[public_transport=stop_area](${bboxToString(bbox)});
-  relation[route=bus](${bboxToString(bbox)});
+  relation[type=route](${bboxToString(bbox)});
 );
 out body;
 `;
@@ -22,7 +24,6 @@ export async function fetchDataFromOsm(tempFolder: string) {
     const url = `http://overpass-api.de/api/interpreter?data=${encodeURIComponent(
       query(config.bbox!)
     )}`;
-    console.log("url", url);
     const osmData = await fetch(url)
       .then((r) => r.json())
       .then((resp): OsmFeature[] => resp.elements);

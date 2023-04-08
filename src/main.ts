@@ -41,7 +41,7 @@ async function main() {
   const alreadyDownloaded = await doesFileExist(join(tempFolder, "gtfs.zip"));
 
   if (alreadyDownloaded) {
-    console.log("Already downloaded GTFS zip file");
+    console.log("Already downloaded GTFS zip file".blue);
   } else {
     await downloadZip(tempFolder, url);
   }
@@ -49,7 +49,7 @@ async function main() {
   // 2. unzip GTFS file
   const alreadyUnzipped = await doesFileExist(join(tempFolder, "gtfs"));
   if (alreadyUnzipped) {
-    console.log("Already extracted GTFS zip file");
+    console.log("Already extracted GTFS zip file".blue);
   } else {
     await unzipGtfsFile(tempFolder);
   }
@@ -57,7 +57,7 @@ async function main() {
   // 3. read routes.txt & agency.txt
   const alreadyReadRSNs = await doesFileExist(join(tempFolder, "rsn.json"));
   if (alreadyReadRSNs) {
-    console.log("Already extracted agencies/routes/trips");
+    console.log("Already extracted agencies/routes/trips".blue);
   } else {
     await readAgenciesRoutesAndTrips(tempFolder);
   }
@@ -67,7 +67,7 @@ async function main() {
     join(tempFolder, "gtfsStops.json")
   );
   if (alreadyReadStops) {
-    console.log("Already extracted stops from GTFS");
+    console.log("Already extracted stops from GTFS".blue);
   } else {
     await readStopsFromGtfs(tempFolder);
   }
@@ -77,7 +77,7 @@ async function main() {
     join(tempFolder, "osmRaw.json")
   );
   if (alreadyDownloadedOsmData) {
-    console.log("Already downloaded data from OSM");
+    console.log("Already downloaded data from OSM".blue);
   } else {
     await fetchDataFromOsm(tempFolder);
   }
@@ -87,7 +87,7 @@ async function main() {
     join(tempFolder, "finalGtfsRouteData.json")
   );
   if (alreadyProcessedStopTimes) {
-    console.log("Already processed stop times");
+    console.log("Already processed stop times".blue);
   } else {
     await processStopTimes(tempFolder);
   }

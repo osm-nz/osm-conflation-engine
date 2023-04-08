@@ -13,5 +13,5 @@ export async function downloadZip(tempFolder: string, urlToZipFile: string) {
     `curl "${urlToZipFile}" -o ${pathOnDisk}`
   );
   if (stdout) console.log(stdout);
-  if (stderr) console.error(stderr);
+  if (stderr) console.error(stderr.red);
 }
