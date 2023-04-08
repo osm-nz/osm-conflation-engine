@@ -168,7 +168,7 @@ export async function conflateStops(tempFolder: string) {
         // skip non-nodes, we can't conflate them if anything is wrong
         if (osmItem.type !== "node") {
           console.warn(
-            `can’t conflate non-node tagged as a stop: https:/osm.org/${osmItem.type}/${osmItem.id}`
+            `can’t conflate non-node tagged as a stop: https://osm.org/${osmItem.type}/${osmItem.id}`
               .yellow
           );
           continue;
@@ -192,7 +192,7 @@ export async function conflateStops(tempFolder: string) {
             stopCode
           );
 
-          // no point editting a node just to "upgrade tags"
+          // no point editing a node just to "upgrade tags"
           const anyMeaningfulChanges =
             Object.keys(tagChanges).length &&
             (tagChanges.name || tagChanges.official_name || tagChanges.loc_ref);

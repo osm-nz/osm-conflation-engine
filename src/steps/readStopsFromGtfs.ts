@@ -82,7 +82,7 @@ export async function readStopsFromGtfs(tempFolder: string) {
     }
   }
 
-  await withConfig(tempFolder, (config) => {
+  await withConfig(tempFolder, async (config) => {
     config.bbox ||= bbox;
   });
 

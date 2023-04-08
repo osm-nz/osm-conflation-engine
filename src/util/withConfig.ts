@@ -5,7 +5,7 @@ import { Config } from "../types";
 // eslint-disable-next-line consistent-return -- false positive because exit() never returns
 export async function withConfig<T>(
   tempFolder: string,
-  cb: (config: Config) => T | Promise<T>
+  cb: (config: Config) => Promise<T>
 ): Promise<T> {
   const configFilePath = join(tempFolder, "config.json");
 

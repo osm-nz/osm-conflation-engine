@@ -41,7 +41,10 @@ export function conflateStopTags(
   if (tags.network !== config.networkName!) {
     tagChanges.network = config.networkName!;
   }
-  if (config.networkWikidata && tags.network !== config.networkWikidata!) {
+  if (
+    config.networkWikidata &&
+    tags["network:wikidata"] !== config.networkWikidata!
+  ) {
     tagChanges["network:wikidata"] = config.networkWikidata;
   }
 
