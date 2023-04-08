@@ -1,7 +1,7 @@
 import { VehicleType } from "gtfs-types";
 import type { Config } from "../../../types";
 import type { StopsStationsOutput } from "../../readStopsFromGtfs";
-import { getTagsForTransportMode } from "./getTagsForTransportMode";
+import { getStopTagsForTransportMode } from "../../../constants";
 
 export const transformName = (name: string) =>
   name.replace(" Train Station", "").replace(" Ferry Terminal", "");
@@ -29,7 +29,7 @@ export function conflateStopTags(
   if (tags.ref !== gtfsStopCode) tagChanges.ref = gtfsStopCode;
 
   // 1. ensure base tags are defined
-  const baseTags = getTagsForTransportMode(gtfsModeOfTransport);
+  const baseTags = getStopTagsForTransportMode(gtfsModeOfTransport);
   for (const [key, value] of Object.entries(baseTags)) {
     if (tags[key] !== value && key !== "highway") {
       // don't try to add highway=bus_stop if it's mising

@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import { join } from "path";
 import { createHash } from "crypto";
 import {
+  conflateRoutes,
   conflateStops,
   downloadZip,
   fetchDataFromOsm,
@@ -98,6 +99,9 @@ async function main() {
 
   // 7. Conflate stops
   await conflateStops(tempFolder);
+
+  // 8. Conflate routes
+  await conflateRoutes(tempFolder);
 }
 
 main();

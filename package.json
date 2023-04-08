@@ -30,6 +30,7 @@
   "eslintConfig": {
     "extends": "kyle",
     "rules": {
+      "no-lonely-if": "off",
       "no-param-reassign": "off"
     }
   }

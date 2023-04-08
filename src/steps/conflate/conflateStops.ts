@@ -7,7 +7,7 @@ import type { StopsStationsOutput } from "../readStopsFromGtfs";
 import type { FinalGTFSOutput } from "../processStopTimes";
 import { withConfig, distanceBetween, createDiamond } from "../../util";
 import { conflateStopTags, transformName } from "./tags";
-import { getTagsForTransportMode } from "./tags/getTagsForTransportMode";
+import { getStopTagsForTransportMode } from "../../constants";
 
 /**
  * This is straightforward, no relations to deal with.
@@ -152,7 +152,7 @@ export async function conflateStops(tempFolder: string) {
           coordinates: [gtfsItem.lng, gtfsItem.lat],
         },
         properties: {
-          ...getTagsForTransportMode(modeOfTransport),
+          ...getStopTagsForTransportMode(modeOfTransport),
           network: config.networkName,
           "network:wikidata": config.networkWikidata,
 

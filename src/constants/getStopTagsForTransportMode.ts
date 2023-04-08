@@ -1,6 +1,6 @@
 import { VehicleType } from "gtfs-types";
 
-export function getTagsForTransportMode(vehicleType: VehicleType) {
+export function getStopTagsForTransportMode(vehicleType: VehicleType) {
   switch (vehicleType) {
     case VehicleType.BUS: {
       return {
