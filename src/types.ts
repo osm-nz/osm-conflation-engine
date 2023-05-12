@@ -15,8 +15,10 @@ export type Config = {
    * changed to the replacement stopCode
    */
   ignoreStops?: {
-    [stopCode: string]: string;
+    [stopCode: string]: string | null;
   };
+  /** routes to ignore */
+  ignoreRoutes?: string[];
 };
 
 export type BBox = {

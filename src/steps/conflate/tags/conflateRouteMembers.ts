@@ -30,5 +30,15 @@ export function conflateRouteMembers(
     }
   }
 
+  // remove all other nodes from the route relation
+  for (const actual of actualMembers) {
+    const isExpected = expectedMembers.find(
+      (m) => m.type === actual.type && m.ref === actual.ref
+    );
+    if (actual.type === "node" && !isExpected) {
+      diff.push({ ...actual, role: "🗑️" });
+    }
+  }
+
   return diff;
 }

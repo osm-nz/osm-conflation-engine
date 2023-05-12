@@ -5,13 +5,12 @@ import { FinalGTFSOutput } from "../../processStopTimes";
 export function conflateRouteTags(
   config: Config,
   tags: Record<string, string>,
-  gtfsRoute: FinalGTFSOutput[string],
-  rsn: string
+  gtfsRoute: FinalGTFSOutput[string]
 ) {
   const tagChanges: Record<string, string> = {};
 
-  // 0. check the ref tag. Pointless, but included for consistency
-  if (tags.ref !== rsn) tagChanges.ref = rsn;
+  // 0. check the ref tag
+  if (tags.ref !== gtfsRoute.rsn) tagChanges.ref = gtfsRoute.rsn;
 
   // 1. ensure base tags are defined
   const routeTagValue = getRouteTagForTransportMode(gtfsRoute.vehicleType);
@@ -55,6 +54,26 @@ export function conflateRouteTags(
   } else {
     // there should not be an operator:wikidata tag
     if (tags["operator:wikidata"]) tagChanges["operator:wikidata"] = "🗑️";
+  }
+
+  // 5. add to/from/via tags
+  if (gtfsRoute.rln) {
+    const match =
+      gtfsRoute.rln.match(/(.+) to (.+) via (.+)/i) ||
+      gtfsRoute.rln.match(/(.+) to (.+)/i);
+    if (match) {
+      const [, from, to, _via] = match;
+      const via = _via
+        ?.replace(/\(.+\)/, "") // remove content in parenthesis
+        .trim()
+        .split(/ (?:And|&) /i) // split via points
+        .join(";");
+
+      // respect the value of to/from/via if they're already set
+      if (!tags.to && to) tagChanges.to = to;
+      if (!tags.from && from) tagChanges.from = from;
+      if (!tags.via && via) tagChanges.via = via;
+    }
   }
 
   return tagChanges;
