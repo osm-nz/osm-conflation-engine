@@ -4,6 +4,8 @@ import { join } from "path";
 import { Alight, StopTime, VehicleType } from "gtfs-types";
 import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
 
+export type StopRole = "stop" | "stop_exit_only" | "stop_entry_only";
+
 export type FinalGTFSOutput = {
   [rsna: string]: {
     vehicleType: VehicleType;
@@ -11,10 +13,7 @@ export type FinalGTFSOutput = {
     rln: string | undefined;
     operators: string[];
     stopIds: {
-      [stopId: string]: [
-        type: "stop" | "stop_exit_only" | "stop_entry_only",
-        count: number
-      ];
+      [stopId: string]: [type: StopRole, count: number];
     };
   };
 };
@@ -28,6 +27,11 @@ type PreFinalGTFSOutput = {
     stopIds: {
       [stopId: string]: {
         count: number;
+        /**
+         * index when the bus stops at this stop. usually a single item,
+         * but a route could stop at the same stop twice
+         */
+        sequences: { sequence: number; tripId: string }[];
         codes: ("B" | "D" | "P")[];
       };
     };
@@ -62,6 +66,7 @@ export async function processStopTimes(tempFolder: string) {
           operators: rsnData[rsna].operators,
           stopIds: {},
         };
+
         const existing = output[rsna].stopIds[data.stop_id];
         const newCode =
           +data.drop_off_type! === Alight.NOT_AVAILABLE
@@ -74,10 +79,15 @@ export async function processStopTimes(tempFolder: string) {
           output[rsna].stopIds[data.stop_id] = {
             codes: [newCode],
             count: 0,
+            sequences: [],
           };
         } else if (!existing.codes.includes(newCode)) {
           output[rsna].stopIds[data.stop_id].codes.push(newCode);
         }
+        output[rsna].stopIds[data.stop_id].sequences.push({
+          sequence: +data.stop_sequence,
+          tripId: data.trip_id,
+        });
         output[rsna].stopIds[data.stop_id].count++;
       })
       .on("end", resolve)
@@ -85,13 +95,44 @@ export async function processStopTimes(tempFolder: string) {
   });
 
   for (const rsn in output) {
+    // calculate min/max per trip
+    const minMaxSequencesPerTrip: {
+      [tripId: string]: [min: number, max: number];
+    } = {};
+    for (const { sequences } of Object.values(output[rsn].stopIds)) {
+      for (const { sequence, tripId } of sequences) {
+        minMaxSequencesPerTrip[tripId] ||= [Infinity, -Infinity];
+        const [min, max] = minMaxSequencesPerTrip[tripId];
+        if (sequence < min) minMaxSequencesPerTrip[tripId][0] = sequence;
+        if (sequence > max) minMaxSequencesPerTrip[tripId][1] = sequence;
+      }
+    }
+
     for (const stopId in output[rsn].stopIds) {
-      const { codes: existing, count } = output[rsn].stopIds[stopId];
+      const { codes: existing, count, sequences } = output[rsn].stopIds[stopId];
+
+      const sequencesAsPercent = sequences.map(({ sequence, tripId }) => {
+        const [min, max] = minMaxSequencesPerTrip[tripId];
+        return (sequence - min) / (max - min);
+      });
       const B = existing.includes("B");
       const D = existing.includes("D");
       const P = existing.includes("P");
+      let finalRole: StopRole =
+        B || (D && P) ? "stop" : D ? "stop_entry_only" : "stop_exit_only";
+
+      // if everytime that the vehicle only stops at this stop is the first
+      // or last stop of the respsective trip, then override the role because it
+      // should have been property set in the GTFS source data.
+      if (sequencesAsPercent.every((n) => n === 0)) {
+        finalRole = "stop_entry_only";
+      }
+      if (sequencesAsPercent.every((n) => n === 1)) {
+        finalRole = "stop_exit_only";
+      }
+
       (output as never as FinalGTFSOutput)[rsn].stopIds[stopId] = [
-        B || (D && P) ? "stop" : D ? "stop_entry_only" : "stop_exit_only",
+        finalRole,
         count,
       ];
     }
