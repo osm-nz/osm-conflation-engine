@@ -8,9 +8,10 @@ export type Members = OsmRelation["members"];
  *
  * Currently does not consider duplicate members, or the order of members.
  */
-export function conflateRouteMembers(
+export function conflateRelationMembers(
   actualMembers: Members,
-  expectedMembers: Members
+  expectedMembers: Members,
+  options?: { removeAllOtherNodes?: boolean }
 ): Members {
   const diff: Members = [];
   for (const expected of expectedMembers) {
@@ -30,13 +31,15 @@ export function conflateRouteMembers(
     }
   }
 
-  // remove all other nodes from the route relation
-  for (const actual of actualMembers) {
-    const isExpected = expectedMembers.find(
-      (m) => m.type === actual.type && m.ref === actual.ref
-    );
-    if (actual.type === "node" && !isExpected) {
-      diff.push({ ...actual, role: "🗑️" });
+  if (options?.removeAllOtherNodes) {
+    // remove all other nodes from the relation (but not ways or relations)
+    for (const actual of actualMembers) {
+      const isExpected = expectedMembers.find(
+        (m) => m.type === actual.type && m.ref === actual.ref
+      );
+      if (actual.type === "node" && !isExpected) {
+        diff.push({ ...actual, role: "🗑️" });
+      }
     }
   }
 

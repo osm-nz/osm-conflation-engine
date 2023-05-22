@@ -5,7 +5,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import type { FinalGTFSOutput } from "../processStopTimes";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
 import { getRouteTagForTransportMode } from "../../constants";
-import { conflateRouteMembers, conflateRouteTags } from "./tags";
+import { conflateRelationMembers, conflateRouteTags } from "./tags";
 import { createDiamond, distanceBetween, withConfig } from "../../util";
 
 export async function conflateRoutes(tempFolder: string) {
@@ -147,9 +147,10 @@ export async function conflateRoutes(tempFolder: string) {
         const tagChanges = conflateRouteTags(config, osmRoute.tags!, gtfsRoute);
 
         // 2. Check stops within the route
-        const memberChanges = conflateRouteMembers(
+        const memberChanges = conflateRelationMembers(
           osmRoute.members,
-          expectedOsmStops
+          expectedOsmStops,
+          { removeAllOtherNodes: true }
         );
 
         if (Object.keys(tagChanges).length || memberChanges.length) {

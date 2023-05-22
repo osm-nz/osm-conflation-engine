@@ -10,10 +10,11 @@ export const transformName = (name: string) =>
  * run on both the OSM and GTFS name before comparison, so that
  * simple things like whitespace doesn't get flagged as different names.
  */
-const normalizeName = (name: string | undefined) =>
+export const normalizeName = (name: string | undefined) =>
   name
     ?.normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
+    .replace(" ", "")
     .trim();
 
 export function conflateStopTags(

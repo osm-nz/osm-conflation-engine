@@ -17,6 +17,8 @@ export type Config = {
   ignoreStops?: {
     [stopCode: string]: string | null;
   };
+  /** stations to ignore */
+  ignoreStations?: string[];
   /** routes to ignore */
   ignoreRoutes?: string[];
 };

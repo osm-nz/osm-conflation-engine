@@ -11,13 +11,13 @@ export type StopsStationsOutput = {
       name: string;
       lat: number;
       lng: number;
-      parentStationId: string | undefined;
+      parentStationIds: string[];
       locRef: string | undefined;
     };
   };
   stations: {
     [ref: string]: {
-      stationId: string;
+      stationIds: string[];
       name: string;
     };
   };
@@ -57,10 +57,20 @@ export async function readStopsFromGtfs(tempFolder: string) {
             lat: +stop.stop_lat!,
             lng: +stop.stop_lon!,
             name: stop.stop_name!,
-            parentStationId: stop.parent_station,
+            parentStationIds: [],
             stopIds: [stop.stop_id],
             locRef: stop.platform_code,
           };
+        }
+        if (
+          stop.parent_station &&
+          !output.stops[stop.stop_code!].parentStationIds.includes(
+            stop.parent_station
+          )
+        ) {
+          output.stops[stop.stop_code!].parentStationIds.push(
+            stop.parent_station
+          );
         }
         break;
       }
@@ -68,11 +78,13 @@ export async function readStopsFromGtfs(tempFolder: string) {
       case LocationType.STATION: {
         if (output.stations[stop.stop_code!]) {
           console.warn(`\tDuplicate station ${stop.stop_code}`.yellow);
+          output.stations[stop.stop_code!].stationIds.push(stop.stop_id);
+        } else {
+          output.stations[stop.stop_code!] = {
+            name: stop.stop_name!,
+            stationIds: [stop.stop_id],
+          };
         }
-        output.stations[stop.stop_code!] = {
-          name: stop.stop_name!,
-          stationId: stop.stop_id,
-        };
         break;
       }
 

@@ -8,6 +8,84 @@ import type { FinalGTFSOutput } from "../processStopTimes";
 import { withConfig, distanceBetween, createDiamond } from "../../util";
 import { conflateStopTags, transformName } from "./tags";
 import { getStopTagsForTransportMode } from "../../constants";
+import { Config } from "../../types";
+
+export function getOsmStopsByRef(
+  osmRaw: OsmFeature[],
+  config: Config
+): {
+  [stopCode: string]: OsmFeature;
+} {
+  const skipBecauseDuplicateRef: Record<string, true> = {};
+  const osmRawByRef: Record<string, OsmFeature> = {};
+
+  for (const feature of osmRaw) {
+    const isStop =
+      feature.tags?.highway === "bus_stop" ||
+      feature.tags?.public_transport === "platform" ||
+      feature.tags?.public_transport === "stop_position";
+
+    if (isStop && feature.tags?.ref) {
+      const existing = osmRawByRef[feature.tags.ref];
+      if (existing) {
+        // if we find a duplicate, prefer the one with the correct network tag,
+        // or no network tag. If this doesn't resolve the ambiguity, then warn
+        const oldNetwork = existing.tags?.network || "";
+        const newNetwork = feature.tags?.network || "";
+
+        const bothHaveNoNetwork = !oldNetwork && !newNetwork;
+        const bothHaveCorrectNetwork =
+          oldNetwork === config.networkName &&
+          newNetwork === config.networkName;
+
+        // it's common that there'll be duplicates for ref=1, ref=2 etc.
+        const noWarning =
+          !Number.isNaN(+feature.tags.ref) && +feature.tags.ref < 100;
+
+        if (bothHaveNoNetwork || bothHaveCorrectNetwork) {
+          // no straightforward solution here so print a warning
+          if (!noWarning) {
+            console.warn(
+              `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id})`
+                .yellow
+            );
+          }
+          skipBecauseDuplicateRef[feature.tags.ref] = true;
+        } else {
+          const oldRanking =
+            oldNetwork === config.networkName ? 2 : !oldNetwork ? 1 : 0;
+          const newRanking =
+            newNetwork === config.networkName ? 2 : !newNetwork ? 1 : 0;
+
+          if (oldRanking > newRanking) {
+            // prefer the existing one, so do nothing
+          } else if (newRanking > oldRanking) {
+            // prefer the new one
+            osmRawByRef[feature.tags.ref] = feature;
+          } else {
+            // no straightforward solution
+            if (!noWarning) {
+              console.warn(
+                `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id}) and have incorrect network tags`
+                  .yellow
+              );
+            }
+            skipBecauseDuplicateRef[feature.tags.ref] = true;
+          }
+        }
+      } else {
+        // no duplicate - so just add it
+        osmRawByRef[feature.tags.ref] = feature;
+      }
+    }
+  }
+
+  for (const stopCode in skipBecauseDuplicateRef) {
+    delete osmRawByRef[stopCode];
+  }
+
+  return osmRawByRef;
+}
 
 /**
  * This is straightforward, no relations to deal with.
@@ -36,74 +114,6 @@ export async function conflateStops(tempFolder: string) {
   );
 
   await withConfig(tempFolder, async (config) => {
-    const skipBecauseDuplicateRef: Record<string, true> = {};
-
-    const osmRawByRef: Record<string, OsmFeature> = {};
-    for (const feature of osmRaw) {
-      const isStop =
-        feature.tags?.highway === "bus_stop" ||
-        feature.tags?.public_transport === "platform" ||
-        feature.tags?.public_transport === "stop_position";
-
-      if (isStop && feature.tags?.ref) {
-        const existing = osmRawByRef[feature.tags.ref];
-        if (existing) {
-          // if we find a duplicate, prefer the one with the correct network tag,
-          // or no network tag. If this doesn't resolve the ambiguity, then warn
-          const oldNetwork = existing.tags?.network || "";
-          const newNetwork = feature.tags?.network || "";
-
-          const bothHaveNoNetwork = !oldNetwork && !newNetwork;
-          const bothHaveCorrectNetwork =
-            oldNetwork === config.networkName &&
-            newNetwork === config.networkName;
-
-          // it's common that there'll be duplicates for ref=1, ref=2 etc.
-          const noWarning =
-            !Number.isNaN(+feature.tags.ref) && +feature.tags.ref < 100;
-
-          if (bothHaveNoNetwork || bothHaveCorrectNetwork) {
-            // no straightforward solution here so print a warning
-            if (!noWarning) {
-              console.warn(
-                `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id})`
-                  .yellow
-              );
-            }
-            skipBecauseDuplicateRef[feature.tags.ref] = true;
-          } else {
-            const oldRanking =
-              oldNetwork === config.networkName ? 2 : !oldNetwork ? 1 : 0;
-            const newRanking =
-              newNetwork === config.networkName ? 2 : !newNetwork ? 1 : 0;
-
-            if (oldRanking > newRanking) {
-              // prefer the existing one, so do nothing
-            } else if (newRanking > oldRanking) {
-              // prefer the new one
-              osmRawByRef[feature.tags.ref] = feature;
-            } else {
-              // no straightforward solution
-              if (!noWarning) {
-                console.warn(
-                  `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id}) and have incorrect network tags`
-                    .yellow
-                );
-              }
-              skipBecauseDuplicateRef[feature.tags.ref] = true;
-            }
-          }
-        } else {
-          // no duplicate - so just add it
-          osmRawByRef[feature.tags.ref] = feature;
-        }
-      }
-    }
-
-    for (const stopCode in skipBecauseDuplicateRef) {
-      delete osmRawByRef[stopCode];
-    }
-
     const osmPatchMissing: FeatureCollection = {
       type: "FeatureCollection",
       features: [],
@@ -120,6 +130,8 @@ export async function conflateStops(tempFolder: string) {
     let disused = 0;
 
     config.ignoreStops ||= {};
+
+    const osmRawByRef = getOsmStopsByRef(osmRaw, config);
 
     for (const stopCode in gtfsStops.stops) {
       const gtfsItem = gtfsStops.stops[stopCode];
