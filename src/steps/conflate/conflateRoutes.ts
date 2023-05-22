@@ -60,7 +60,8 @@ export async function conflateRoutes(tempFolder: string) {
 
       if (numberWithSameScore > 1) {
         console.log(
-          `Skipping ${rsna} as there are multiple similar route relations`.cyan
+          `Skipping ${rsna} as there are multiple similar route relations`
+            .yellow
         );
         continue;
       } else if (candiateOsmRoutes.length > 1) {
