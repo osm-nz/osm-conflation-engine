@@ -2,6 +2,7 @@ import { VehicleType } from "gtfs-types";
 
 export function getStopTagsForTransportMode(vehicleType: VehicleType) {
   switch (vehicleType) {
+    case VehicleType.SCHOOL_BUS:
     case VehicleType.BUS: {
       return {
         highway: "bus_stop",
@@ -9,6 +10,7 @@ export function getStopTagsForTransportMode(vehicleType: VehicleType) {
         bus: "yes",
       };
     }
+    case VehicleType.CABLE_CAR:
     case VehicleType.TRAIN: {
       return {
         railway: "stop",

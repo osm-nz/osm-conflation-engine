@@ -4,7 +4,7 @@ import type { OsmFeature, OsmFeatureType, OsmRelation } from "osm-api";
 import type { Feature, FeatureCollection } from "geojson";
 import type { FinalGTFSOutput } from "../processStopTimes";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
-import { getRouteTagForTransportMode } from "../../constants";
+import { getRouteTagsForTransportMode } from "../../constants";
 import { conflateRelationMembers, conflateRouteTags } from "./tags";
 import { createDiamond, distanceBetween, withConfig } from "../../util";
 
@@ -30,7 +30,9 @@ export async function conflateRoutes(tempFolder: string) {
   await withConfig(tempFolder, async (config) => {
     for (const rsna in gtfsRouteData) {
       const gtfsRoute = gtfsRouteData[rsna];
-      const routeTagValue = getRouteTagForTransportMode(gtfsRoute.vehicleType);
+      const { route: routeTagValue } = getRouteTagsForTransportMode(
+        gtfsRoute.vehicleType
+      );
 
       if (config.ignoreRoutes?.includes(gtfsRoute.rsn)) continue;
 

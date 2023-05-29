@@ -6,8 +6,7 @@ import { VehicleType } from "gtfs-types";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
 import type { FinalGTFSOutput } from "../processStopTimes";
 import { withConfig, distanceBetween, createDiamond } from "../../util";
-import { conflateStopTags, transformName } from "./tags";
-import { getStopTagsForTransportMode } from "../../constants";
+import { NON_MEANINGFUL_TAGS, conflateStopTags } from "./tags";
 import { Config } from "../../types";
 
 export function getOsmStopsByRef(
@@ -102,10 +101,13 @@ export async function conflateStops(tempFolder: string) {
 
   // store which stops are actually in use, so that we don't add disused ones.
   // also store the stop's mode of transport.
-  const stopsInUse: Record<string, VehicleType> = {};
+  const stopsInUse: Record<string, Set<VehicleType>> = {};
   for (const rsn in gtfsRouteData) {
     for (const stopId in gtfsRouteData[rsn].stopIds) {
-      stopsInUse[stopId] = gtfsRouteData[rsn].vehicleType;
+      // it's possible for multiple modes of transport to stop at the same stop
+      // e.g. light rail/bus/school bus
+      stopsInUse[stopId] ||= new Set();
+      stopsInUse[stopId].add(gtfsRouteData[rsn].vehicleType);
     }
   }
 
@@ -145,9 +147,10 @@ export async function conflateStops(tempFolder: string) {
         gtfsItem.stopIds.find((stopId) => stopId in stopsInUse) ||
         gtfsItem.stopIds[0];
 
-      const modeOfTransport: VehicleType | undefined = stopsInUse[firstStopId];
+      const modeOfTransports: Set<VehicleType> | undefined =
+        stopsInUse[firstStopId];
 
-      if (typeof modeOfTransport === "undefined") {
+      if (typeof modeOfTransports === "undefined") {
         // skip stops that are not used by any routes.
         // this is a design decision but also a technical
         // limitation because we need at least 1 route to
@@ -164,13 +167,7 @@ export async function conflateStops(tempFolder: string) {
           coordinates: [gtfsItem.lng, gtfsItem.lat],
         },
         properties: {
-          ...getStopTagsForTransportMode(modeOfTransport),
-          network: config.networkName,
-          "network:wikidata": config.networkWikidata,
-
-          ref: stopCode,
-          name: transformName(gtfsItem.name),
-          loc_ref: gtfsItem.locRef || undefined,
+          ...conflateStopTags(config, {}, modeOfTransports, gtfsItem, stopCode),
         },
       };
 
@@ -199,7 +196,7 @@ export async function conflateStops(tempFolder: string) {
           const tagChanges = conflateStopTags(
             config,
             osmItem.tags,
-            modeOfTransport,
+            modeOfTransports,
             gtfsItem,
             stopCode
           );
@@ -207,7 +204,9 @@ export async function conflateStops(tempFolder: string) {
           // no point editing a node just to "upgrade tags"
           const anyMeaningfulChanges =
             Object.keys(tagChanges).length &&
-            (tagChanges.name || tagChanges.official_name || tagChanges.loc_ref);
+            !Object.keys(tagChanges).every((tag) =>
+              NON_MEANINGFUL_TAGS.has(tag)
+            );
 
           if (anyMeaningfulChanges) {
             // some tags need changing

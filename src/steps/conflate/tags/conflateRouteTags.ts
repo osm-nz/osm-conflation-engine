@@ -1,5 +1,5 @@
 import type { Config } from "../../../types";
-import { getRouteTagForTransportMode } from "../../../constants";
+import { getRouteTagsForTransportMode } from "../../../constants";
 import { FinalGTFSOutput } from "../../processStopTimes";
 
 export function conflateRouteTags(
@@ -13,8 +13,10 @@ export function conflateRouteTags(
   if (tags.ref !== gtfsRoute.rsn) tagChanges.ref = gtfsRoute.rsn;
 
   // 1. ensure base tags are defined
-  const routeTagValue = getRouteTagForTransportMode(gtfsRoute.vehicleType);
-  if (tags.route !== routeTagValue) tagChanges.route = routeTagValue;
+  const baseTags = getRouteTagsForTransportMode(gtfsRoute.vehicleType);
+  for (const [key, value] of Object.entries(baseTags)) {
+    if (tags[key] !== value) tagChanges[key] = value;
+  }
 
   // 2. add NSI tags for network
   if (tags.network !== config.networkName!) {

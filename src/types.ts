@@ -27,6 +27,9 @@ export type Config = {
    * This can optionally be disabled by setting this option to `true`
    */
   includeAllStops?: boolean;
+
+  /** optional mode to override the existing `name` tag, instead of using `official_name` */
+  overrideExistingNames?: boolean;
 };
 
 export type BBox = {

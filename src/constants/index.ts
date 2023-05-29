@@ -1,2 +1,2 @@
-export * from "./getRouteTagForTransportMode";
+export * from "./getRouteTagsForTransportMode";
 export * from "./getStopTagsForTransportMode";
