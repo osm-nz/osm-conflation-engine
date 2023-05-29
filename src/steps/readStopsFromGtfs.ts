@@ -47,7 +47,7 @@ export async function readStopsFromGtfs(tempFolder: string) {
     if (+stop.stop_lon! > bbox.maxLng) bbox.maxLng = +stop.stop_lon!;
     if (+stop.stop_lon! < bbox.minLng) bbox.minLng = +stop.stop_lon!;
 
-    switch (+stop.location_type!) {
+    switch (+(stop.location_type ?? LocationType.STOP)) {
       case LocationType.STOP: {
         if (output.stops[stop.stop_code!]) {
           console.warn(`\tDuplicate stop ${stop.stop_code}`.yellow);

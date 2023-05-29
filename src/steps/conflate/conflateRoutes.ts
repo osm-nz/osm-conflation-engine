@@ -80,7 +80,7 @@ export async function conflateRoutes(tempFolder: string) {
       const expectedOsmStopsString: (string | undefined)[] = Object.entries(
         gtfsRoute.stopIds
       ).map(([stopId, [relationRole, count]]) => {
-        if ((count / maxCount) * 100 < 10) {
+        if ((count / maxCount) * 100 < 10 && !config.includeAllStops) {
           // less than 10% of trips stop here, so it must be a special
           // stop e.g. the night-bus version of the 82
           return undefined;
@@ -111,7 +111,7 @@ export async function conflateRoutes(tempFolder: string) {
             distance:
               f.type === "node"
                 ? distanceBetween(f.lat, f.lon, gtfsStop.lat, gtfsStop.lng)
-                : 0.123, // can't easily compute distance for non-nodes
+                : 9999, // can't easily compute distance for non-nodes
           }))
           .sort((a, b) => a.distance - b.distance)[0];
 

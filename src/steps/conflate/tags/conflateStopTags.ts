@@ -4,7 +4,10 @@ import type { StopsStationsOutput } from "../../readStopsFromGtfs";
 import { getStopTagsForTransportMode } from "../../../constants";
 
 export const transformName = (name: string) =>
-  name.replace(" Train Station", "").replace(" Ferry Terminal", "");
+  name
+    .replace(" Train Station", "")
+    .replace(" Ferry Terminal", "")
+    .replace(/ ?\(hail2ride\)$/, ""); // BUSIT Waikato
 
 /**
  * run on both the OSM and GTFS name before comparison, so that

@@ -21,6 +21,12 @@ export type Config = {
   ignoreStations?: string[];
   /** routes to ignore */
   ignoreRoutes?: string[];
+
+  /**
+   * by default, stops are excluded from route relations if <10% of trips stop there.
+   * This can optionally be disabled by setting this option to `true`
+   */
+  includeAllStops?: boolean;
 };
 
 export type BBox = {
