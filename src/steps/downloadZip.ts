@@ -10,7 +10,7 @@ export async function downloadZip(tempFolder: string, urlToZipFile: string) {
   const pathOnDisk = join(tempFolder, "gtfs.zip");
 
   const { stdout, stderr } = await execAsync(
-    `curl "${urlToZipFile}" -o ${pathOnDisk}`
+    `curl "${urlToZipFile}" -Lo ${pathOnDisk}`
   );
   if (stdout) console.log(stdout);
   if (stderr) console.error(stderr.red);

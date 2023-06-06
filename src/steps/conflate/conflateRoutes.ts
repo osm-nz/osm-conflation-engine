@@ -5,7 +5,11 @@ import type { Feature, FeatureCollection } from "geojson";
 import type { FinalGTFSOutput } from "../processStopTimes";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
 import { getRouteTagsForTransportMode } from "../../constants";
-import { conflateRelationMembers, conflateRouteTags } from "./tags";
+import {
+  NON_MEANINGFUL_ROUTE_TAGS,
+  conflateRelationMembers,
+  conflateRouteTags,
+} from "./tags";
 import { createDiamond, distanceBetween, withConfig } from "../../util";
 import { TRIP_PERCENT_THRESHOLD } from "./constants";
 
@@ -167,7 +171,14 @@ export async function conflateRoutes(tempFolder: string) {
           { removeAllOtherNodes: true }
         );
 
-        if (Object.keys(tagChanges).length || memberChanges.length) {
+        // only edit the tags if at least 1 tag is meaningful
+        const anyMeaningfulTagChanges =
+          Object.keys(tagChanges).length &&
+          !Object.keys(tagChanges).every((tag) =>
+            NON_MEANINGFUL_ROUTE_TAGS.has(tag)
+          );
+
+        if (anyMeaningfulTagChanges || memberChanges.length) {
           osmPatch.features.push({
             type: "Feature",
             id: osmRoute.type[0] + osmRoute.id,

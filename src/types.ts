@@ -1,3 +1,5 @@
+import { VehicleType } from "gtfs-types";
+
 export type Config = {
   /** the value for the `network=*` tag in this city */
   networkName?: string;
@@ -21,6 +23,11 @@ export type Config = {
   ignoreStations?: string[];
   /** routes to ignore */
   ignoreRoutes?: string[];
+
+  /** you can change the mode of transport for certain route if they're defined wrong */
+  overrideTransportMode?: {
+    [rsn: string]: VehicleType;
+  };
 
   /**
    * by default, stops are excluded from route relations if <10% of trips stop there.

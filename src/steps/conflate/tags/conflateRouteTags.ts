@@ -2,6 +2,9 @@ import type { Config } from "../../../types";
 import { getRouteTagsForTransportMode } from "../../../constants";
 import { FinalGTFSOutput } from "../../processStopTimes";
 
+// no point editting a route if it's purely to edit these tags
+export const NON_MEANINGFUL_ROUTE_TAGS = new Set(["__action", "via"]);
+
 export function conflateRouteTags(
   config: Config,
   tags: Record<string, string>,

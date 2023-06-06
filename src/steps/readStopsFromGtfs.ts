@@ -47,6 +47,11 @@ export async function readStopsFromGtfs(tempFolder: string) {
     if (+stop.stop_lon! > bbox.maxLng) bbox.maxLng = +stop.stop_lon!;
     if (+stop.stop_lon! < bbox.minLng) bbox.minLng = +stop.stop_lon!;
 
+    if (!stop.stop_code) {
+      console.warn(`\tSkipping stop with no code (${stop.stop_id})`);
+      continue;
+    }
+
     switch (+(stop.location_type ?? LocationType.STOP)) {
       case LocationType.STOP: {
         if (output.stops[stop.stop_code!]) {

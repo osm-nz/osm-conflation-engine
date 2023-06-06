@@ -5,6 +5,8 @@ import { getStopTagsForTransportMode } from "../../../constants";
 
 // no point editting a node if it's purely to edit these tags
 export const NON_MEANINGFUL_TAGS = new Set([
+  "name",
+  "official_name",
   "network",
   "network:wikidata",
   "network:wikipedia",
@@ -127,6 +129,10 @@ export function conflateStopTags(
   const finalishTags = { ...tags, ...tagChanges };
   if (finalishTags.ref && finalishTags.ref === finalishTags.local_ref) {
     tagChanges.local_ref = "🗑️";
+  }
+  if (finalishTags.ref && finalishTags.ref === finalishTags.name) {
+    tagChanges.name = gtfsName;
+    if (finalishTags.official_name) tagChanges.official_name = "🗑️";
   }
   if (finalishTags.name && finalishTags.name === finalishTags.official_name) {
     tagChanges.official_name = "🗑️";

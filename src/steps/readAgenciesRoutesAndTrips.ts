@@ -42,7 +42,9 @@ export async function readAgenciesRoutesAndTrips(tempFolder: string) {
 
       const rsna = `${route.route_short_name!}|${agencyName}`;
       output[rsna] ||= {
-        vehicleType: +route.route_type,
+        vehicleType:
+          config.overrideTransportMode?.[route.route_short_name!] ||
+          +route.route_type,
         rln: route.route_long_name,
         rsn: route.route_short_name!,
         operators: [],
