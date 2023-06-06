@@ -76,6 +76,24 @@ export function conflateRouteTags(
       if (!tags.from && from) tagChanges.from = from;
       if (!tags.via && via) tagChanges.via = via;
     }
+
+    const match2 =
+      gtfsRoute.rln.match(/(.+) - (.+) - (.+) - (.+)/i) ||
+      gtfsRoute.rln.match(/(.+) - (.+) - (.+)/i) ||
+      gtfsRoute.rln.match(/(.+) - (.+)/i);
+    if (match2) {
+      const [, a, b, c, d] = match2;
+
+      const to = d || c || b;
+      const from = a;
+      const middle = d ? [b, c] : c ? [b] : [];
+      const via = middle.join(";");
+
+      // respect the value of to/from/via if they're already set
+      if (!tags.to && to) tagChanges.to = to;
+      if (!tags.from && from) tagChanges.from = from;
+      if (!tags.via && via) tagChanges.via = via;
+    }
   }
 
   return tagChanges;

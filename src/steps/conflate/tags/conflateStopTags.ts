@@ -124,8 +124,11 @@ export function conflateStopTags(
   if (tags.loc_ref && tags.local_ref) tagChanges.loc_ref = "🗑️";
 
   // 7. delete tags that duplicate each other
-  if (tags.ref && tags.ref === tags.local_ref) tagChanges.local_ref = "🗑️";
-  if (tags.name && tags.name === tags.official_name) {
+  const finalishTags = { ...tags, ...tagChanges };
+  if (finalishTags.ref && finalishTags.ref === finalishTags.local_ref) {
+    tagChanges.local_ref = "🗑️";
+  }
+  if (finalishTags.name && finalishTags.name === finalishTags.official_name) {
     tagChanges.official_name = "🗑️";
   }
 

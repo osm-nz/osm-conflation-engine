@@ -7,6 +7,7 @@ import type { StopsStationsOutput } from "../readStopsFromGtfs";
 import { getRouteTagsForTransportMode } from "../../constants";
 import { conflateRelationMembers, conflateRouteTags } from "./tags";
 import { createDiamond, distanceBetween, withConfig } from "../../util";
+import { TRIP_PERCENT_THRESHOLD } from "./constants";
 
 export async function conflateRoutes(tempFolder: string) {
   const gtfsRouteData: FinalGTFSOutput = JSON.parse(
@@ -82,8 +83,11 @@ export async function conflateRoutes(tempFolder: string) {
       const expectedOsmStopsString: (string | undefined)[] = Object.entries(
         gtfsRoute.stopIds
       ).map(([stopId, [relationRole, count]]) => {
-        if ((count / maxCount) * 100 < 10 && !config.includeAllStops) {
-          // less than 10% of trips stop here, so it must be a special
+        if (
+          (count / maxCount) * 100 < TRIP_PERCENT_THRESHOLD &&
+          !config.includeAllStops
+        ) {
+          // less than TRIP_PERCENT_THRESHOLD% of trips stop here, so it must be a special
           // stop e.g. the night-bus version of the 82
           return undefined;
         }
@@ -94,7 +98,15 @@ export async function conflateRoutes(tempFolder: string) {
         )?.[0];
 
         if (stopCode && stopCode in config.ignoreStops!) {
-          stopCode = config.ignoreStops![stopCode] || undefined;
+          const overrideValue = config.ignoreStops![stopCode];
+
+          if (overrideValue === null) {
+            // don't error if the user is decidedly ignoring this stop
+            return undefined;
+          }
+
+          // apply the override
+          stopCode = overrideValue;
         }
 
         const gtfsStop = stopCode && gtfsStops.stops[stopCode];

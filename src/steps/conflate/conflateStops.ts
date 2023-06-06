@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import { join } from "path";
-import type { OsmFeature } from "osm-api";
+import type { OsmFeature, OsmNode } from "osm-api";
 import type { Feature, FeatureCollection } from "geojson";
 import { VehicleType } from "gtfs-types";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
@@ -8,6 +8,9 @@ import type { FinalGTFSOutput } from "../processStopTimes";
 import { withConfig, distanceBetween, createDiamond } from "../../util";
 import { NON_MEANINGFUL_TAGS, conflateStopTags } from "./tags";
 import { Config } from "../../types";
+import { TRIP_PERCENT_THRESHOLD } from "./constants";
+
+const used: Record<string, true> = {};
 
 export function getOsmStopsByRef(
   osmRaw: OsmFeature[],
@@ -99,23 +102,35 @@ export async function conflateStops(tempFolder: string) {
     await fs.readFile(join(tempFolder, "finalGtfsRouteData.json"), "utf8")
   );
 
-  // store which stops are actually in use, so that we don't add disused ones.
-  // also store the stop's mode of transport.
-  const stopsInUse: Record<string, Set<VehicleType>> = {};
-  for (const rsn in gtfsRouteData) {
-    for (const stopId in gtfsRouteData[rsn].stopIds) {
-      // it's possible for multiple modes of transport to stop at the same stop
-      // e.g. light rail/bus/school bus
-      stopsInUse[stopId] ||= new Set();
-      stopsInUse[stopId].add(gtfsRouteData[rsn].vehicleType);
-    }
-  }
-
   const osmRaw: OsmFeature[] = JSON.parse(
     await fs.readFile(join(tempFolder, "osmRaw.json"), "utf8")
   );
 
   await withConfig(tempFolder, async (config) => {
+    // store which stops are actually in use, so that we don't add disused ones.
+    // also store the stop's mode of transport.
+    const stopsInUse: Record<string, Set<VehicleType>> = {};
+    for (const rsn in gtfsRouteData) {
+      const stops = Object.entries(gtfsRouteData[rsn].stopIds);
+      const maxCount = Math.max(...stops.map(([, [, count]]) => count));
+
+      for (const [stopId, [, count]] of stops) {
+        // it's possible for multiple modes of transport to stop at the same stop
+        // e.g. light rail/bus/school bus
+        stopsInUse[stopId] ||= new Set();
+
+        if (
+          (count / maxCount) * 100 < TRIP_PERCENT_THRESHOLD &&
+          !config.includeAllStops
+        ) {
+          // skip, this mode of transport hardly ever stops at this stop
+          continue;
+        }
+
+        stopsInUse[stopId].add(gtfsRouteData[rsn].vehicleType);
+      }
+    }
+
     const osmPatchMissing: FeatureCollection = {
       type: "FeatureCollection",
       features: [],
