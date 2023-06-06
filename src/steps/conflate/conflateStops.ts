@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import { join } from "path";
-import type { OsmFeature, OsmNode } from "osm-api";
+import type { OsmFeature } from "osm-api";
 import type { Feature, FeatureCollection } from "geojson";
 import { VehicleType } from "gtfs-types";
 import type { StopsStationsOutput } from "../readStopsFromGtfs";
@@ -9,8 +9,6 @@ import { withConfig, distanceBetween, createDiamond } from "../../util";
 import { NON_MEANINGFUL_TAGS, conflateStopTags } from "./tags";
 import { Config } from "../../types";
 import { TRIP_PERCENT_THRESHOLD } from "./constants";
-
-const used: Record<string, true> = {};
 
 export function getOsmStopsByRef(
   osmRaw: OsmFeature[],

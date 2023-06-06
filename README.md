@@ -1,7 +1,7 @@
 # OSM-GTFS Sync
 
-![Test](https://github.com/osm-nz/linz-address-import/actions/workflows/ci.yml/badge.svg)
-![Lines of code](https://img.shields.io/tokei/lines/github/osm-nz/linz-address-import?color=green)
+![Test](https://github.com/k-yle/osm-gtfs-sync/actions/workflows/ci.yml/badge.svg)
+![Lines of code](https://img.shields.io/tokei/lines/github/k-yle/osm-gtfs-sync?color=green)
 
 A simple modern alternative to [CUTR-at-USF/gtfs-osm-sync](https://github.com/CUTR-at-USF/gtfs-osm-sync), with a few benefits:
 
