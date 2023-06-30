@@ -10,6 +10,7 @@ import {
   processStopTimes,
   readAgenciesRoutesAndTrips,
   readStopsFromGtfs,
+  shapeToGeoJson,
   unzipGtfsFile,
 } from "./steps";
 
@@ -94,17 +95,20 @@ async function main() {
     await processStopTimes(tempFolder);
   }
 
+  // 7. Generate geojson files from shapes.txt
+  await shapeToGeoJson(tempFolder);
+
   //
   // now we have everything, we can finally conflate the data.
   //
 
-  // 7. Conflate stops
+  // 8. Conflate stops
   await conflateStops(tempFolder);
 
-  // 8. Conflate stations
+  // 9. Conflate stations
   await conflateStations(tempFolder);
 
-  // 9. Conflate routes
+  // 10. Conflate routes
   await conflateRoutes(tempFolder);
 }
 

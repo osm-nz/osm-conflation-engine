@@ -1,15 +1,23 @@
 import csv from "csv-parser";
 import { createReadStream, promises as fs } from "node:fs";
 import { join } from "node:path";
-import { Shapes } from "gtfs-types";
-import { FeatureCollection } from "geojson";
-import { RSNOutput } from "./steps";
+import type { Shapes } from "gtfs-types";
+import type { FeatureCollection } from "geojson";
+import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
 
 type Coord = [lng: number, lat: number];
 
-const tempFolder = join(__dirname, "../tmp/cdn01-at-govt-nz-7526d7");
+export async function shapeToGeoJson(tempFolder: string) {
+  const alreadyExists = await fs
+    .access(join(tempFolder, "shapes"))
+    .then(() => true)
+    .catch(() => false);
 
-export async function main() {
+  if (alreadyExists) {
+    console.log("Shapes already generated");
+    return;
+  }
+
   console.log("processing shapes...");
   const output: { [rsna: string]: { [shapeId: string]: Coord[] } } = {};
 
@@ -62,5 +70,3 @@ export async function main() {
     );
   }
 }
-
-main();
