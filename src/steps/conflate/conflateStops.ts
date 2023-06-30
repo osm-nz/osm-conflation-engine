@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
-import { join } from "path";
+import { promises as fs } from "node:fs";
+import { join } from "node:path";
 import type { OsmFeature } from "osm-api";
 import type { Feature, FeatureCollection } from "geojson";
 import { VehicleType } from "gtfs-types";
@@ -53,9 +53,9 @@ export function getOsmStopsByRef(
           skipBecauseDuplicateRef[feature.tags.ref] = true;
         } else {
           const oldRanking =
-            oldNetwork === config.networkName ? 2 : !oldNetwork ? 1 : 0;
+            oldNetwork === config.networkName ? 2 : oldNetwork ? 0 : 1;
           const newRanking =
-            newNetwork === config.networkName ? 2 : !newNetwork ? 1 : 0;
+            newNetwork === config.networkName ? 2 : newNetwork ? 0 : 1;
 
           if (oldRanking > newRanking) {
             // prefer the existing one, so do nothing
@@ -163,7 +163,7 @@ export async function conflateStops(tempFolder: string) {
       const modeOfTransports: Set<VehicleType> | undefined =
         stopsInUse[firstStopId];
 
-      if (typeof modeOfTransports === "undefined") {
+      if (modeOfTransports === undefined) {
         // skip stops that are not used by any routes.
         // this is a design decision but also a technical
         // limitation because we need at least 1 route to

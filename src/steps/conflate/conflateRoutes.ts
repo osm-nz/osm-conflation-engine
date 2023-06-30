@@ -54,18 +54,18 @@ export async function conflateRoutes(tempFolder: string) {
 
       const candiateOsmRoutes = osmRaw
         .filter(
-          (el): el is OsmRelation =>
-            el.type === "relation" &&
-            el.tags?.type === "route" &&
-            el.tags.route === routeTagValue &&
-            el.tags.ref === gtfsRoute.rsn
+          (feature): feature is OsmRelation =>
+            feature.type === "relation" &&
+            feature.tags?.type === "route" &&
+            feature.tags.route === routeTagValue &&
+            feature.tags.ref === gtfsRoute.rsn
         )
-        .map((el) => ({
-          ...el,
+        .map((relation) => ({
+          ...relation,
           score:
-            el.tags?.network === config.networkName
+            relation.tags?.network === config.networkName
               ? 2
-              : el.tags?.network
+              : relation.tags?.network
               ? 0 // any other network value
               : 1,
         }))

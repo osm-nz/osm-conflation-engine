@@ -1,5 +1,5 @@
 import csv from "csv-parser";
-import { createReadStream } from "fs";
+import { createReadStream } from "node:fs";
 
 /**
  * reads an entire csv file into memory, obvioulsy

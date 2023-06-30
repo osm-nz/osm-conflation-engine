@@ -1,6 +1,6 @@
 import csv from "csv-parser";
-import { createReadStream, promises as fs } from "fs";
-import { join } from "path";
+import { createReadStream, promises as fs } from "node:fs";
+import { join } from "node:path";
 import { Shapes } from "gtfs-types";
 import { FeatureCollection } from "geojson";
 import { RSNOutput } from "./steps";

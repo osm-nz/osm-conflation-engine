@@ -71,7 +71,7 @@ export function conflateRouteTags(
       const via = _via
         ?.replace(/\(.+\)/, "") // remove content in parenthesis
         .trim()
-        .split(/ (?:And|&) /i) // split via points
+        .split(/ (?:and|&) /i) // split via points
         .join(";");
 
       // respect the value of to/from/via if they're already set

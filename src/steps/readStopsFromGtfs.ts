@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
-import { join } from "path";
+import { promises as fs } from "node:fs";
+import { join } from "node:path";
 import { LocationType, Stop } from "gtfs-types";
 import { BBox } from "../types";
 import { csvToJsonObject, withConfig } from "../util";
@@ -93,9 +93,10 @@ export async function readStopsFromGtfs(tempFolder: string) {
         break;
       }
 
-      default:
+      default: {
         console.log(`\tSkipping node ${stop.location_type}`.yellow);
         break;
+      }
     }
   }
 

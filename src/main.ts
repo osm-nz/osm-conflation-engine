@@ -1,6 +1,6 @@
-import { promises as fs } from "fs";
-import { join } from "path";
-import { createHash } from "crypto";
+import { promises as fs } from "node:fs";
+import { join } from "node:path";
+import { createHash } from "node:crypto";
 import {
   conflateRoutes,
   conflateStations,
@@ -25,7 +25,7 @@ async function doesFileExist(fileOrFolder: string) {
 async function main() {
   const url = process.argv[2];
 
-  const cityId = `${new URL(url).hostname.replace(/[^\w]+/g, "-")}-${createHash(
+  const cityId = `${new URL(url).hostname.replaceAll(/\W+/g, "-")}-${createHash(
     "sha256"
   )
     .update(url)

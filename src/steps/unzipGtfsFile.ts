@@ -1,5 +1,5 @@
-import { createReadStream } from "fs";
-import { join } from "path";
+import { createReadStream } from "node:fs";
+import { join } from "node:path";
 import { Extract } from "unzip-stream";
 
 export function unzipGtfsFile(tempFolder: string) {

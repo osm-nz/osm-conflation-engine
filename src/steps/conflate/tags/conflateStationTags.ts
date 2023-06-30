@@ -4,7 +4,7 @@ import { normalizeName, transformName } from "./conflateStopTags";
 
 const transformStationName = (name: string) =>
   name
-    .replace(/(\w)\/(\w)/g, "$1 / $2") // space between slashes
+    .replaceAll(/(\w)\/(\w)/g, "$1 / $2") // space between slashes
     .replace(/(^\/|\/$)/, ""); // leading or trailing slashes
 
 export function conflateStationTags(

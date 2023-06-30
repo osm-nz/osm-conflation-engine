@@ -31,7 +31,7 @@ export const transformName = (name: string) =>
 export const normalizeName = (name: string | undefined) =>
   name
     ?.normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+    .replaceAll(/\p{Diacritic}/gu, "")
     .replace(" ", "")
     .trim();
 

@@ -1,11 +1,11 @@
-import { promises as fs } from "fs";
-import { join } from "path";
+import { promises as fs } from "node:fs";
+import { join } from "node:path";
 import { Config } from "../types";
 
 // eslint-disable-next-line consistent-return -- false positive because exit() never returns
 export async function withConfig<T>(
   tempFolder: string,
-  cb: (config: Config) => Promise<T>
+  callback: (config: Config) => Promise<T>
 ): Promise<T> {
   const configFilePath = join(tempFolder, "config.json");
 
@@ -15,7 +15,7 @@ export async function withConfig<T>(
     .catch((): Config => ({}));
 
   try {
-    const result = await cb(config);
+    const result = await callback(config);
 
     await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
     return result;

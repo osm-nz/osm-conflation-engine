@@ -1,6 +1,6 @@
 import csv from "csv-parser";
-import { createReadStream, promises as fs } from "fs";
-import { join } from "path";
+import { createReadStream, promises as fs } from "node:fs";
+import { join } from "node:path";
 import { Alight, StopTime, VehicleType } from "gtfs-types";
 import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
 
