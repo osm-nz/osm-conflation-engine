@@ -25,6 +25,17 @@ export async function conflateRoutes(tempFolder: string) {
     await fs.readFile(join(tempFolder, "osmRaw.json"), "utf8")
   );
 
+  for (const r of osmRaw) {
+    if (r.type === "relation" && r.tags?.route && r.tags?.ref) {
+      const wayMemberCount = r.members.filter((w) => w.type === "way").length;
+      if (wayMemberCount < 1) {
+        console.log(
+          `OSM relation/${r.id} (${r.tags.ref}) has no geometry`.gray
+        );
+      }
+    }
+  }
+
   const osmPatch: FeatureCollection = {
     type: "FeatureCollection",
     features: [],
