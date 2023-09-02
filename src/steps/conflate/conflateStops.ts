@@ -32,18 +32,38 @@ export function getOsmStopsByRef(
         // or no network tag. If this doesn't resolve the ambiguity, then warn
         const oldNetwork = existing.tags?.network || "";
         const newNetwork = feature.tags?.network || "";
-
-        const bothHaveNoNetwork = !oldNetwork && !newNetwork;
-        const bothHaveCorrectNetwork =
-          oldNetwork === config.networkName &&
-          newNetwork === config.networkName;
+        const oldNetworkQId = existing.tags?.["network:wikidata"] || "";
+        const newNetworkQId = feature.tags?.["network:wikidata"] || "";
 
         // it's common that there'll be duplicates for ref=1, ref=2 etc.
         const noWarning =
           !Number.isNaN(+feature.tags.ref) && +feature.tags.ref < 100;
 
-        if (bothHaveNoNetwork || bothHaveCorrectNetwork) {
-          // no straightforward solution here so print a warning
+        const oldRanking =
+          oldNetworkQId === config.networkWikidata
+            ? 3
+            : oldNetwork === config.networkName
+            ? 2
+            : oldNetwork || oldNetworkQId
+            ? 0 // penalise if there is a network[:wikidata] with the wrong value
+            : 1;
+        const newRanking =
+          newNetworkQId === config.networkWikidata
+            ? 3
+            : newNetwork === config.networkName
+            ? 2
+            : newNetwork || newNetworkQId
+            ? 0 // penalise if there is a network[:wikidata] with the wrong value
+            : 1;
+
+        if (oldRanking > newRanking) {
+          // prefer the existing one, so do nothing
+        } else if (newRanking > oldRanking) {
+          // prefer the new one
+          osmRawByRef[feature.tags.ref] = feature;
+        } else {
+          // both have the same ranking,
+          // no straightforward solution
           if (!noWarning) {
             console.warn(
               `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id})`
@@ -51,27 +71,6 @@ export function getOsmStopsByRef(
             );
           }
           skipBecauseDuplicateRef[feature.tags.ref] = true;
-        } else {
-          const oldRanking =
-            oldNetwork === config.networkName ? 2 : oldNetwork ? 0 : 1;
-          const newRanking =
-            newNetwork === config.networkName ? 2 : newNetwork ? 0 : 1;
-
-          if (oldRanking > newRanking) {
-            // prefer the existing one, so do nothing
-          } else if (newRanking > oldRanking) {
-            // prefer the new one
-            osmRawByRef[feature.tags.ref] = feature;
-          } else {
-            // no straightforward solution
-            if (!noWarning) {
-              console.warn(
-                `Multiple OSM stops have ref=${feature.tags.ref} (${feature.id} & ${existing.id}) and have incorrect network tags`
-                  .yellow
-              );
-            }
-            skipBecauseDuplicateRef[feature.tags.ref] = true;
-          }
         }
       } else {
         // no duplicate - so just add it
@@ -141,6 +140,12 @@ export async function conflateStops(tempFolder: string) {
       // @ts-expect-error -- part of the osmPatch spec
       size: "medium",
     };
+    const osmPatchDisused: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [],
+      // @ts-expect-error -- part of the osmPatch spec
+      size: "medium",
+    };
 
     let disused = 0;
 
@@ -169,6 +174,15 @@ export async function conflateStops(tempFolder: string) {
         // limitation because we need at least 1 route to
         // determine the mode of transport for the stop.
         disused++;
+        osmPatchDisused.features.push({
+          type: "Feature",
+          id: stopCode,
+          geometry: {
+            type: "Point",
+            coordinates: [gtfsItem.lng, gtfsItem.lat],
+          },
+          properties: { name: gtfsItem.name, red: stopCode },
+        });
         continue;
       }
 
@@ -239,7 +253,7 @@ export async function conflateStops(tempFolder: string) {
             // this stop is perfect
           }
         } else {
-          // stop is too way away to conceively be the one we're looking for.
+          // stop is too far away to conceively be the one we're looking for.
           // so suggest creating a new one
           osmPatchMissing.features.push(fallback);
         }
@@ -264,6 +278,10 @@ export async function conflateStops(tempFolder: string) {
     await fs.writeFile(
       join(tempFolder, "output", "stops-wrong.osmPatch.geo.json"),
       JSON.stringify(osmPatchWrong, null, 2)
+    );
+    await fs.writeFile(
+      join(tempFolder, "output", "stops-disused.osmPatch.geo.json"),
+      JSON.stringify(osmPatchDisused, null, 2)
     );
 
     if (missing) {

@@ -19,7 +19,7 @@ export async function conflateStations(tempFolder: string) {
 
   const gtfsStops: StopsStationsOutput & {
     // extra attributes added in the file
-    stations: { [red: string]: { children: string[] } };
+    stations: { [ref: string]: { children: string[] } };
   } = JSON.parse(await fs.readFile(join(tempFolder, "gtfsStops.json"), "utf8"));
 
   const stationsIdToCode: Record<string, string> = {};
@@ -97,9 +97,9 @@ export async function conflateStations(tempFolder: string) {
       if (config.ignoreStations?.includes(stationCode)) continue;
 
       const gtfsStation = gtfsStops.stations[stationCode];
-      const expectedOsmMembers = [...new Set(gtfsStation.children)].map(
-        (stopCode) => stopsByRef[stopCode]
-      );
+      const expectedOsmMembers = [...new Set(gtfsStation.children)]
+        .map((stopCode) => stopsByRef[stopCode])
+        .filter(Boolean);
 
       // no point adding stations that only have one child
       if (expectedOsmMembers.length === 1) continue;
@@ -108,14 +108,16 @@ export async function conflateStations(tempFolder: string) {
         osmStationsWithRef.get(stationCode) ||
         // if we can't find one with a match, try to find a matching one with no ref.
         // this is a much more expensive search
-        osmStationsWithNoRef.find((actualStation) =>
-          expectedOsmMembers.every((expectedMember) =>
-            actualStation.children.some(
-              (actualMember) =>
-                actualMember.id === expectedMember.id &&
-                actualMember.type === expectedMember.type
+        osmStationsWithNoRef.find(
+          (actualStation) =>
+            expectedOsmMembers.length &&
+            expectedOsmMembers.every((expectedMember) =>
+              actualStation.children.some(
+                (actualMember) =>
+                  actualMember.id === expectedMember.id &&
+                  actualMember.type === expectedMember.type
+              )
             )
-          )
         );
 
       const tagChanges = conflateStationTags(
@@ -182,8 +184,9 @@ export async function conflateStations(tempFolder: string) {
             __members: memberChanges,
           },
         });
-      } else {
+      } else if (memberChanges.length) {
         // no match found, so create a station
+        // but not if there are no members, since that's impossible
         osmPatch.features.push({
           type: "Feature",
           id: stationCode,

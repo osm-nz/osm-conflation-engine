@@ -63,9 +63,9 @@ export async function conflateRoutes(tempFolder: string) {
         .map((relation) => ({
           ...relation,
           score:
-            relation.tags?.network === config.networkName
+            relation.tags?.["network:wikidata"] === config.networkWikidata
               ? 2
-              : relation.tags?.network
+              : relation.tags?.["network:wikidata"]
               ? 0 // any other network value
               : 1,
         }))
@@ -164,11 +164,12 @@ export async function conflateRoutes(tempFolder: string) {
 
       if (osmRoute) {
         if (
-          osmRoute.tags?.network &&
-          osmRoute.tags.network !== config.networkName
+          osmRoute.tags?.["network:wikidata"] &&
+          osmRoute.tags["network:wikidata"] !== config.networkWikidata
         ) {
           console.warn(
-            `Route ${rsna} has invalid network ${osmRoute.tags.network}`.red
+            `Route ${rsna} has invalid network QID “${osmRoute.tags["network:wikidata"]}”`
+              .red
           );
         }
 
