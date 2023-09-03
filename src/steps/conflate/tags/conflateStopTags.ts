@@ -15,6 +15,10 @@ export const NON_MEANINGFUL_TAGS = new Set([
   "operator:wikipedia",
   "public_transport",
   "bus",
+  // crap that we remove:
+  "gtfs:id",
+  "gtfs:name",
+  "gtfs:stop_id",
 ]);
 
 export const transformName = (name: string) =>
@@ -136,6 +140,13 @@ export function conflateStopTags(
   }
   if (finalishTags.name && finalishTags.name === finalishTags.official_name) {
     tagChanges.official_name = "🗑️";
+  }
+
+  // 8. delete spammy tags from previous imports
+  for (const key in tags) {
+    if (key.startsWith("gtfs:")) {
+      tagChanges[key] = "🗑️";
+    }
   }
 
   return tagChanges;

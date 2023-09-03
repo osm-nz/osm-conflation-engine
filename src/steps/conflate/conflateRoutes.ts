@@ -77,8 +77,9 @@ export async function conflateRoutes(tempFolder: string) {
       ).length;
 
       if (numberWithSameScore > 1) {
+        const relationIds = candiateOsmRoutes.map((r) => r.id).join(", ");
         console.log(
-          `Skipping ${rsna} as there are multiple similar route relations`
+          `Skipping ${rsna} as there are multiple similar route relations\n\t${relationIds}`
             .yellow
         );
         continue;
