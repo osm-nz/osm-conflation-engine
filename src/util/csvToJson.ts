@@ -1,4 +1,5 @@
 import csv from "csv-parser";
+import stripBOM from "strip-bom-stream";
 import { createReadStream } from "node:fs";
 
 /**
@@ -9,6 +10,7 @@ export function csvToJsonObject<T>(path: string, key: keyof T) {
   return new Promise<Record<string, T[]>>((resolve, reject) => {
     const results: Record<string, T[]> = {};
     createReadStream(path)
+      .pipe(stripBOM())
       .pipe(csv())
       .on("data", (data) => {
         results[data[key]] ||= [];

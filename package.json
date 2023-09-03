@@ -25,6 +25,7 @@
     "csv-parser": "^3.0.0",
     "gtfs-types": "^2.2.0",
     "osm-api": "^1.0.5",
+    "strip-bom-stream": "^4.0.0",
     "ts-node": "^10.9.1",
     "unzip-stream": "^0.3.1"
   },

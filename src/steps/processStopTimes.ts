@@ -1,6 +1,7 @@
 import csv from "csv-parser";
 import { createReadStream, promises as fs } from "node:fs";
 import { join } from "node:path";
+import stripBOM from "strip-bom-stream";
 import { Alight, StopTime, VehicleType } from "gtfs-types";
 import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
 
@@ -56,6 +57,7 @@ export async function processStopTimes(tempFolder: string) {
 
   await new Promise((resolve, reject) => {
     createReadStream(join(tempFolder, "gtfs", "stop_times.txt"))
+      .pipe(stripBOM())
       .pipe(csv())
       .on("data", (data: StopTime) => {
         const rsna = tripIdToRSNAMap[data.trip_id];

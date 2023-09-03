@@ -1,6 +1,7 @@
 import csv from "csv-parser";
 import { createReadStream, promises as fs } from "node:fs";
 import { join } from "node:path";
+import stripBOM from "strip-bom-stream";
 import type { Shapes } from "gtfs-types";
 import type { FeatureCollection } from "geojson";
 import type { RSNOutput } from "./readAgenciesRoutesAndTrips";
@@ -35,6 +36,7 @@ export async function shapeToGeoJson(tempFolder: string) {
 
   await new Promise((resolve, reject) => {
     createReadStream(join(tempFolder, "gtfs", "shapes.txt"))
+      .pipe(stripBOM())
       .pipe(csv())
       .on("data", (data: Shapes) => {
         const rsna = shapeIdToRSNAMap[data.shape_id];
