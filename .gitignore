@@ -1,5 +1,5 @@
 node_modules
 tmp
-todo.md
 .DS_Store
 yarn.lock
+dist
