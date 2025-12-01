@@ -7,7 +7,8 @@ import { version } from '../../package.json';
  * Some datasets don't specify a `stop_code`, and just
  * use a the `stop_id` for a human-readable ID.
  */
-export function getStopCode(stop: Stop) {
+export function getStopCode(stop: Stop, config: NetworkConfig) {
+  if (config.useStopId) return stop.stop_id;
   return stop.stop_code || stop.stop_id;
 }
 

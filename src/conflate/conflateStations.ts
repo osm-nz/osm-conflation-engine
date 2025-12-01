@@ -107,13 +107,15 @@ export async function conflateStations(
       continue;
     }
 
-    const stationCode = getStopCode(gtfsStation);
+    const stationCode = getStopCode(gtfsStation, config);
 
     // if the user wants to skip this one, pretend it doesn't exist if
     if (config.ignoreStations?.includes(stationCode)) continue;
 
     const expectedOsmMembers = [
-      ...new Set(stopsByStation[_stationId]?.map(getStopCode)),
+      ...new Set(
+        stopsByStation[_stationId]?.map((s) => getStopCode(s, config)),
+      ),
     ]
       .map((stopCode) => osmRawByRef[stopCode])
       .filter(Boolean);

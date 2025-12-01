@@ -58,6 +58,7 @@ function getRankingForJourney(
   osmRawById: { [osmId: string]: OsmFeature },
   osmRawByRef: { [stopCode: string]: OsmFeature },
   stopsById: { [stopId: string]: Stop[] | undefined },
+  config: NetworkConfig,
 ) {
   // this is a perfect match, but we don't encourage this tag, unless the
   // guesswork totally fails, because this column is unstable and not intended
@@ -118,7 +119,7 @@ function getRankingForJourney(
     .map(({ stopId }) => {
       const stop = stopsById[stopId]?.[0];
       if (!stop) return undefined;
-      const osmStop = osmRawByRef[getStopCode(stop)];
+      const osmStop = osmRawByRef[getStopCode(stop, config)];
       return members.some((m) => m.feature && m.feature === osmStop);
     })
     .filter(Boolean);
@@ -157,7 +158,7 @@ function getExpectedStops(
         );
       }
 
-      let stopCode = getStopCode(gtfsStop);
+      let stopCode = getStopCode(gtfsStop, config);
 
       if (stopCode && stopCode in config.ignoreStops!) {
         const overrideValue = config.ignoreStops![stopCode];
@@ -168,14 +169,16 @@ function getExpectedStops(
         }
 
         // apply the override
-        const override = allStops.find((s) => getStopCode(s) === overrideValue);
+        const override = allStops.find(
+          (s) => getStopCode(s, config) === overrideValue,
+        );
         if (!override) {
           throw new Error(
             `${stopCode} is overriden to ${overrideValue}, but this is not a valid stop_code.`,
           );
         }
         gtfsStop = override;
-        stopCode = getStopCode(gtfsStop);
+        stopCode = getStopCode(gtfsStop, config);
       }
 
       const osmStop = osmRawByRef[stopCode];
@@ -343,6 +346,7 @@ export async function conflateRoutes(
               osmRawById,
               osmRawByRef,
               stopsById,
+              config,
             ),
           }))
           .sort((a, b) => b.score - a.score);

@@ -17,7 +17,7 @@ export function conflateStationTags(
 ) {
   const tagChanges: Tags = {};
 
-  const gtfsStopCode = getStopCode(gtfsItem);
+  const gtfsStopCode = getStopCode(gtfsItem, config);
 
   // 0. check the ref tag
   const { key: refKey, value: ref } = getOsmRef('stop', config, tags);

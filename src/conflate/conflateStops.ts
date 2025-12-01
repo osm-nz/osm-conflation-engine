@@ -185,7 +185,9 @@ export async function conflateStops(
 
   const allStops = await comms.exec<Stop>('SELECT * FROM stops');
   const allStopsById = Object.groupBy(allStops, (s) => s.stop_id);
-  const allStopsByCode = Object.groupBy(allStops, getStopCode);
+  const allStopsByCode = Object.groupBy(allStops, (s) =>
+    getStopCode(s, config),
+  );
 
   // some columns are options, so we need to check if they exist in this feed first
   const cols = {
@@ -314,7 +316,7 @@ export async function conflateStops(
     let stopId = row.stop_id;
 
     const stop = allStopsById[row.stop_id]?.[0];
-    const overrideId = stop && config.ignoreStops?.[getStopCode(stop)];
+    const overrideId = stop && config.ignoreStops?.[getStopCode(stop, config)];
     if (overrideId) {
       const override = allStopsByCode[overrideId]?.[0];
       if (override) {

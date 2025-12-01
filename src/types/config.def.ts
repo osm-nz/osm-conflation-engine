@@ -102,6 +102,9 @@ export const NetworkConfig = z.object({
 
   /** optional mode to override the existing `name` tag, instead of using `official_name` */
   overrideExistingNames: z.boolean().optional(),
+
+  /** If `true`, we will ignore the `stop_code` and only use the `stop_id` */
+  useStopId: z.boolean().optional(),
 });
 export type NetworkConfig = typeof NetworkConfig._type;
 
