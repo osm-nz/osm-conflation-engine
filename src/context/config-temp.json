@@ -1,5 +1,6 @@
 {
-  "$schema": "../dist/config.schema.json",
+  "$schema": "../../dist/config.schema.json",
+  // FIXME: auto detect if there are duplicate stop_codes, if so, suggest turning on useStopId
   "networks": [
     {
       "code": "NZ-AKL",
@@ -40,7 +41,7 @@
           "name": "Tranzit Group",
           "wikidata": "Q55636134"
         },
-        "Go Bus": { "name": "K/NET/C", "wikidata": "Q85774435" },
+        "Go Bus": { "name": "Kinetic", "wikidata": "Q85774435" },
         "Ritchies Transport": {
           "name": "Ritchies Transport",
           "wikidata": "Q7336695"
@@ -59,9 +60,15 @@
           "name": "Pavlovich Transport Solutions",
           "wikidata": "Q137175212"
         },
-        "New Zealand Bus": { "name": "K/NET/C", "wikidata": "Q85774435" },
-        "Howick and Eastern": { "name": "Howick and Eastern", "wikidata": "Q137175102" },
-        "Bayes Coachlines": { "name": "Bayes Coachlines", "wikidata": "Q137175096" },
+        "New Zealand Bus": { "name": "Kinetic", "wikidata": "Q85774435" },
+        "Howick and Eastern": {
+          "name": "Howick and Eastern",
+          "wikidata": "Q137175102"
+        },
+        "Bayes Coachlines": {
+          "name": "Bayes Coachlines",
+          "wikidata": "Q137175096"
+        },
         "Mahu City Express": { "name": "Mahu City Express", "wikidata": "" },
         "AT Metro Bus": { "name": "AT Metro Bus", "wikidata": "" }, // rail replacement busses
 
@@ -269,7 +276,6 @@
       }
     },
     {
-      // FIXME: email them re. license
       "code": "NZ-BOP",
       "networkName": "BayBus",
       "networkWikidata": "Q112189811",
@@ -279,7 +285,6 @@
       }
     },
     {
-      // FIXME: email them re. license
       "code": "NZ-MWT",
       "networkName": "Horizons",
       "networkWikidata": "Q124314259",
@@ -289,17 +294,25 @@
       }
     },
     {
-      // FIXME: follow up. current status: no license, will eventually be CC4.0, waiting for approval from manager
       "code": "NZ-TKI",
-      "networkName": "Taranaki",
+      "networkName": "Taranaki Regional Council",
       "networkWikidata": "Q16926647",
       "gtfsSource": {
         "mode": "automatic",
         "url": "https://data.trilliumtransit.com/gtfs/trc-nz/trc-nz.zip"
+      },
+      "includeAllStops": true,
+      "useStopId": true,
+      "operatorMap": {
+        "Tranzit": { "name": "Tranzit Group", "wikidata": "Q55636134" },
+        "Pickering Motors": {
+          "name": "Pickering Motors",
+          "wikidata": "Q134292429"
+        },
+        "Weir Bros": { "name": "Weir Bros", "wikidata": "Q16926647" }
       }
     },
     {
-      // FIXME: email them re. license
       "code": "NZ-NSN",
       "networkName": "eBus",
       "networkWikidata": "Q133818760",
@@ -309,7 +322,6 @@
       }
     },
     {
-      // FIXME: follow up with their email after 10 days
       "code": "NZ-CHC",
       "networkName": "Metro Christchurch",
       "networkWikidata": "Q7258007",
@@ -318,7 +330,31 @@
         "url": "https://apis.metroinfo.co.nz/rti/gtfs/v1/gtfs.zip"
       }
     },
-    // TODO: in 2016 whangārei said they'll create a GTFS feed "by 2026". Followed up in 2019 and 2024, still no progress :/
+    {
+      // FIXME: follow up to the latest response
+      "code": "NZ-NTH",
+      "networkName": "Citylink Whangārei",
+      "networkWikidata": "Q112189837",
+      "gtfsSource": {
+        "mode": "automatic",
+        "url": "https://data.trilliumtransit.com/gtfs/nrc-nz/nrc-nz.zip"
+      }
+    },
+    {
+      // FIXME: follow up to the latest response
+      "code": "NZ-HWK",
+      "networkName": "goBay",
+      "networkWikidata": "Q112189822",
+      "gtfsSource": {
+        "mode": "automatic",
+        "url": "https://data.trilliumtransit.com/gtfs/hbrc-nz/hbrc-nz.zip"
+      }
+    },
+    // Gisborne has bus services but no GTFS feed
+    // Southland has bus services but no GTFS feed
+    // Marlborough has bus services but no GTFS feed
+    // West Coast has no public transport
+    // Chatham Islands have no public transport
     {
       "code": "AU-NSW",
       "networkName": "TfNSW",
