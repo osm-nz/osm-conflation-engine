@@ -40,7 +40,7 @@
           "name": "Tranzit Group",
           "wikidata": "Q55636134"
         },
-        "Go Bus": { "name": "Go Bus", "wikidata": "Q18167220" },
+        "Go Bus": { "name": "K/NET/C", "wikidata": "Q85774435" },
         "Ritchies Transport": {
           "name": "Ritchies Transport",
           "wikidata": "Q7336695"
@@ -57,11 +57,11 @@
         "Island Direct": { "name": "Island Direct", "wikidata": "Q123290531" },
         "Pavlovich Transport Solutions": {
           "name": "Pavlovich Transport Solutions",
-          "wikidata": ""
+          "wikidata": "Q137175212"
         },
-        "New Zealand Bus": { "name": "NZ Bus", "wikidata": "Q6956272" },
-        "Howick and Eastern": { "name": "Howick and Eastern", "wikidata": "" },
-        "Bayes Coachlines": { "name": "Bayes Coachlines", "wikidata": "" },
+        "New Zealand Bus": { "name": "K/NET/C", "wikidata": "Q85774435" },
+        "Howick and Eastern": { "name": "Howick and Eastern", "wikidata": "Q137175102" },
+        "Bayes Coachlines": { "name": "Bayes Coachlines", "wikidata": "Q137175096" },
         "Mahu City Express": { "name": "Mahu City Express", "wikidata": "" },
         "AT Metro Bus": { "name": "AT Metro Bus", "wikidata": "" }, // rail replacement busses
 
