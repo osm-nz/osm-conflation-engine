@@ -90,21 +90,17 @@ export function conflateStopTags(
 
   // 2. add NSI tags for network
   if (!tags.network?.split(';').includes(config.networkName)) {
-    if (tags.network) {
-      tagChanges.network += `;${config.networkName}`;
-    } else {
-      tagChanges.network = config.networkName;
-    }
+    tagChanges.network = tags.network
+      ? `${tags.network};${config.networkName}`
+      : config.networkName;
   }
   if (
     config.networkWikidata &&
     !tags['network:wikidata']?.split(';').includes(config.networkWikidata)
   ) {
-    if (tags['network:wikidata']) {
-      tagChanges['network:wikidata'] += `;${config.networkWikidata}`;
-    } else {
-      tagChanges['network:wikidata'] = config.networkWikidata;
-    }
+    tagChanges['network:wikidata'] = tags['network:wikidata']
+      ? `${tags['network:wikidata']};${config.networkWikidata}`
+      : config.networkWikidata;
   }
 
   // 3. delete spammy NSI tags
