@@ -8,7 +8,12 @@ import { hhmmss } from '../../helpers/js';
 import { deleteIgnoredTags } from './tagHelpers';
 
 // no point editting a route if it's purely to edit these tags
-export const NON_MEANINGFUL_ROUTE_TAGS = new Set(['__action', 'via']);
+export const NON_MEANINGFUL_ROUTE_TAGS = new Set([
+  '__action',
+  'via',
+  'colour',
+  'duration',
+]);
 
 export function conflateRouteTags(
   config: NetworkConfig,
@@ -186,7 +191,7 @@ export function conflateRouteTags(
   if (journey !== 'ROUTE_MASTER') {
     const durations =
       journey === 'PTv1'
-        ? gtfsRoute.journeys.flatMap((x) => x.duration)
+        ? gtfsRoute.journeys.filter((x) => x.keep).flatMap((x) => x.duration)
         : journey.duration;
     if (new Set(durations).size === 1) {
       // exactly 1 duration, easy. override the existing
@@ -198,11 +203,18 @@ export function conflateRouteTags(
       const max = Math.max(...durations);
       const parsed = hhmmss.toSeconds(tags.duration || '');
       if (Number.isNaN(parsed) || parsed < min || parsed > max) {
-        // either there's no value, or it's outside the range. So we need
-        // to set the duration tag to something. There are 4 options:
-        // median, mean, midpoint, or range.
-        // For now, we're using the range.
-        tagChanges.duration = `${hhmmss.fromSeconds(min, true)}-${hhmmss.fromSeconds(max, true)}`;
+        // eslint-disable-next-line unicorn/prefer-ternary -- more readable like this
+        if (max - min <= 15 * 60) {
+          // less than 15 mins difference between the fastest/slowest trip
+          // so just take the slowest one.
+          tagChanges.duration = hhmmss.fromSeconds(max, true);
+        } else {
+          // either there's no value, or it's outside the range. So we need
+          // to set the duration tag to something. There are 4 options:
+          // median, mean, midpoint, or range.
+          // For now, we're using the range.
+          tagChanges.duration = `${hhmmss.fromSeconds(min, true)}-${hhmmss.fromSeconds(max, true)}`;
+        }
       }
     }
   }
