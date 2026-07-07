@@ -1,11 +1,10 @@
 import type { BBox, OsmFeature } from 'osm-api';
 
+import type * as Server from '@osm-conflation-engine/server';
+
 // this weird syntax is to work around a bug in tsdown
-export type ChangesetWatchCheckDate = {
-  timestamp: string;
-};
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- temp
-export type IgnoreList = {};
+export type ChangesetWatchCheckDate = Server.ChangesetWatchCheckDate;
+export type IgnoreList = Server.IgnoreList;
 
 export interface ChangesetWatchConfig {
   /**
