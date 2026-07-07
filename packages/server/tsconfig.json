@@ -1,0 +1,17 @@
+{
+  "extends": "eslint-config-kyle/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": [
+      "node",
+      "./worker-configuration.d.ts",
+      "@cloudflare/vitest-pool-workers"
+    ]
+  },
+  "include": [
+    "src",
+    "drizzle.config.ts",
+    "worker-configuration.d.ts",
+    "wrangler.json"
+  ]
+}

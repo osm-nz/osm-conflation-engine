@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@osm-conflation-engine/cli": "workspace:",
+    "@osm-conflation-engine/server": "workspace:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "tsdown": "^0.22.3",

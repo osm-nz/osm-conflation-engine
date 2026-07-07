@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "osm-conflation-engine",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-05",
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "d1_db",
+      "database_name": "osm-conflation-engine",
+      "database_id": "cb5276a5-7daa-472b-b99a-ab6fcdc5ac03",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
