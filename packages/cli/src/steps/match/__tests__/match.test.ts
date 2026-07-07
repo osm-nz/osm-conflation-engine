@@ -73,6 +73,7 @@ const sourceData: SourceData = {
   ...createSourceRow('r7'), // should be many:1 match with r8 (and there's a standalone r7 in the DB)
   ...createSourceRow('r8'), // should be many:1 match with r7
   ...createSourceRow('r9'), // should be CREATE (missing in OSM, nothing to auto-match to)
+  ...createSourceRow('r10'), // should be CREATE (missing in OSM, two equally good candidates: n11 and n12)
 };
 
 const osmData: OSMData = {
@@ -91,6 +92,8 @@ const osmData: OSMData = {
   noRef: {
     n4: createOsmFeature('n4', undefined), // ignored, not a candiate
     n5: createOsmFeature('n5', undefined, '2'), // this will be a candiate for r2
+    n11: createOsmFeature('n11', undefined, '10'), // n11 and n12 are both candiates for r10
+    n12: createOsmFeature('n12', undefined, '10'), // n11 and n12 are both candiates for r10
   },
   semi: {
     [<DatasetId>'r5;r6']: createOsmFeature('n8', 'r5;r6'),
@@ -124,9 +127,8 @@ describe(match, () => {
           'invalidd',
         ],
         [MatchType.Guess]: [
-          //
-          // TODosm: fundamental flaw, o_candidates will always be an empty array
           { source: 'r9', osmCandidates: [] },
+          { source: 'r10', osmCandidates: ['n11', 'n12'] },
         ],
       },
     });

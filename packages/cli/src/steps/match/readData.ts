@@ -38,7 +38,7 @@ export async function readData<
   );
   console.info('Reading osm data into memory (noRef)...');
   const noRef: OSMData['noRef'] = await readJsonL(
-    ctx.tempFileNames.osm_processed_with_ref,
+    ctx.tempFileNames.osm_processed_no_ref,
     (row) => row.id,
   );
   console.info('Reading osm data into memory (other)...');
