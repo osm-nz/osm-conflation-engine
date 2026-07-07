@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/refs/heads/main/schemas/manifest.json",
+  "last-release-sha": "4abc8accf9b6ee9ede0fdf31bb93db0834efc8f4",
+  "packages/changeset-watcher": "2.0.0",
+  "packages/cli": "2.0.0"
+}
