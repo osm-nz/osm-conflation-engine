@@ -30,7 +30,7 @@ export const IgnoreListReviewSchema = z.object({
     .string()
     .describe('timestamp when the review was created/updated (ISO Date)'),
   review_decision: z.boolean().describe('true = approve, false = reject'),
-  review_comment: z.boolean().describe('comment/note written by the reviewer'),
+  review_comment: z.string().describe('comment/note written by the reviewer'),
 });
 
 export const IgnoreListSchema = z.object({

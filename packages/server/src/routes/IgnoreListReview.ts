@@ -94,7 +94,7 @@ export class IgnoreListReview extends OpenAPIRoute {
         review_timestamp: new Date().toISOString(),
       });
       // derived from the JSON field for faster querying
-      const overalDecision = reviews.some((r) => r.review_decision === false)
+      const overallDecision = reviews.some((r) => r.review_decision === false)
         ? 0
         : reviews.length
           ? 1
@@ -102,7 +102,7 @@ export class IgnoreListReview extends OpenAPIRoute {
 
       const result = await db
         .update(IgnoreListModel)
-        .set({ reviews, review_decision: overalDecision })
+        .set({ reviews, review_decision: overallDecision })
         .where(
           and(
             eq(IgnoreListModel.refTag, data.params.refTag),

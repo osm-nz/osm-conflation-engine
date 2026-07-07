@@ -37,7 +37,7 @@ export class LockCreate extends OpenAPIRoute {
           'application/json': {
             schema: z.object({
               success: z.literal(true),
-              result: z.array(LockedLayersSchema),
+              result: LockedLayersSchema,
             }),
           },
         },

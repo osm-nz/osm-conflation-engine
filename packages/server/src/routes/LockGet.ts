@@ -28,7 +28,7 @@ export class LockGet extends OpenAPIRoute {
     },
     responses: {
       200: {
-        description: 'Returns the locks for a dataset was deleted',
+        description: 'Returns the active locks for a given refTag',
         content: {
           'application/json': {
             schema: z.object({
