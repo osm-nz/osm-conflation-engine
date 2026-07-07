@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/osm-nz/osm-conflation-engine/compare/changeset-watcher-v3.1.0...changeset-watcher-v3.1.1) (2026-07-07)
+
+
+### Bug Fixes
+
+* remove unsafe non-null assertion ([29e2211](https://github.com/osm-nz/osm-conflation-engine/commit/29e2211f26788001f55005cf46323ec924066214))
+
 ## [3.1.0](https://github.com/osm-nz/osm-conflation-engine/compare/changeset-watcher-v3.0.0...changeset-watcher-v3.1.0) (2026-07-07)
 
 
