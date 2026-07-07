@@ -46,7 +46,7 @@ export class IgnoreListAdd extends OpenAPIRoute {
           'application/json': {
             schema: z.object({
               success: z.literal(true),
-              result: z.array(IgnoreListSchema),
+              result: IgnoreListSchema,
             }),
           },
         },

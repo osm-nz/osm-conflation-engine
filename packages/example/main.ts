@@ -21,13 +21,13 @@ const config: Config = {
     'https://unpkg.com/@osm-conflation-engine/cli/dist/config.schema.json',
   source_data: {
     type: 'file',
-    file: join(import.meta.dirname, 'example-dataset.json'),
+    file: join(import.meta.dirname, 'example_dataset.jsonl'),
   },
   o_data: {
     source: {
       type: 'pbf',
       pbf_url:
-        'https://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbff',
+        'https://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf',
       pbf_filter: ['addr:housenumber+addr:street,ref:au:address_id'],
     },
     tags_to_keep: ['check_date', '/^addr/'],
@@ -74,7 +74,7 @@ await run<Point, Properties>(config, {
 
     return {
       selection: existingFeature,
-      group: `Adress Update - ${source.properties.city}`, // optional, to provide more meaningful groups
+      group: `Address Update - ${source.properties.city}`, // optional, to provide more meaningful groups
       diff: { tags: tagDiff },
     };
   },
@@ -87,7 +87,7 @@ await run<Point, Properties>(config, {
       tagDiff['addr:street'] = source.properties.street;
     }
 
-    if (source.properties.street !== osm.tags['addr:housenumber']) {
+    if (source.properties.number !== osm.tags['addr:housenumber']) {
       tagDiff['addr:housenumber'] = source.properties.number;
     }
 
