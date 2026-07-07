@@ -29,7 +29,7 @@ export function checkDiffsForAddress(
 
     // then remove all addrIds that were added back to a different feature
     for (const feat of [...diff.modify, ...diff.create]) {
-      const addrId = <DatasetId>feat.tags![config.refTag];
+      const addrId = <DatasetId | undefined>feat.tags?.[config.refTag];
       if (addrId) {
         delete deletedAddresses[addrId];
       } else {
@@ -37,7 +37,12 @@ export function checkDiffsForAddress(
         // So we check if this is this new address is identical to one that was deleted.
         // if so, we won't add this address to the ignore-list.
         const maybeLinzAddr = seenAddresses[config.getLocalKey(feat)];
-        if (maybeLinzAddr) delete deletedAddresses[maybeLinzAddr];
+        if (maybeLinzAddr && deletedAddresses[maybeLinzAddr]) {
+          console.info(
+            `Skipping “${maybeLinzAddr}” because it was recreated as ${feat.type}/${feat.id} after being deleted from ${deletedAddresses[maybeLinzAddr].type}/${deletedAddresses[maybeLinzAddr].id}`,
+          );
+          delete deletedAddresses[maybeLinzAddr];
+        }
       }
     }
 
