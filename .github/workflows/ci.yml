@@ -22,22 +22,24 @@ jobs:
       - name: ⏬ Install
         run: |
           sudo apt-get install osmium-tool -y
-          npm ci
+          corepack enable
+          pnpm install
 
       - name: ✨ Lint
         run: |
           npm run lint
 
-      - name: 🔣 Validate taginfo.json
+      - name: ✨ Typecheck
         run: |
-          node -e 'require("./taginfo.json")'
+          pnpm run -r typecheck
+
+      - name: 🚛 Build
+        run: |
+          pnpm run -r build
 
       - name: 🧪 Test
         run: |
-          mkdir -p data
-          npm run test:ci
-        env:
-          FORCE_COLOR: 1
+          pnpm run -r test -- --coverage
 
       - name: 😥 Print snapshot diff on failure
         if: failure()

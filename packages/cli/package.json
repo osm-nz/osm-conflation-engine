@@ -1,0 +1,53 @@
+{
+  "name": "@osm-conflation-engine/cli",
+  "version": "2.0.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osm-nz/osm-conflation-engine.git",
+    "directory": "packages/cli"
+  },
+  "types": "./dist/index.d.cts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "postbuild": "ts-json-schema-generator --type Config > dist/config.schema.json",
+    "build": "tsdown --exports --minify --format esm --format cjs",
+    "typecheck": "tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "d3-geo": "^3.1.1",
+    "h3-js": "^4.4.0",
+    "osm-api": "^4.0.0",
+    "pbf2json": "https://github.com/osm-nz/pbf2json",
+    "protobufjs": "^8.6.5"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "^3.1.0",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "catalog:",
+    "@types/pbf2json": "^6.6.4",
+    "@vitest/coverage-v8": "catalog:",
+    "ts-json-schema-generator": "^2.9.0",
+    "tsdown": "^0.22.3",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "inlinedDependencies": {
+    "@types/geojson": "7946.0.16"
+  }
+}

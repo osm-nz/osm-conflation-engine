@@ -1,0 +1,14 @@
+packages:
+  - 'packages/*'
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
+
+catalog:
+  '@types/node': ^26.0.1
+  '@vitest/coverage-v8': ^4.1.9
+  typescript: ^6.0.3
+  vitest: ^4.1.9

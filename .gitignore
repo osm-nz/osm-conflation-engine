@@ -1,7 +1,13 @@
 .DS_Store
 node_modules
 coverage
-out
+dist
 .env
-data
-src/__tests__/mock/planet.pbf
+*.tsbuildinfo
+*.pbf
+*.tgz
+
+# cloudflare
+.wrangler/
+worker-configuration.d.ts
+migrations
