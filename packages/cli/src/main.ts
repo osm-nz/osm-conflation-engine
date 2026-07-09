@@ -104,8 +104,8 @@ export async function run<G extends Geometry, P extends GeoJsonProperties>(
     console.timeEnd('download');
   }
 
-  let sourceData: SourceData<G, P>;
-  let osmData: OSMData;
+  let sourceData: SourceData<G, P> | undefined;
+  let osmData: OSMData | undefined;
 
   if (steps.includes('match')) {
     ({ sourceData, osmData } = await readData(ctx));
@@ -116,7 +116,9 @@ export async function run<G extends Geometry, P extends GeoJsonProperties>(
 
   let conflateResult: ConflateResult | undefined;
   if (steps.includes('conflate')) {
-    ({ sourceData, osmData } = await readData(ctx));
+    if (!sourceData || !osmData) {
+      ({ sourceData, osmData } = await readData(ctx));
+    }
     console.time('conflate');
     conflateResult = await conflate(ctx, sourceData, osmData);
     console.timeEnd('conflate');

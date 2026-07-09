@@ -90,6 +90,7 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
       return keep;
     }
 
+    let anythingSeen = false;
     pbf2json
       .createReadStream({
         file: ctx.tempFileNames.pbf,
@@ -103,6 +104,7 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
         'data',
         //
         (item: Item) => {
+          anythingSeen ||= true;
           const coords = item.type === 'node' ? item : item.centroid;
           // @ts-expect-error -- missing from typedefs since we
           //                     added this option in our fork.
@@ -203,6 +205,11 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
       .on('finish', () => {
         if (!anyMetadata) {
           ctx.warnings.push('No metadata extracted from the planet file!');
+        }
+        if (!anythingSeen) {
+          throw new Error(
+            'Nothing extracted from the pbf file, presumably it’s invalid.',
+          );
         }
         resolve(out);
       })

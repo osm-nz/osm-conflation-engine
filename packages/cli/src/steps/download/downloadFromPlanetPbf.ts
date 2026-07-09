@@ -18,12 +18,9 @@ const getCsrfToken = (html: string) =>
  * bypassing CSRF and bypassing OAuth consent...
  */
 async function getAuthToken(ctx: Ctx, pbfUrl: string) {
-  if (
-    !pbfUrl.startsWith(DOWNLOAD_SERVER) &&
-    !pbfUrl.startsWith(DOWNLOAD_SERVER_NO_METADATA)
-  ) {
+  if (!pbfUrl.startsWith(DOWNLOAD_SERVER)) {
     ctx.warnings.push(
-      '(!) Planet PBF url is not from geofabrik.de, so metadata may not be available.',
+      `(!) Planet PBF url is not from ${DOWNLOAD_SERVER}, so metadata may not be available.`,
     );
   }
 
@@ -32,7 +29,9 @@ async function getAuthToken(ctx: Ctx, pbfUrl: string) {
       '(!) No OSM credentials, so the planet extract will not include metadata',
     );
     return {
-      url: pbfUrl.replace(DOWNLOAD_SERVER, DOWNLOAD_SERVER_NO_METADATA),
+      url: pbfUrl
+        .replace(DOWNLOAD_SERVER, DOWNLOAD_SERVER_NO_METADATA)
+        .replace('-internal.osm.pbf', '.osm.pbf'),
       cookies: '',
     };
   }
@@ -108,7 +107,7 @@ async function getAuthToken(ctx: Ctx, pbfUrl: string) {
   if (!authToken.includes('gf_download_oauth')) throw new Error('No token');
 
   return {
-    url: pbfUrl.replace(DOWNLOAD_SERVER_NO_METADATA, DOWNLOAD_SERVER),
+    url: pbfUrl,
     cookies: authToken,
   };
 }

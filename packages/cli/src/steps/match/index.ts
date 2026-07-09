@@ -32,7 +32,7 @@ export async function match(
 
   console.info('Processing data...');
   let index = 0;
-  console.time('match');
+  console.time('matchLoop');
   const output: MatchOutput = {
     [MatchType.OneToOne]: [],
     [MatchType.OneToMany]: [],
@@ -140,7 +140,7 @@ export async function match(
     }
   }
 
-  console.timeEnd('match');
+  console.timeEnd('matchLoop');
 
   await fs.writeFile(
     ctx.tempFileNames.matches,

@@ -58,11 +58,11 @@ export async function createIndexAndSaveToDisk(
       })
       .toSorted((a, b) => a.name.localeCompare(b.name)),
   };
+  await fs.mkdir(join(outputFolder, subFolderName), { recursive: true });
   await fs.writeFile(
     join(outputFolder, 'index.json'),
     JSON.stringify(indexFile, null, IS_UNIT_TEST ? 2 : undefined),
   );
-  await fs.mkdir(join(outputFolder, subFolderName), { recursive: true });
 
   // save each suburb
   for (const s of meta) {
