@@ -30,12 +30,23 @@ export interface Config {
     source:
       | {
           type: 'pbf';
+          /**
+           * A URL to download the pbf file for your local area, this should
+           * ideally use `osm-internal.download.geofabrik.de` to ensure that
+           * metadata is available.
+           *
+           * For unit tests only, you can use a path to a file on disk instead
+           * of a URL.
+           */
           pbf_url: string;
+          /** the filter expression which is passed to {@link https://github.com/pelias/pbf2json#usage the pbf2json library}. */
           pbf_filter: string[];
         }
       | {
           type: 'overpass';
-          overpass_query_file: string;
+          /** if a query is not supplied, we will try to download all features with `Config.merge.osm_key` */
+          overpass_query_file?: string;
+          /** optional, if you want to use a different server. Use the full URL (domain + path) */
           overpass_server_url?: string;
         }
       | {

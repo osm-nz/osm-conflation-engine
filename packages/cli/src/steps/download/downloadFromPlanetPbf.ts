@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 import { spawn } from 'node:child_process';
-import { existsSync, promises as fs } from 'node:fs';
+import { promises as fs } from 'node:fs';
 import { basename, dirname } from 'node:path';
 import { getHttpHeaders } from '../../constants/defaults.js';
 import type { Ctx } from '../../types/index.js';
@@ -114,11 +114,6 @@ async function getAuthToken(ctx: Ctx, pbfUrl: string) {
 
 export async function downloadFromPlanetPbf(ctx: Ctx, pbfUrl: string) {
   const planetFile = ctx.tempFileNames.pbf;
-
-  if (ctx.use_cache && existsSync(planetFile)) {
-    console.info('Using cached planet file');
-    return;
-  }
 
   const { cookies, url } = await getAuthToken(ctx, pbfUrl);
 
