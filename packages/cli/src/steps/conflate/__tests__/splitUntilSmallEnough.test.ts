@@ -5,6 +5,7 @@ import {
   normalizeName,
   splitUntilSmallEnough,
 } from '../splitUntilSmallEnough.js';
+import type { Ctx } from '../../../types/internal.def.js';
 
 vi.mock('../../../constants/defaults.js', async () => ({
   ...(await vi.importActual('../../../constants/defaults.js')),
@@ -25,11 +26,12 @@ const taka = point(-36.78766, 174.77309);
 const kumeū = point(-36.77705, 174.55489);
 const drury = point(-37.10182, 174.95275);
 
+const ctx = { config: { merge: {} } } as Ctx;
+
 describe(splitUntilSmallEnough, () => {
   it('correctly splits N-S', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', metadata, [
-        //
+      splitUntilSmallEnough(ctx, 'Import geysers', metadata, [
         taka,
         taka,
         drury,
@@ -38,12 +40,14 @@ describe(splitUntilSmallEnough, () => {
       'Import geysers^N': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [taka, taka],
         changesetTags,
       },
       'Import geysers^S': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [drury],
         changesetTags,
       },
@@ -52,8 +56,7 @@ describe(splitUntilSmallEnough, () => {
 
   it('correctly splits E-W', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', metadata, [
-        //
+      splitUntilSmallEnough(ctx, 'Import geysers', metadata, [
         taka,
         kumeū,
         kumeū,
@@ -62,12 +65,14 @@ describe(splitUntilSmallEnough, () => {
       'Import geysers^E': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [taka],
         changesetTags,
       },
       'Import geysers^W': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [kumeū, kumeū],
         changesetTags,
       },
@@ -76,7 +81,7 @@ describe(splitUntilSmallEnough, () => {
 
   it('can recursively split', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', metadata, [
+      splitUntilSmallEnough(ctx, 'Import geysers', metadata, [
         taka,
         taka,
         kumeū,
@@ -88,18 +93,21 @@ describe(splitUntilSmallEnough, () => {
       'Import geysers^E^N': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [taka, taka],
         changesetTags,
       },
       'Import geysers^E^S': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [drury, drury],
         changesetTags,
       },
       'Import geysers^W': {
         bbox: expect.any(Object),
         instructions: 'a',
+        sectorIds: ['83bb50fffffffff'],
         features: [kumeū],
         changesetTags,
       },

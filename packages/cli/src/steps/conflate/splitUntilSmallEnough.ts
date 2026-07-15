@@ -1,18 +1,29 @@
 import type { OsmPatchFeature as GeoJsonFeature } from 'osm-api';
 import { geoCentroid as getFirstCoord } from 'd3-geo';
-import type { HandlerReturnWithBBox, OutputLayer } from '../../types/index.js';
+import type {
+  Ctx,
+  HandlerReturnWithBBox,
+  OutputLayer,
+} from '../../types/index.js';
 import { MAX_ITEMS_PER_DATASET } from '../../constants/defaults.js';
 import { calcBBox } from '../../common/calcBBox.js';
+import { getSector } from '../../common/getSector.js';
+import { bboxToPolygon } from '../../common/bboxToPolygon.js';
 
 export function splitUntilSmallEnough(
+  ctx: Ctx,
   name: string,
-  metadata: Omit<OutputLayer, 'features' | 'bbox'>,
+  metadata: Omit<OutputLayer, 'features' | 'bbox' | 'sectorIds'>,
   features: GeoJsonFeature[],
   depth = 0,
 ): HandlerReturnWithBBox {
   if (!features.length) return {};
 
   const bbox = calcBBox(features);
+  const sectorIds = getSector(
+    bboxToPolygon(bbox),
+    ctx.config.merge.sector_resolution,
+  );
 
   const recursionLimit = depth > 10;
   if (recursionLimit) {
@@ -21,7 +32,7 @@ export function splitUntilSmallEnough(
 
   if (features.length <= MAX_ITEMS_PER_DATASET || recursionLimit) {
     // yay, it's small enough
-    return { [name]: { features, bbox, ...metadata } };
+    return { [name]: { features, bbox, sectorIds, ...metadata } };
   }
 
   // it's not small enough
@@ -38,6 +49,7 @@ export function splitUntilSmallEnough(
     return {
       ...splitUntilSmallEnough(
         //
+        ctx,
         `${name}^N`,
         metadata,
         north,
@@ -45,6 +57,7 @@ export function splitUntilSmallEnough(
       ),
       ...splitUntilSmallEnough(
         //
+        ctx,
         `${name}^S`,
         metadata,
         south,
@@ -65,6 +78,7 @@ export function splitUntilSmallEnough(
   return {
     ...splitUntilSmallEnough(
       //
+      ctx,
       `${name}^E`,
       metadata,
       east,
@@ -72,6 +86,7 @@ export function splitUntilSmallEnough(
     ),
     ...splitUntilSmallEnough(
       //
+      ctx,
       `${name}^W`,
       metadata,
       west,

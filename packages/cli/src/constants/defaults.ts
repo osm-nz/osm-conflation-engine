@@ -8,7 +8,12 @@ export const DEFAULT_SECTOR_RESOLUTION = 3;
 
 export const IS_UNIT_TEST = process.env.NODE_ENV === 'test';
 
+/**
+ * this is not a hard minimum, if a dataset has fewer than this number,
+ * we will try to merge it into the nearest datasets in the same sector.
+ */
 // TODO: make configurable
+export const MIN_ITEMS_PER_DATASET = 40;
 export const MAX_ITEMS_PER_DATASET = 110;
 
 /** can be customised in the config */

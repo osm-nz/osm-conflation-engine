@@ -21,6 +21,7 @@ import { createDiamond, createSquare } from './createDiamond.js';
 import { splitUntilSmallEnough } from './splitUntilSmallEnough.js';
 import { shiftOverlappingPoints } from './spreadToGrid.js';
 import { createIndexAndSaveToDisk } from './createIndexAndSaveToDisk.js';
+import { mergeTinyDatasets } from './mergeTinyDatasets.js';
 
 const MSG = 'invalid value returned by your callback function';
 
@@ -298,6 +299,7 @@ export async function conflate(
       }
 
       const groups = splitUntilSmallEnough(
+        ctx,
         group,
         { changesetTags, instructions },
         features,
@@ -305,8 +307,8 @@ export async function conflate(
       Object.assign(handlerReturn[category], groups);
     }
 
-    // TODO: merge tiny datasets into adjacent sectors (using h3 API)
     shiftOverlappingPoints(handlerReturn[category]);
+    mergeTinyDatasets(handlerReturn[category]);
   }
 
   await createIndexAndSaveToDisk(ctx, handlerReturn);

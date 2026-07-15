@@ -100,6 +100,7 @@ export type BBox = {
 export interface OutputLayer {
   features: OsmPatchFeature[];
   bbox: BBox;
+  sectorIds: string[];
   instructions?: string;
   changesetTags?: Tags;
 }
