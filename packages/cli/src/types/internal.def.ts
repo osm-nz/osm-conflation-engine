@@ -97,13 +97,21 @@ export type BBox = {
   maxLng: number;
 };
 
-export type HandlerReturnWithBBox = {
-  [sectorName: string]: {
-    features: OsmPatchFeature[];
-    bbox: BBox;
-    instructions?: string;
-    changesetTags?: Tags;
+export interface OutputLayer {
+  features: OsmPatchFeature[];
+  bbox: BBox;
+  instructions?: string;
+  changesetTags?: Tags;
+}
+
+export interface HandlerReturnWithBBox {
+  [sectorName: string]: OutputLayer;
+}
+
+export interface OutputLayers {
+  [categoryName: string]: {
+    [sectorName: string]: OutputLayer;
   };
-};
+}
 
 export type CoordKey = `${number},${number}`;

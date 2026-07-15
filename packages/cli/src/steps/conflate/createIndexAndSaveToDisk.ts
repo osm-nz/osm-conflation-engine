@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import type { OsmPatch } from 'osm-api';
-import type { Ctx, HandlerReturnWithBBox } from '../../types/index.js';
+import type { Ctx, OutputLayers } from '../../types/index.js';
 import { IS_UNIT_TEST } from '../../constants/defaults.js';
 import { sha256 as hash } from '../../helpers.js';
 import { calcCount } from '../../common/calcCount.js';
@@ -13,7 +13,7 @@ function toId(suburb: string) {
 
 export async function createIndexAndSaveToDisk(
   ctx: Ctx,
-  suburbs: HandlerReturnWithBBox,
+  suburbs: OutputLayers,
 ): Promise<void> {
   const githubParts = ctx.config.metadata.git_repository.match(
     'https://github.com/([^/]+)/([^/]+)',
@@ -23,24 +23,27 @@ export async function createIndexAndSaveToDisk(
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'suburbs';
 
-  const meta = Object.entries(suburbs).map(([suburb, v]) => ({
-    suburb,
-    bbox: v.bbox,
-    instructions: v.instructions,
-    ...calcCount(v.features),
-  }));
+  const meta = Object.entries(suburbs).flatMap(([category, groups]) =>
+    Object.entries(groups).map(([group, items]) => ({
+      category,
+      group,
+      title: [category, group].filter(Boolean).join(' - '),
+      bbox: items.bbox,
+      instructions: items.instructions,
+      ...calcCount(items.features),
+    })),
+  );
 
   // create index.json
   const indexFile = {
     fields: [],
     results: meta
       .map((v) => {
-        const title = v.suburb.replace('ZZ ', '').replace('Z ', '');
         return {
-          id: toId(v.suburb),
-          url: `https://${githubParts[1]}.github.io/${githubParts[2]}/${subFolderName}/${toId(v.suburb)}.osmPatch.geo.json`,
-          name: title,
-          title,
+          id: toId(v.title),
+          url: `https://${githubParts[1]}.github.io/${githubParts[2]}/${subFolderName}/${toId(v.title)}.osmPatch.geo.json`,
+          name: v.title,
+          title: v.title,
           totalCount: v.totalCount,
           source: '',
           snippet: v.count,
@@ -49,11 +52,7 @@ export async function createIndexAndSaveToDisk(
             [v.bbox.maxLng, v.bbox.maxLat],
           ],
           instructions: v.instructions,
-          groupCategories: [
-            v.suburb.startsWith('ZZ')
-              ? '/Categories/Preview'
-              : '/Categories/Addresses',
-          ],
+          groupCategories: [v.category, '/Categories/Addresses'],
         };
       })
       .toSorted((a, b) => a.name.localeCompare(b.name)),
@@ -65,22 +64,14 @@ export async function createIndexAndSaveToDisk(
   );
 
   // save each suburb
-  for (const s of meta) {
-    const { suburb } = s;
+  for (const v of meta) {
     const geojson: OsmPatch = {
       type: 'FeatureCollection',
-      ...suburbs[suburb]!,
-    };
-    geojson.changesetTags ||= {
-      attribution: 'https://wiki.openstreetmap.org/wiki/Contributors#LINZ',
-      created_by: 'LINZ Data Import 2.0.0',
-      locale: 'en-NZ',
-      source: 'https://wiki.osm.org/LINZ',
-      comment: suburb,
+      ...suburbs[v.category]![v.group]!,
     };
 
     await fs.writeFile(
-      join(outputFolder, subFolderName, `${toId(suburb)}.osmPatch.geo.json`),
+      join(outputFolder, subFolderName, `${toId(v.title)}.osmPatch.geo.json`),
       JSON.stringify(geojson, null, IS_UNIT_TEST ? 2 : undefined),
     );
   }

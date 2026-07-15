@@ -1,13 +1,12 @@
-import type { OsmPatchFeature as GeoJsonFeature, Tags } from 'osm-api';
+import type { OsmPatchFeature as GeoJsonFeature } from 'osm-api';
 import { geoCentroid as getFirstCoord } from 'd3-geo';
-import type { HandlerReturnWithBBox } from '../../types/index.js';
+import type { HandlerReturnWithBBox, OutputLayer } from '../../types/index.js';
 import { MAX_ITEMS_PER_DATASET } from '../../constants/defaults.js';
 import { calcBBox } from '../../common/calcBBox.js';
 
 export function splitUntilSmallEnough(
   name: string,
-  instructions: string | undefined,
-  changesetTags: Tags | undefined,
+  metadata: Omit<OutputLayer, 'features' | 'bbox'>,
   features: GeoJsonFeature[],
   depth = 0,
 ): HandlerReturnWithBBox {
@@ -22,7 +21,7 @@ export function splitUntilSmallEnough(
 
   if (features.length <= MAX_ITEMS_PER_DATASET || recursionLimit) {
     // yay, it's small enough
-    return { [name]: { features, bbox, instructions, changesetTags } };
+    return { [name]: { features, bbox, ...metadata } };
   }
 
   // it's not small enough
@@ -38,16 +37,16 @@ export function splitUntilSmallEnough(
 
     return {
       ...splitUntilSmallEnough(
+        //
         `${name}^N`,
-        instructions,
-        changesetTags,
+        metadata,
         north,
         depth + 1,
       ),
       ...splitUntilSmallEnough(
+        //
         `${name}^S`,
-        instructions,
-        changesetTags,
+        metadata,
         south,
         depth + 1,
       ),
@@ -65,16 +64,16 @@ export function splitUntilSmallEnough(
 
   return {
     ...splitUntilSmallEnough(
+      //
       `${name}^E`,
-      instructions,
-      changesetTags,
+      metadata,
       east,
       depth + 1,
     ),
     ...splitUntilSmallEnough(
+      //
       `${name}^W`,
-      instructions,
-      changesetTags,
+      metadata,
       west,
       depth + 1,
     ),

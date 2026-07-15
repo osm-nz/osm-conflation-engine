@@ -6,13 +6,13 @@ import {
   type ConflationResultExtra,
   type Ctx,
   type DatasetId,
-  type HandlerReturnWithBBox,
   type MatchOutput,
   MatchType,
   type OSMData,
   type OsmFeature,
   OsmFlags,
   type OsmId,
+  type OutputLayers,
   type SourceData,
   type SourceDataFeature,
   type TagDiff,
@@ -81,17 +81,21 @@ export async function conflate(
     }
   }
 
-  const featuresBySector: { [sector: string]: OsmPatchFeature[] } = {};
+  const output: {
+    [category: string]: { [sector: string]: OsmPatchFeature[] };
+  } = {};
 
   function handleExtra(
     extra: ConflationResultExtra | undefined,
+    category: string,
     sector: string,
   ) {
     if (!extra) return;
     if (extra.warnings?.length) ctx.warnings.push(...extra.warnings);
     if (extra.createFeatures) {
-      featuresBySector[sector] ||= [];
-      featuresBySector[sector].push(...extra.createFeatures);
+      output[category] ||= {};
+      output[category][sector] ||= [];
+      output[category][sector].push(...extra.createFeatures);
     }
   }
 
@@ -113,10 +117,12 @@ export async function conflate(
     if (typeof result !== 'object') throw new TypeError(MSG);
     if (!hasDiff(result.diff)) continue;
 
+    const category = result.category || '';
     const sector = result.group || oFeature.sectors[0]!;
-    handleExtra(result.extra, sector);
-    featuresBySector[sector] ||= [];
-    featuresBySector[sector].push(
+    handleExtra(result.extra, category, sector);
+    output[category] ||= {};
+    output[category][sector] ||= [];
+    output[category][sector].push(
       createFeature(result.diff, oFeature, sFeature),
     );
   }
@@ -146,10 +152,12 @@ export async function conflate(
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const sector = result.group || oFeature.sectors[0]!;
-      handleExtra(result.extra, sector);
-      featuresBySector[sector] ||= [];
-      featuresBySector[sector].push(createFeature(diff, oFeature, sFeature));
+      const category = result.category || '';
+      const group = result.group || oFeature.sectors[0]!;
+      handleExtra(result.extra, category, group);
+      output[category] ||= {};
+      output[category][group] ||= [];
+      output[category][group].push(createFeature(diff, oFeature, sFeature));
     }
   }
 
@@ -172,10 +180,12 @@ export async function conflate(
     if (typeof result.diff !== 'object') throw new TypeError(MSG);
     if (!hasDiff(result.diff)) continue;
 
-    const sector = result.group || oFeature.sectors[0]!;
-    handleExtra(result.extra, sector);
-    featuresBySector[sector] ||= [];
-    featuresBySector[sector].push(createFeature(result.diff, oFeature));
+    const category = result.category || '';
+    const group = result.group || oFeature.sectors[0]!;
+    handleExtra(result.extra, category, group);
+    output[category] ||= {};
+    output[category][group] ||= [];
+    output[category][group].push(createFeature(result.diff, oFeature));
   }
 
   // 4.
@@ -203,10 +213,12 @@ export async function conflate(
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const sector = result.group || oFeature.sectors[0]!;
-      handleExtra(result.extra, sector);
-      featuresBySector[sector] ||= [];
-      featuresBySector[sector].push(createFeature(diff, oFeature));
+      const category = result.category || '';
+      const group = result.group || oFeature.sectors[0]!;
+      handleExtra(result.extra, category, group);
+      output[category] ||= {};
+      output[category][group] ||= [];
+      output[category][group].push(createFeature(diff, oFeature));
     }
   }
 
@@ -224,10 +236,12 @@ export async function conflate(
     if (typeof result.diff !== 'object') throw new TypeError(MSG);
     if (!hasDiff(result.diff)) continue;
 
-    const sector = result.group || oFeature.sectors[0]!;
-    handleExtra(result.extra, sector);
-    featuresBySector[sector] ||= [];
-    featuresBySector[sector].push(createFeature(result.diff, oFeature));
+    const category = result.category || '';
+    const group = result.group || oFeature.sectors[0]!;
+    handleExtra(result.extra, category, group);
+    output[category] ||= {};
+    output[category][group] ||= [];
+    output[category][group].push(createFeature(result.diff, oFeature));
   }
 
   // 6. to avoid reënqueuing these features twice, the business-side needs to
@@ -247,48 +261,55 @@ export async function conflate(
       ? osmData.noRef[result.selection]!
       : undefined;
 
-    const sector = result.group || oFeature?.sectors[0] || 'unknown';
-    handleExtra(result.extra, sector);
-    featuresBySector[sector] ||= [];
-    featuresBySector[sector].push(
+    const category = result.category || '';
+    const group = result.group || oFeature?.sectors[0] || 'unknown';
+    handleExtra(result.extra, category, group);
+    output[category] ||= {};
+    output[category][group] ||= [];
+    output[category][group].push(
       createFeature(result.diff, oFeature, sFeature),
     );
   }
 
-  const handlerReturn: HandlerReturnWithBBox = {};
-  for (const sector in featuresBySector) {
-    const { changesetTags = {}, instructions } =
-      (await ctx.callbacks.getChangesetTags?.(sector)) || {};
+  const handlerReturn: OutputLayers = {};
+  for (const category in output) {
+    handlerReturn[category] ||= {};
 
-    // add some default changeset tags if not defined by the consumer
-    /* eslint-disable dot-notation */
-    changesetTags['created_by'] ||= 'osm-conflation-engine';
-    changesetTags['import'] ||= 'yes';
-    changesetTags['source'] ||= ctx.config.metadata.wiki_page;
-    /* eslint-enable dot-notation */
+    for (const group in output[category]) {
+      const { changesetTags = {}, instructions } =
+        (await ctx.callbacks.getChangesetTags?.({ category, group })) || {};
 
-    const features = featuresBySector[sector]!;
-    if (ctx.callbacks.postprocessLayer) {
-      await ctx.callbacks.postprocessLayer({
-        group: sector,
-        osmData: osmDataById,
-        sourceData,
+      // add some default changeset tags if not defined by the consumer
+      /* eslint-disable dot-notation */
+      changesetTags['created_by'] ||= 'osm-conflation-engine';
+      changesetTags['import'] ||= 'yes';
+      changesetTags['source'] ||= ctx.config.metadata.wiki_page;
+      /* eslint-enable dot-notation */
+
+      const features = output[category][group]!;
+      if (ctx.callbacks.postprocessLayer) {
+        await ctx.callbacks.postprocessLayer({
+          category,
+          group,
+          osmData: osmDataById,
+          sourceData,
+          features,
+        });
+      }
+
+      const groups = splitUntilSmallEnough(
+        group,
+        { changesetTags, instructions },
         features,
-      });
+      );
+      Object.assign(handlerReturn[category], groups);
     }
 
-    const groups = splitUntilSmallEnough(
-      sector,
-      instructions,
-      changesetTags,
-      features,
-    );
-    Object.assign(handlerReturn, groups);
+    // TODO: merge tiny datasets into adjacent sectors (using h3 API)
+    shiftOverlappingPoints(handlerReturn[category]);
   }
 
-  // TODO: merge tiny datasets into adjacent sectors (using h3 API)
-  shiftOverlappingPoints(handlerReturn);
-  createIndexAndSaveToDisk(ctx, handlerReturn);
+  await createIndexAndSaveToDisk(ctx, handlerReturn);
   // TODO: generate stats and stats history
 
   const counts: ConflateResult['counts'] = {
@@ -297,8 +318,10 @@ export async function conflate(
     delete: 0,
     perfect: 0,
   };
-  for (const sector in handlerReturn) {
-    for (const f of handlerReturn[sector]!.features) {
+  for (const sectors of Object.values(handlerReturn).flatMap((v) =>
+    Object.values(v),
+  )) {
+    for (const f of sectors.features) {
       if (f.properties.__action === 'edit') {
         counts.edit++;
       } else if (f.properties.__action === 'delete') {

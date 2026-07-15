@@ -19,6 +19,7 @@ const point = (lat: number, lng: number): GeoJsonFeature => ({
 });
 
 const changesetTags = { comment: 'hi' };
+const metadata = { instructions: 'a', changesetTags };
 
 const taka = point(-36.78766, 174.77309);
 const kumeū = point(-36.77705, 174.55489);
@@ -27,7 +28,8 @@ const drury = point(-37.10182, 174.95275);
 describe(splitUntilSmallEnough, () => {
   it('correctly splits N-S', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', 'a', changesetTags, [
+      splitUntilSmallEnough('Import geysers', metadata, [
+        //
         taka,
         taka,
         drury,
@@ -50,7 +52,8 @@ describe(splitUntilSmallEnough, () => {
 
   it('correctly splits E-W', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', 'a', changesetTags, [
+      splitUntilSmallEnough('Import geysers', metadata, [
+        //
         taka,
         kumeū,
         kumeū,
@@ -73,7 +76,7 @@ describe(splitUntilSmallEnough, () => {
 
   it('can recursively split', () => {
     expect(
-      splitUntilSmallEnough('Import geysers', 'a', changesetTags, [
+      splitUntilSmallEnough('Import geysers', metadata, [
         taka,
         taka,
         kumeū,

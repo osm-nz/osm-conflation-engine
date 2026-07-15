@@ -59,12 +59,14 @@ export interface ConflationDiff {
 }
 
 export interface SingleFeatureConflationResult {
+  category?: string;
   group?: string;
   diff: ConflationDiff;
   extra?: ConflationResultExtra;
 }
 
 export interface MutliFeatureConflationResult {
+  category?: string;
   group?: string;
   diffPerFeature: { [id: OsmId]: ConflationDiff };
   extra?: ConflationResultExtra;
@@ -152,6 +154,7 @@ export interface Callbacks<G extends Geometry, P extends GeoJsonProperties> {
    * the features in each layer.
    */
   postprocessLayer?(input: {
+    category: string;
     group: string;
     features: OsmPatchFeature[];
     osmData: Record<OsmId, OsmFeature>;
@@ -164,7 +167,7 @@ export interface Callbacks<G extends Geometry, P extends GeoJsonProperties> {
    * optionally `instructions` which are shown in the website UI, before
    * someone starts working on this group.
    */
-  getChangesetTags?(group: string): MaybePromise<{
+  getChangesetTags?(input: { category: string; group: string }): MaybePromise<{
     instructions?: string;
     changesetTags?: Tags;
   }>;
