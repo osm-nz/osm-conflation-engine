@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { OsmPatchFeature } from 'osm-api';
-import { mergeTinyDatasets } from '../mergeTinyDatasets.js';
+import { mergeTags, mergeTinyDatasets } from '../mergeTinyDatasets.js';
 import type {
   HandlerReturnWithBBox,
   OutputLayer,
@@ -10,6 +10,7 @@ import { calcBBox } from '../../../common/calcBBox.js';
 vi.mock('../../../constants/defaults.js', () => ({
   MAX_ITEMS_PER_DATASET: 7,
   MIN_ITEMS_PER_DATASET: 3,
+  MAX_BBOX_DEGREES: Infinity,
 }));
 
 function createNFeatures(...ids: number[]): OutputLayer {
@@ -63,7 +64,7 @@ describe(mergeTinyDatasets, () => {
         }),
       ),
     ).toStrictEqual({
-      a: [1, 2, 3, 4, 5, 6],
+      'a;b': [1, 2, 3, 4, 5, 6],
       c: [7, 8],
     });
   });
@@ -79,8 +80,24 @@ describe(mergeTinyDatasets, () => {
         }),
       ),
     ).toStrictEqual({
-      a: [1, 2, 3, 4, 5, 6],
-      d: [7, 8], // not included, because then it would be too big
+      'a;b': [1, 2, 3, 4],
+      'c;d': [5, 6, 7, 8],
+    });
+  });
+
+  it('can combine >2 layers that are too small', () => {
+    expect(
+      simplifyOutput(
+        mergeTinyDatasets({
+          a: createNFeatures(1),
+          b: createNFeatures(2),
+          c: createNFeatures(3),
+          d: createNFeatures(4, 5, 6, 7, 8, 9, 10),
+        }),
+      ),
+    ).toStrictEqual({
+      'c;a;b': [3, 1, 2],
+      d: [4, 5, 6, 7, 8, 9, 10],
     });
   });
 
@@ -93,11 +110,11 @@ describe(mergeTinyDatasets, () => {
         d: createNFeatures(7, 8),
       }),
     ).toStrictEqual({
-      a: {
-        bbox: { minLng: -12, maxLng: -2, minLat: 1, maxLat: 6 }, // correctly merged
+      'a;b': {
+        bbox: { minLng: -8, maxLng: -2, minLat: 1, maxLat: 4 }, // correctly merged
         changesetTags: {
           created_by: 'me', // same value in all datasets
-          comment: 'Example Layer - 12;Example Layer - 34;Example Layer - 56', // merged
+          comment: 'Example Layer - 12;Example Layer - 34', // merged
         },
         features: [
           {
@@ -124,6 +141,16 @@ describe(mergeTinyDatasets, () => {
             properties: { i: '4' },
             type: 'Feature',
           },
+        ],
+        sectorIds: ['a'],
+      },
+      'c;d': {
+        bbox: { minLng: -16, maxLng: -10, minLat: 5, maxLat: 8 }, // correctly merged
+        changesetTags: {
+          created_by: 'me',
+          comment: 'Example Layer - 56;Example Layer - 78',
+        },
+        features: [
           {
             geometry: { coordinates: [-10, 5], type: 'Point' },
             id: 5,
@@ -136,16 +163,6 @@ describe(mergeTinyDatasets, () => {
             properties: { i: '6' },
             type: 'Feature',
           },
-        ],
-        sectorIds: ['a'],
-      },
-      d: {
-        bbox: { minLng: -16, maxLng: -14, minLat: 7, maxLat: 8 }, // correctly merged
-        changesetTags: {
-          created_by: 'me',
-          comment: 'Example Layer - 78',
-        },
-        features: [
           {
             geometry: { coordinates: [-14, 7], type: 'Point' },
             id: 7,
@@ -161,6 +178,19 @@ describe(mergeTinyDatasets, () => {
         ],
         sectorIds: ['a'],
       },
+    });
+  });
+});
+
+describe(mergeTags, () => {
+  it('handle conflicts', () => {
+    expect(
+      mergeTags({ a: '1', b: '2', c: '3' }, { b: '2', c: '4', d: '5' }),
+    ).toStrictEqual({
+      a: '1', // L only
+      b: '2', // L & R have same value
+      c: '3;4', // L & R have different value
+      d: '5', // R only
     });
   });
 });

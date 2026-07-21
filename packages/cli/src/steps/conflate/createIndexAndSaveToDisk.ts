@@ -8,7 +8,7 @@ import { calcCount } from '../../common/calcCount.js';
 
 function toId(suburb: string) {
   // macrons are url safe
-  return `${suburb.replaceAll(/[^\dA-Za-zĀāĒēĪīŌōŪū]/g, '')}_${hash(suburb).slice(0, 6)}`;
+  return `${suburb.replaceAll(/[^\dA-Za-zĀāĒēĪīŌōŪū]/g, '').slice(0, 100)}_${hash(suburb).slice(0, 6)}`;
 }
 
 export async function createIndexAndSaveToDisk(

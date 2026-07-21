@@ -15,6 +15,7 @@ export const IS_UNIT_TEST = process.env.NODE_ENV === 'test';
 // TODO: make configurable
 export const MIN_ITEMS_PER_DATASET = 40;
 export const MAX_ITEMS_PER_DATASET = 110;
+export const MAX_BBOX_DEGREES = 4;
 
 /** can be customised in the config */
 export const CHECK_DATE_KEY = 'check_date';
