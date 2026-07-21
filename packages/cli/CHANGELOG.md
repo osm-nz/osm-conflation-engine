@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.1.0...cli-v3.2.0) (2026-07-21)
+
+
+### Features
+
+* merge tiny datasets with the closest neighbour ([9672801](https://github.com/osm-nz/osm-conflation-engine/commit/967280152a221f57228226d71acbe0c50bdbe728))
+
 ## [3.1.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.0.1...cli-v3.1.0) (2026-07-15)
 
 
