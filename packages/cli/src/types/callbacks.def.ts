@@ -5,7 +5,8 @@ import type {
 } from 'osm-api';
 import type { Feature, GeoJsonProperties, Geometry } from 'geojson';
 import type { Step } from '../constants/defaults.js';
-import type { SourceData } from './internal.def.js';
+import type { MatchType, SourceData } from './internal.def.js';
+import type { Config } from './config.def.js';
 
 export type TagDiff = OsmPatchFeature['properties'];
 
@@ -178,11 +179,32 @@ export interface RunOptions {
 }
 
 export interface ConflateResult {
-  counts: {
-    create: number;
-    edit: number;
-    delete: number;
-    perfect: number;
+  config: Config;
+  warnings: string[];
+  countsByPhase: {
+    init: {
+      sourceDataset: number;
+      osm: {
+        // these 4 are mutataly exclusive
+        withRef: number;
+        duplicateRefs: number;
+        semi: number;
+        noRef: number;
+
+        // these are independant of the previous 4
+        recentlyChecked: number;
+        recentlyChanged: number;
+        lastEditedByImporter: number;
+      };
+      ignored: number;
+    };
+    matched: Record<MatchType, number>;
+    conflated: {
+      create: number;
+      edit: number;
+      delete: number;
+      perfect: number;
+    };
   };
 }
 

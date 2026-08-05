@@ -15,6 +15,7 @@ declare global {
     interface ProcessEnv {
       NODE_ENV?: 'test';
       OSM_AUTH?: string;
+      GITHUB_ACTIONS?: 'true';
     }
   }
 }
@@ -65,7 +66,7 @@ export interface OSMData {
 }
 
 /**
- * `source:o`. this only describes the mapping between the two datasets.
+ * `source:osm`. this only describes the mapping between the two datasets.
  * This mapping is orthogonal to whether the tags are correct. That is
  * checked at a later stage.
  */
@@ -80,7 +81,7 @@ export enum MatchType {
   Guess = 6,
 }
 
-/** `source:o` */
+/** `source:osm` */
 export interface MatchOutput {
   [MatchType.OneToOne]: { source: DatasetId; osm: OsmId }[];
   [MatchType.OneToMany]: { source: DatasetId; osm: OsmId[] }[];

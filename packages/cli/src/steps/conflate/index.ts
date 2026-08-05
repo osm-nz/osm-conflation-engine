@@ -22,6 +22,8 @@ import { splitUntilSmallEnough } from './splitUntilSmallEnough.js';
 import { shiftOverlappingPoints } from './spreadToGrid.js';
 import { createIndexAndSaveToDisk } from './createIndexAndSaveToDisk.js';
 import { mergeTinyDatasets } from './mergeTinyDatasets.js';
+import { generateDataForWebsite } from './stats/generateDataForWebsite.js';
+import { writeToRunHistory } from './stats/writeToRunHistory.js';
 
 const MSG = 'invalid value returned by your callback function';
 
@@ -311,29 +313,16 @@ export async function conflate(
     mergeTinyDatasets(handlerReturn[category]);
   }
 
-  await createIndexAndSaveToDisk(ctx, handlerReturn);
+  const metrics = await generateDataForWebsite(
+    ctx,
+    sourceData,
+    osmData,
+    matches,
+    handlerReturn,
+  );
+  await createIndexAndSaveToDisk(ctx, metrics, handlerReturn);
   // TODO: generate stats and stats history
+  await writeToRunHistory(ctx.config.merge.osm_key);
 
-  const counts: ConflateResult['counts'] = {
-    create: 0,
-    edit: 0,
-    delete: 0,
-    perfect: 0,
-  };
-  for (const sectors of Object.values(handlerReturn).flatMap((v) =>
-    Object.values(v),
-  )) {
-    for (const f of sectors.features) {
-      if (f.properties.__action === 'edit') {
-        counts.edit++;
-      } else if (f.properties.__action === 'delete') {
-        counts.delete++;
-      } else {
-        counts.create++;
-      }
-    }
-  }
-
-  counts.perfect = osmData.count - counts.edit - counts.delete;
-  return { counts };
+  return metrics;
 }
