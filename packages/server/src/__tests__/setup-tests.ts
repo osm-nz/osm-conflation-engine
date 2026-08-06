@@ -9,6 +9,8 @@ import {
   IgnoreListModel,
   type LockedLayers,
   LockedLayersModel,
+  type RunHistory,
+  RunHistoryModel,
 } from '../db/index.js';
 
 const MOCK_IGNORE_LIST: IgnoreList[] = [
@@ -54,6 +56,19 @@ const MOCK_CHECK_DATES: ChangesetWatchCheckDate[] = [
   },
 ];
 
+const MOCK_RUN_HISTORY: RunHistory[] = [
+  {
+    operator: 'https://github.com/example/example/actions/runs/1#octocat',
+    refTag: 'ref:example',
+    timestamp: '2021-05-17T00:00:00.000Z',
+  },
+  {
+    operator: 'https://github.com/example/example/actions/runs/2#octocat',
+    refTag: 'ref:example',
+    timestamp: '2021-06-17T00:00:00.000Z',
+  },
+];
+
 beforeAll(async () => {
   const db = drizzle(env.d1_db);
   await db.run(inject('migrations'));
@@ -67,5 +82,8 @@ beforeAll(async () => {
   }
   for (const row of MOCK_CHECK_DATES) {
     await db.insert(ChangesetWatchCheckDateModel).values(row);
+  }
+  for (const row of MOCK_RUN_HISTORY) {
+    await db.insert(RunHistoryModel).values(row);
   }
 });

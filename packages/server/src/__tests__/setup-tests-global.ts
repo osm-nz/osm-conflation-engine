@@ -22,11 +22,12 @@ declare module 'vitest' {
 export default async function setup(project: TestProject) {
   const migrationFolder = join(__dirname, '../../migrations');
   const files = await fs.readdir(migrationFolder);
-  const migrationFileName = files.find((f) => f.endsWith('.sql'))!;
-  const migrations = await fs.readFile(
-    join(migrationFolder, migrationFileName),
-    'utf8',
+  const migrationFileNames = files.filter((f) => f.endsWith('.sql')).toSorted();
+  const migrations = await Promise.all(
+    migrationFileNames.map((fileName) =>
+      fs.readFile(join(migrationFolder, fileName), 'utf8'),
+    ),
   );
-  project.provide('migrations', migrations);
+  project.provide('migrations', migrations.join('\n'));
   project.provide('MOCK_OIDC_TOKEN', MOCK_OIDC_TOKEN);
 }

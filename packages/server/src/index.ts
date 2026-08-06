@@ -9,6 +9,8 @@ import { LockCreate } from './routes/LockCreate.js';
 import { LockDelete } from './routes/LockDelete.js';
 import { ChangesetWatchGetCheckDate } from './routes/ChangesetWatchGetCheckDate.js';
 import { ChangesetWatchSetCheckDate } from './routes/ChangesetWatchSetCheckDate.js';
+import { RunHistoryGet } from './routes/RunHistoryGet.js';
+import { RunHistoryPut } from './routes/RunHistoryPut.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -24,6 +26,9 @@ openapi.post('/api/ignore_list/:refTag/batch', IgnoreListAddBatch);
 openapi.get('/api/lock/:refTag', LockGet);
 openapi.put('/api/lock/:refTag/:datasetId', LockCreate);
 openapi.delete('/api/lock/:refTag/:datasetId', LockDelete);
+
+openapi.get('/api/run_history/:refTag', RunHistoryGet);
+openapi.put('/api/run_history/:refTag', RunHistoryPut);
 
 openapi.get(
   '/api/changeset_watch/check_date/:refTag',

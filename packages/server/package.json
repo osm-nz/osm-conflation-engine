@@ -10,7 +10,7 @@
     "directory": "packages/server"
   },
   "scripts": {
-    "postinstall": "wrangler types && drizzle-kit generate && rm -rf .wrangler && npx wrangler d1 execute d1_db --local --file=$(ls ./migrations/*.sql| head -1)",
+    "postinstall": "wrangler types && drizzle-kit generate && rm -rf .wrangler && wrangler d1 migrations apply d1_db --local",
     "start": "wrangler dev",
     "deploy": "wrangler deploy",
     "typecheck": "tsc",
