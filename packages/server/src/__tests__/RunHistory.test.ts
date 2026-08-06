@@ -37,6 +37,28 @@ describe('run_history', () => {
     });
   });
 
+  it('returns the whole table, newest first', async () => {
+    const response = await send(
+      new IncomingRequest('https://example.com/api/run_history'),
+    );
+
+    expect(await response.json()).toStrictEqual({
+      success: true,
+      result: [
+        {
+          refTag: 'ref:other',
+          operator: 'https://github.com/example/example/actions/runs/3#octocat',
+          timestamp: '2021-07-17T00:00:00.000Z',
+        },
+        {
+          refTag: 'ref:example',
+          operator: 'https://github.com/example/example/actions/runs/2#octocat',
+          timestamp: '2021-06-17T00:00:00.000Z',
+        },
+      ],
+    });
+  });
+
   it('overwrites the previous run for the same refTag', async () => {
     const putResponse = await send(
       new IncomingRequest('https://example.com/api/run_history/ref:example', {

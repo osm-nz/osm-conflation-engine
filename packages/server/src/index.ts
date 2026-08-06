@@ -10,6 +10,7 @@ import { LockDelete } from './routes/LockDelete.js';
 import { ChangesetWatchGetCheckDate } from './routes/ChangesetWatchGetCheckDate.js';
 import { ChangesetWatchSetCheckDate } from './routes/ChangesetWatchSetCheckDate.js';
 import { RunHistoryGet } from './routes/RunHistoryGet.js';
+import { RunHistoryGetAll } from './routes/RunHistoryGetAll.js';
 import { RunHistoryPut } from './routes/RunHistoryPut.js';
 
 const app = new Hono<{ Bindings: Env }>();
@@ -27,6 +28,7 @@ openapi.get('/api/lock/:refTag', LockGet);
 openapi.put('/api/lock/:refTag/:datasetId', LockCreate);
 openapi.delete('/api/lock/:refTag/:datasetId', LockDelete);
 
+openapi.get('/api/run_history', RunHistoryGetAll);
 openapi.get('/api/run_history/:refTag', RunHistoryGet);
 openapi.put('/api/run_history/:refTag', RunHistoryPut);
 
