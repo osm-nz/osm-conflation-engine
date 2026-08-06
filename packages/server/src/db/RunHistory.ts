@@ -1,15 +1,11 @@
-import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { z } from 'zod';
 
-export const RunHistoryModel = sqliteTable(
-  'run_history',
-  {
-    refTag: text('refTag').notNull(),
-    operator: text('operator').notNull(),
-    timestamp: text('timestamp').notNull(),
-  },
-  (table) => [primaryKey({ columns: [table.refTag, table.timestamp] })],
-);
+export const RunHistoryModel = sqliteTable('run_history', {
+  refTag: text('refTag').notNull().primaryKey(),
+  operator: text('operator').notNull(),
+  timestamp: text('timestamp').notNull(),
+});
 
 export const RunHistorySchema = z.object({
   refTag: z

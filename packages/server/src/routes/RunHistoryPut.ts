@@ -16,7 +16,7 @@ import { createOIDCAuthor, verifyOIDC } from '../auth/oidc.js';
 export class RunHistoryPut extends OpenAPIRoute {
   override schema = {
     tags: ['run_history'],
-    summary: 'stors the most recent run history',
+    summary: 'stores the most recent run for a given refTag',
     request: {
       params: z.object({
         refTag: RunHistorySchema.shape.refTag,
@@ -63,7 +63,10 @@ export class RunHistoryPut extends OpenAPIRoute {
     const result = await db
       .insert(RunHistoryModel)
       .values(newRow)
-      // no need for onConflictDoUpdate
+      .onConflictDoUpdate({
+        target: [RunHistoryModel.refTag],
+        set: newRow,
+      })
       .returning();
 
     return {

@@ -58,11 +58,6 @@ const MOCK_CHECK_DATES: ChangesetWatchCheckDate[] = [
 
 const MOCK_RUN_HISTORY: RunHistory[] = [
   {
-    operator: 'https://github.com/example/example/actions/runs/1#octocat',
-    refTag: 'ref:example',
-    timestamp: '2021-05-17T00:00:00.000Z',
-  },
-  {
     operator: 'https://github.com/example/example/actions/runs/2#octocat',
     refTag: 'ref:example',
     timestamp: '2021-06-17T00:00:00.000Z',
