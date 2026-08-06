@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.2.0...cli-v3.3.0) (2026-08-06)
+
+
+### Features
+
+* store stats that we need for the graphs on the website ([a810c69](https://github.com/osm-nz/osm-conflation-engine/commit/a810c6964d53ae028cf7432fa9b10696d038f8e0))
+
 ## [3.2.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.1.0...cli-v3.2.0) (2026-07-21)
 
 
