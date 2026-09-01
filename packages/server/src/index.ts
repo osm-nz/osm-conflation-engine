@@ -42,3 +42,19 @@ openapi.put(
 );
 
 export default app;
+
+/* eslint-disable unicorn/prefer-export-from */
+export type {
+  IgnoreListGet,
+  IgnoreListMarkAsReviewed,
+  IgnoreListAdd,
+  IgnoreListAddBatch,
+  LockGet,
+  LockCreate,
+  LockDelete,
+  RunHistoryGetAll,
+  RunHistoryGet,
+  RunHistoryPut,
+  ChangesetWatchGetCheckDate,
+  ChangesetWatchSetCheckDate,
+};
