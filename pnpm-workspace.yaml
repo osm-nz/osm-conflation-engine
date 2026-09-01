@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
 
 allowBuilds:
+  es5-ext: false # looks like malware
   esbuild: true
   sharp: true
   unrs-resolver: true

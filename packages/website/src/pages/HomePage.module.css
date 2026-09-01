@@ -1,0 +1,52 @@
+/* eslint-disable css/no-invalid-properties -- css variables from mantine */
+.card {
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.card:hover {
+  box-shadow: var(--mantine-shadow-md);
+  transform: translateY(-2px);
+}
+
+.title {
+  color: inherit;
+  text-decoration: none;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.title:focus-visible {
+  outline: none;
+}
+.title:focus-visible::after {
+  outline: 2px solid var(--mantine-primary-color-filled);
+  outline-offset: -2px;
+}
+
+.nonclickable {
+  /** above ::after */
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.createNewCard {
+  min-height: 240px;
+  border-style: dashed;
+  color: var(--mantine-color-dimmed);
+  text-decoration: none;
+}
+
+.createNewCard:hover {
+  color: var(--mantine-primary-color-filled);
+  border-color: var(--mantine-primary-color-filled);
+}

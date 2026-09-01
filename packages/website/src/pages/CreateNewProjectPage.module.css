@@ -1,0 +1,45 @@
+/* eslint-disable css/no-invalid-properties -- css variables from mantine */
+.card {
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease,
+    border-color 150ms ease;
+}
+
+.card:hover {
+  box-shadow: var(--mantine-shadow-md);
+  transform: translateY(-2px);
+}
+
+.card[data-checked] {
+  color: var(--mantine-primary-color-filled);
+}
+
+.cardBody {
+  min-height: 120px;
+}
+
+/* shrink icons on sm screens */
+@media (max-width: 48em) {
+  .cardBody {
+    min-height: 88px;
+  }
+  .cardBody svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* switch to vertical layout on xs screens */
+@media (max-width: 36em) {
+  .cardBody {
+    flex-direction: row;
+    justify-content: flex-start;
+    min-height: 0;
+    gap: var(--mantine-spacing-sm);
+  }
+  .cardBody svg {
+    width: 24px;
+    height: 24px;
+  }
+}
