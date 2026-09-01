@@ -2,7 +2,12 @@ import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import type { OsmPatch } from 'osm-api';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
-import type { ConflateResult, Ctx, OutputLayers } from '../../types/index.js';
+import type {
+  ConflateResult,
+  Ctx,
+  IndexFileProperties,
+  OutputLayers,
+} from '../../types/index.js';
 import { IS_UNIT_TEST } from '../../constants/defaults.js';
 import { sha256 as hash } from '../../helpers.js';
 import { calcCount } from '../../common/calcCount.js';
@@ -11,14 +16,6 @@ import { bboxToPolygon } from '../../common/bboxToPolygon.js';
 function toId(suburb: string) {
   // macrons are url safe
   return `${suburb.replaceAll(/[^\dA-Za-zĀāĒēĪīŌōŪū]/g, '').slice(0, 100)}_${hash(suburb).slice(0, 6)}`;
-}
-
-export interface IndexFileProperties {
-  category: string;
-  group: string;
-  title: string;
-  instructions: string | undefined;
-  totalCount: number;
 }
 
 export async function createIndexAndSaveToDisk(

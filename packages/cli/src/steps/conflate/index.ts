@@ -322,7 +322,7 @@ export async function conflate(
   );
   await createIndexAndSaveToDisk(ctx, metrics, handlerReturn);
   // TODO: generate stats and stats history
-  await writeToRunHistory(ctx.config.merge.osm_key);
+  await writeToRunHistory(metrics);
 
   return metrics;
 }

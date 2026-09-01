@@ -3,7 +3,13 @@ import type {
   OsmFeature as StandardOsmFeature,
   Tags,
 } from 'osm-api';
-import type { Feature, GeoJsonProperties, Geometry } from 'geojson';
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+  Polygon,
+} from 'geojson';
 import type { Step } from '../constants/defaults.js';
 import type { MatchType, SourceData } from './internal.def.js';
 import type { Config } from './config.def.js';
@@ -211,3 +217,14 @@ export interface ConflateResult {
 export interface RunResult {
   conflate?: ConflateResult;
 }
+
+export interface IndexFileProperties {
+  category: string;
+  group: string;
+  title: string;
+  instructions: string | undefined;
+  totalCount: number;
+}
+
+/** the shape of `index.geo.json` */
+export type IndexFile = FeatureCollection<Polygon, IndexFileProperties>;

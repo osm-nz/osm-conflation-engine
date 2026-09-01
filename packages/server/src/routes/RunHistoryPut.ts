@@ -2,11 +2,13 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   OpenAPIRoute,
+  contentJson,
 } from 'chanfana';
 import { z } from 'zod';
 import { drizzle } from 'drizzle-orm/d1';
 import type { AppContext } from '../types.def.js';
 import {
+  MetricsSchema,
   type RunHistory,
   RunHistoryModel,
   RunHistorySchema,
@@ -21,6 +23,7 @@ export class RunHistoryPut extends OpenAPIRoute {
       params: z.object({
         refTag: RunHistorySchema.shape.refTag,
       }),
+      body: contentJson(MetricsSchema),
       headers: z.object({
         Authorization: z
           .string()
@@ -57,6 +60,10 @@ export class RunHistoryPut extends OpenAPIRoute {
       refTag: data.params.refTag,
       operator: createOIDCAuthor(jwt),
       timestamp: new Date().toISOString(),
+      metrics: {
+        ...data.body,
+        warnings: [], // don't store warnings
+      },
     };
 
     const db = drizzle(ctx.env.d1_db);
