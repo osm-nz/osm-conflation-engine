@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.0...cli-v3.4.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* don't call the API in unit tests ([961c459](https://github.com/osm-nz/osm-conflation-engine/commit/961c459b7f31c525a00cc738daee5dbeb4c001f8))
+
 ## [3.4.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.3.0...cli-v3.4.0) (2026-09-01)
 
 
