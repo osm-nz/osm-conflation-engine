@@ -1,0 +1,13 @@
+.card {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.fullWidth {
+  flex: 1 1 100%;
+}
+
+.statCard {
+  flex: 1 1 200px;
+  min-width: 0;
+}

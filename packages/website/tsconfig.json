@@ -1,0 +1,9 @@
+{
+  "extends": "eslint-config-kyle/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"],
+    "noPropertyAccessFromIndexSignature": false
+  },
+  "include": ["src", "src/**/*.json"]
+}

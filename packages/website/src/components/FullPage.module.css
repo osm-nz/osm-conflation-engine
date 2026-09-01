@@ -1,0 +1,8 @@
+/* eslint-disable css/no-invalid-properties -- mantine variables */
+
+.fullPage {
+  height: calc(
+    100vh - var(--app-shell-header-offset) - var(--app-shell-footer-offset) -
+      2 * var(--app-shell-padding)
+  );
+}

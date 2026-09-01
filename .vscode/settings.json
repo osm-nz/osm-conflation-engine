@@ -1,4 +1,9 @@
 {
+  // i18n
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.localesPaths": ["packages/website/src/translations"],
+
   "json.schemas": [
     {
       "fileMatch": ["taginfo.json"],
