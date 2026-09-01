@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.3.0...cli-v3.4.0) (2026-09-01)
+
+
+### Features
+
+* also store the metrics object on the server ([3bed500](https://github.com/osm-nz/osm-conflation-engine/commit/3bed5006d3b39765eb15e1760fe675dd8fa8d086))
+
 ## [3.3.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.2.0...cli-v3.3.0) (2026-08-06)
 
 
