@@ -18,7 +18,7 @@ import {
   IgnoreListSchema,
 } from '../db/index.js';
 
-export class IgnoreListReview extends OpenAPIRoute {
+export class IgnoreListMarkAsReviewed extends OpenAPIRoute {
   override schema = {
     tags: ['ignore_list'],
     summary: 'Marks an ignore_list row as reviewed (approved/rejected)',

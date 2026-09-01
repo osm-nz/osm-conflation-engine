@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { IgnoreListGet } from './routes/IgnoreListGet.js';
 import { IgnoreListAdd } from './routes/IgnoreListAdd.js';
 import { IgnoreListAddBatch } from './routes/IgnoreListAddBatch.js';
-import { IgnoreListReview } from './routes/IgnoreListReview.js';
+import { IgnoreListMarkAsReviewed } from './routes/IgnoreListMarkAsReviewed.js';
 import { LockGet } from './routes/LockGet.js';
 import { LockCreate } from './routes/LockCreate.js';
 import { LockDelete } from './routes/LockDelete.js';
@@ -20,7 +20,7 @@ const openapi = fromHono(app, {
 });
 
 openapi.get('/api/ignore_list/:refTag', IgnoreListGet);
-openapi.put('/api/ignore_list/:refTag', IgnoreListReview);
+openapi.put('/api/ignore_list/:refTag', IgnoreListMarkAsReviewed);
 openapi.post('/api/ignore_list/:refTag', IgnoreListAdd);
 openapi.post('/api/ignore_list/:refTag/batch', IgnoreListAddBatch);
 
