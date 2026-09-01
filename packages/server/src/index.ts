@@ -1,5 +1,6 @@
 import { fromHono } from 'chanfana';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { IgnoreListGet } from './routes/IgnoreListGet.js';
 import { IgnoreListAdd } from './routes/IgnoreListAdd.js';
 import { IgnoreListAddBatch } from './routes/IgnoreListAddBatch.js';
@@ -18,6 +19,7 @@ const app = new Hono<{ Bindings: Env }>();
 const openapi = fromHono(app, {
   docs_url: '/',
 });
+openapi.use('/api/*', cors());
 
 openapi.get('/api/ignore_list/:refTag', IgnoreListGet);
 openapi.put('/api/ignore_list/:refTag', IgnoreListMarkAsReviewed);
