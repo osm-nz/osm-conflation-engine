@@ -1,8 +1,9 @@
 import { getIDToken } from '@actions/core';
-import { API_BASE_URL } from '../../../constants/defaults.js';
+import { API_BASE_URL, IS_UNIT_TEST } from '../../../constants/defaults.js';
 import type { ConflateResult } from '../../../types/callbacks.def.js';
 
 export async function writeToRunHistory(metrics: ConflateResult) {
+  if (IS_UNIT_TEST) return;
   if (!process.env.GITHUB_ACTIONS) {
     console.info(
       'Skipping run history update, because not running in GitHub Actions',
