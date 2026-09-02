@@ -35,6 +35,8 @@ describe('run_history', () => {
         operator: 'https://github.com/example/example/actions/runs/2#octocat',
         timestamp: '2021-06-17T00:00:00.000Z',
         metrics: MOCK_METRICS,
+        image: null,
+        regionFlagImage: null,
       },
     });
   });
@@ -51,13 +53,17 @@ describe('run_history', () => {
           refTag: 'ref:other',
           operator: 'https://github.com/example/example/actions/runs/3#octocat',
           timestamp: '2021-07-17T00:00:00.000Z',
-          metrics: null,
+          metrics: MOCK_METRICS,
+          image: null,
+          regionFlagImage: null,
         },
         {
           refTag: 'ref:example',
           operator: 'https://github.com/example/example/actions/runs/2#octocat',
           timestamp: '2021-06-17T00:00:00.000Z',
           metrics: MOCK_METRICS,
+          image: null,
+          regionFlagImage: null,
         },
       ],
     });
@@ -65,11 +71,14 @@ describe('run_history', () => {
 
   it('overwrites the previous run for the same refTag', async () => {
     const putResponse = await send(
-      new IncomingRequest('https://example.com/api/run_history/ref:example', {
-        method: 'PUT',
-        headers: { Authorization: inject('MOCK_OIDC_TOKEN') },
-        body: JSON.stringify(MOCK_METRICS),
-      }),
+      new IncomingRequest(
+        'https://example.com/api/run_history/ref:example?skipDerivedData=true',
+        {
+          method: 'PUT',
+          headers: { Authorization: inject('MOCK_OIDC_TOKEN') },
+          body: JSON.stringify(MOCK_METRICS),
+        },
+      ),
     );
     expect(putResponse.status).toBe(200);
 
@@ -83,6 +92,8 @@ describe('run_history', () => {
         'https://github.com/octo-org/octo-repo/actions/runs/example-run-id#octocat',
       timestamp: expect.any(String),
       metrics: MOCK_METRICS,
+      image: null,
+      regionFlagImage: null,
     });
     expect(result).not.toHaveProperty('timestamp', '2021-06-17T00:00:00.000Z'); // should not be the old value
   });
@@ -94,14 +105,19 @@ describe('run_history', () => {
         'https://github.com/octo-org/octo-repo/actions/runs/example-run-id#octocat',
       timestamp: expect.any(String),
       metrics: MOCK_METRICS,
+      image: null,
+      regionFlagImage: null,
     };
 
     const putResponse = await send(
-      new IncomingRequest('https://example.com/api/run_history/my_key', {
-        method: 'PUT',
-        headers: { Authorization: inject('MOCK_OIDC_TOKEN') },
-        body: JSON.stringify(MOCK_METRICS),
-      }),
+      new IncomingRequest(
+        'https://example.com/api/run_history/my_key?skipDerivedData=true',
+        {
+          method: 'PUT',
+          headers: { Authorization: inject('MOCK_OIDC_TOKEN') },
+          body: JSON.stringify(MOCK_METRICS),
+        },
+      ),
     );
     expect(await putResponse.json()).toStrictEqual({
       success: true,

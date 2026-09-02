@@ -14,6 +14,10 @@ import {
   RunHistorySchema,
 } from '../db/index.js';
 import { createOIDCAuthor, verifyOIDC } from '../auth/oidc.js';
+import {
+  getFlagFromWikidata,
+  getImageFromOsmWikibase,
+} from '../api/wikibase.js';
 
 export class RunHistoryPut extends OpenAPIRoute {
   override schema = {
@@ -24,6 +28,14 @@ export class RunHistoryPut extends OpenAPIRoute {
         refTag: RunHistorySchema.shape.refTag,
       }),
       body: contentJson(MetricsSchema),
+      query: z.object({
+        skipDerivedData: z
+          .boolean()
+          .optional()
+          .describe(
+            "if true, we won't generate derived data (which relies on calling other APIs)",
+          ),
+      }),
       headers: z.object({
         Authorization: z
           .string()
@@ -56,6 +68,17 @@ export class RunHistoryPut extends OpenAPIRoute {
     const jwt = await verifyOIDC(
       data.headers.Authorization.replace('Bearer ', ''),
     );
+
+    const region = data.body.config.metadata.region;
+
+    const image = data.query.skipDerivedData
+      ? undefined
+      : await getImageFromOsmWikibase(data.params.refTag);
+
+    const regionFlagImage = data.query.skipDerivedData
+      ? undefined
+      : await getFlagFromWikidata(region);
+
     const newRow: RunHistory = {
       refTag: data.params.refTag,
       operator: createOIDCAuthor(jwt),
@@ -64,6 +87,8 @@ export class RunHistoryPut extends OpenAPIRoute {
         ...data.body,
         warnings: [], // don't store warnings
       },
+      image: image || null,
+      regionFlagImage: regionFlagImage || null,
     };
 
     const db = drizzle(ctx.env.d1_db);

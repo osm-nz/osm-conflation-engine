@@ -10,6 +10,7 @@
   },
   "include": [
     "src",
+    "package.json",
     "drizzle.config.ts",
     "worker-configuration.d.ts",
     "wrangler.json"
