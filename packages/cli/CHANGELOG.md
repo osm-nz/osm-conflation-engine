@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.2](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.1...cli-v3.4.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* inconsistent api response shape ([8247df4](https://github.com/osm-nz/osm-conflation-engine/commit/8247df495318bc5c927db5dad5793568e99d1d1d))
+
 ## [3.4.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.0...cli-v3.4.1) (2026-09-01)
 
 
