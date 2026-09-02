@@ -34,7 +34,7 @@ describe('ignore_list', () => {
 
     expect(await response.json()).toStrictEqual({
       success: true,
-      rows: [
+      result: [
         {
           refTag: 'ref:example',
           rowId: 'row1',
@@ -57,7 +57,7 @@ describe('ignore_list', () => {
       'https://example.com/api/ignore_list/invaliddd',
     );
     const response = await send(request);
-    expect(await response.json()).toStrictEqual({ success: true, rows: [] });
+    expect(await response.json()).toStrictEqual({ success: true, result: [] });
   });
 
   it('errors if no authentication provided', async () => {
@@ -126,7 +126,7 @@ describe('ignore_list', () => {
       await send(
         new IncomingRequest('https://example.com/api/ignore_list/my_key'),
       ).then((r) => r.json()),
-    ).toStrictEqual({ success: true, rows: [newRow] });
+    ).toStrictEqual({ success: true, result: [newRow] });
   });
 
   it('can add an item to the ignore list on behalf of a robot', async () => {
@@ -176,6 +176,6 @@ describe('ignore_list', () => {
       await send(
         new IncomingRequest('https://example.com/api/ignore_list/my_key2'),
       ).then((r) => r.json()),
-    ).toStrictEqual({ success: true, rows: [newRow] });
+    ).toStrictEqual({ success: true, result: [newRow] });
   });
 });

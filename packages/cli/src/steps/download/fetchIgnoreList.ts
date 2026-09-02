@@ -12,7 +12,7 @@ export async function fetchIgnoreList(ctx: Ctx) {
     );
   }
 
-  const obj: { rows: string[] } =
+  const obj: { result: string[] } =
     IS_UNIT_TEST && mockFilePath
       ? JSON.parse(await fs.readFile(mockFilePath, 'utf8'))
       : await fetch(
@@ -21,6 +21,6 @@ export async function fetchIgnoreList(ctx: Ctx) {
 
   await fs.writeFile(
     ctx.tempFileNames.ignore_list,
-    JSON.stringify(obj.rows, null, 2),
+    JSON.stringify(obj.result, null, 2),
   );
 }

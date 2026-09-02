@@ -27,7 +27,7 @@ export class IgnoreListGet extends OpenAPIRoute {
           'application/json': {
             schema: z.object({
               success: z.literal(true),
-              rows: z.union([z.array(IgnoreListSchema), z.array(z.string())]),
+              result: z.union([z.array(IgnoreListSchema), z.array(z.string())]),
             }),
           },
         },
@@ -47,7 +47,7 @@ export class IgnoreListGet extends OpenAPIRoute {
 
       return {
         success: true,
-        rows: result.map((r) => r.rowId),
+        result: result.map((r) => r.rowId),
       };
     }
 
@@ -58,7 +58,7 @@ export class IgnoreListGet extends OpenAPIRoute {
 
     return {
       success: true,
-      rows: result,
+      result,
     };
   }
 }
