@@ -19,7 +19,7 @@ import { getSector } from '../../../common/getSector.js';
 
 const THRESHOLD_DATE = ((d) => {
   d.setDate(d.getDate() - RECENT_THRESHOLD);
-  return +d / 1000;
+  return +d;
 })(new Date());
 
 export function loadOsmFeature(ctx: Ctx, out: OSMData, object: OsmFeature) {
