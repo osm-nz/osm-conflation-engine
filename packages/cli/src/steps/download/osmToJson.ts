@@ -41,6 +41,7 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
     let anyMetadata = false;
 
     let anythingSeen = false;
+    let index = 0;
     pbf2json
       .createReadStream({
         file: ctx.tempFileNames.pbf,
@@ -84,7 +85,8 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
           };
           loadOsmFeature(ctx, out, object);
 
-          if (!(out.count % 1000)) process.stdout.write('.');
+          index += 1;
+          if (!(index % 1000)) process.stdout.write('.');
         },
       )
       .on('finish', () => {

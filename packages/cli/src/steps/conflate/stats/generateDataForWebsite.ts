@@ -28,6 +28,9 @@ export async function generateDataForWebsite(
   let lastEditedByImporter = 0;
   let recentlyChanged = 0;
   let recentlyChecked = 0;
+
+  const semiFeatures = new Set(Object.values(osmData.semi));
+
   function collectFlags(feature: OsmFeature) {
     if (feature.flags & OsmFlags.IsLastEditedByImporter) lastEditedByImporter++;
     if (feature.flags & OsmFlags.IsRecentlyChanged) recentlyChanged++;
@@ -35,7 +38,7 @@ export async function generateDataForWebsite(
   }
   for (const feature of Object.values(osmData.withRef)) collectFlags(feature);
   for (const feature of Object.values(osmData.noRef)) collectFlags(feature);
-  for (const feature of Object.values(osmData.semi)) collectFlags(feature);
+  for (const feature of semiFeatures) collectFlags(feature);
   for (const features of Object.values(osmData.duplicateRefs)) {
     for (const feature of features) collectFlags(feature);
   }
@@ -50,7 +53,7 @@ export async function generateDataForWebsite(
         osm: {
           withRef: Object.keys(osmData.withRef).length,
           noRef: Object.keys(osmData.noRef).length,
-          semi: Object.keys(osmData.semi).length,
+          semi: semiFeatures.size,
           duplicateRefs: Object.values(osmData.duplicateRefs).flat().length,
           lastEditedByImporter,
           recentlyChanged,

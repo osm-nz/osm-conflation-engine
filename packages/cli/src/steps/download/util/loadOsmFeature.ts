@@ -23,8 +23,6 @@ const THRESHOLD_DATE = ((d) => {
 })(new Date());
 
 export function loadOsmFeature(ctx: Ctx, out: OSMData, object: OsmFeature) {
-  out.count += 1;
-
   object.sectors = getSector(
     { type: 'Point', coordinates: object.centroid },
     ctx.config.merge.sector_resolution,
