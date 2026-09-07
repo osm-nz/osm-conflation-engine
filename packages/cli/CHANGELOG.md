@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.3](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.2...cli-v3.4.3) (2026-09-07)
+
+
+### Bug Fixes
+
+* metrics double-counted ([49b68d8](https://github.com/osm-nz/osm-conflation-engine/commit/49b68d8dd469be9c37dedf9cca62ae686d792851))
+* recently-edited flag wrong ([2858c70](https://github.com/osm-nz/osm-conflation-engine/commit/2858c7022562194732448bb49adf818f601dc56e))
+
 ## [3.4.2](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.1...cli-v3.4.2) (2026-09-02)
 
 
