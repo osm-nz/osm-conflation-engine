@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.4](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.3...cli-v3.4.4) (2026-09-09)
+
+
+### Bug Fixes
+
+* add missing properties to index.geo.json ([45dda81](https://github.com/osm-nz/osm-conflation-engine/commit/45dda8145594805060e4a558ff772a59d770a7aa))
+* mergeTinyDatasets not working well ([ee5aa09](https://github.com/osm-nz/osm-conflation-engine/commit/ee5aa09d2ffb4b8abc6a33e3678705c297015cb5))
+
 ## [3.4.3](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.2...cli-v3.4.3) (2026-09-07)
 
 
