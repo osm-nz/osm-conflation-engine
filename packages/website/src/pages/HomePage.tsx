@@ -80,6 +80,7 @@ const HomePageCard: React.FC<HomePageItem> = ({
       <Text fw={500} mt="md" mb="xs">
         <Link
           to={to}
+          reloadDocument={to.startsWith('https://')}
           className={classes.title} // this css maximises the link so it covers the whole card
         >
           {name}
