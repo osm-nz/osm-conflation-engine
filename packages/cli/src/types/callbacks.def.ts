@@ -219,10 +219,12 @@ export interface RunResult {
 }
 
 export interface IndexFileProperties {
+  id: string;
   category: string;
   group: string;
   title: string;
   instructions: string | undefined;
+  count: string;
   totalCount: number;
 }
 

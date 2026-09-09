@@ -32,14 +32,18 @@ export async function createIndexAndSaveToDisk(
   const subFolderName = 'suburbs';
 
   const meta = Object.entries(suburbs).flatMap(([category, groups]) =>
-    Object.entries(groups).map(([group, items]) => ({
-      category,
-      group,
-      title: [category, group].filter(Boolean).join(' - '),
-      bbox: items.bbox,
-      instructions: items.instructions,
-      ...calcCount(items.features),
-    })),
+    Object.entries(groups).map(([group, items]) => {
+      const title = [category, group].filter(Boolean).join(' - ');
+      return {
+        id: toId(title),
+        category,
+        group,
+        title,
+        bbox: items.bbox,
+        instructions: items.instructions,
+        ...calcCount(items.features),
+      };
+    }),
   );
 
   // create index.json
@@ -48,8 +52,8 @@ export async function createIndexAndSaveToDisk(
     results: meta
       .map((v) => {
         return {
-          id: toId(v.title),
-          url: `https://${githubParts[1]}.github.io/${githubParts[2]}/${subFolderName}/${toId(v.title)}.osmPatch.geo.json`,
+          id: v.id,
+          url: `https://${githubParts[1]}.github.io/${githubParts[2]}/${subFolderName}/${v.id}.osmPatch.geo.json`,
           name: v.title,
           title: v.title,
           totalCount: v.totalCount,
@@ -102,7 +106,7 @@ export async function createIndexAndSaveToDisk(
     };
 
     await fs.writeFile(
-      join(outputFolder, subFolderName, `${toId(v.title)}.osmPatch.geo.json`),
+      join(outputFolder, subFolderName, `${v.id}.osmPatch.geo.json`),
       JSON.stringify(geojson, null, IS_UNIT_TEST ? 2 : undefined),
     );
   }
