@@ -1,5 +1,5 @@
 import type { Tags } from 'osm-api';
-import type { HandlerReturnWithBBox } from '../../types/index.js';
+import type { BBox, HandlerReturnWithBBox } from '../../types/index.js';
 import {
   MAX_BBOX_DEGREES,
   MAX_ITEMS_PER_DATASET,
@@ -24,6 +24,13 @@ export function mergeTags(a: Tags, b: Tags): Tags {
   return merged;
 }
 
+function mergeBboxes(a: BBox, b: BBox): BBox {
+  return calcBBox([
+    { type: 'Feature', geometry: bboxToPolygon(a), properties: {} },
+    { type: 'Feature', geometry: bboxToPolygon(b), properties: {} },
+  ]);
+}
+
 /**
  * having many tiny datasets is unhelpful, it's more convenient for us
  * to merge them into
@@ -38,7 +45,6 @@ export function mergeTinyDatasets(
 
     for (const sectorName in sectors) {
       const sector = sectors[sectorName]!;
-      const mainSectorId = sector.sectorIds[0]!;
 
       // skip if it already has enough members
       if (sector.features.length > MIN_ITEMS_PER_DATASET) continue;
@@ -48,12 +54,10 @@ export function mergeTinyDatasets(
       const bestOther = Object.entries(sectors)
         .filter(([otherName, other]) => {
           return (
-            // must be in the same sector
-            other.sectorIds.includes(mainSectorId) &&
+            // at least 1 sector ID must overlap
+            other.sectorIds.some((id) => sector.sectorIds.includes(id)) &&
             // skip self
             otherName !== sectorName &&
-            // must have too few items
-            other.features.length <= MIN_ITEMS_PER_DATASET &&
             // if we merge them, the total must not be too high
             sector.features.length + other.features.length <
               MAX_ITEMS_PER_DATASET
@@ -64,37 +68,27 @@ export function mergeTinyDatasets(
             // prefer the closest
             distanceBetweenBboxes(sector.bbox, a.bbox) -
             distanceBetweenBboxes(sector.bbox, b.bbox),
-        )[0];
+        )
+        .find(([, other]) => {
+          // If the new bbox is now ridiculously big, and the previous
+          // bboxes were not this big, then abort the merge.
+          const isMergedSmallEnough =
+            getBboxMaxDimension(mergeBboxes(sector.bbox, other.bbox)) <=
+            MAX_BBOX_DEGREES;
+
+          const isAlreadyTooBig =
+            getBboxMaxDimension(sector.bbox) > MAX_BBOX_DEGREES &&
+            getBboxMaxDimension(other.bbox) > MAX_BBOX_DEGREES;
+
+          return isMergedSmallEnough || isAlreadyTooBig;
+        });
 
       if (!bestOther) continue;
 
       const [otherName, other] = bestOther;
 
-      const newBbox = calcBBox([
-        {
-          type: 'Feature',
-          geometry: bboxToPolygon(sector.bbox),
-          properties: {},
-        },
-        {
-          type: 'Feature',
-          geometry: bboxToPolygon(other.bbox),
-          properties: {},
-        },
-      ]);
-
-      // If the new bbox is now ridiculously big, and the previous
-      // bboxes were not this big, then abort the merge.
-      if (
-        getBboxMaxDimension(newBbox) > MAX_BBOX_DEGREES &&
-        (getBboxMaxDimension(sector.bbox) < MAX_BBOX_DEGREES ||
-          getBboxMaxDimension(other.bbox) < MAX_BBOX_DEGREES)
-      ) {
-        continue;
-      }
-
       // combine them
-      sector.bbox = newBbox;
+      sector.bbox = mergeBboxes(sector.bbox, other.bbox);
       sector.sectorIds = [
         ...new Set([...sector.sectorIds, ...other.sectorIds]),
       ];
