@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import { existsSync, promises as fs } from 'node:fs';
 import type { OsmFeature as StandardOsmFeature } from 'osm-api';
 import { getHttpHeaders } from '../../constants/defaults.js';
 import type { Ctx, OSMData } from '../../types/internal.def.js';
@@ -18,6 +18,14 @@ export async function downloadFromOverpass(
   queryFile: string | undefined,
   serverUrl: string | undefined,
 ) {
+  const cacheFile = ctx.tempFileNames.overpass;
+
+  if (ctx.use_cache && existsSync(cacheFile)) {
+    console.info('Using cached overpass response');
+    const cached: OSMData = JSON.parse(await fs.readFile(cacheFile, 'utf8'));
+    await saveLoadedOsmFeatures(ctx, cached);
+  }
+
   const DEFAULT_SERVER_URL = 'https://overpass-api.de/api/interpreter';
   const DEFAULT_QUERY = `
     [out:json][timeout:480];
@@ -78,5 +86,7 @@ export async function downloadFromOverpass(
     };
     loadOsmFeature(ctx, out, object);
   }
+
+  await fs.writeFile(cacheFile, JSON.stringify(out));
   await saveLoadedOsmFeatures(ctx, out);
 }
