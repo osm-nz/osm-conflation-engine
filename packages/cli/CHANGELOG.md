@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.5.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.4...cli-v3.5.0) (2026-09-10)
+
+
+### Features
+
+* add a callback for `addCustomLayers` ([cf35ea6](https://github.com/osm-nz/osm-conflation-engine/commit/cf35ea6d71c530c566fa55f3ab1899c01caceb02))
+
+
+### Bug Fixes
+
+* overpass response not being cached ([7e95d73](https://github.com/osm-nz/osm-conflation-engine/commit/7e95d731a1b07baf52734c6d6fa6eb4a0e7f6f60))
+
 ## [3.4.4](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.3...cli-v3.4.4) (2026-09-09)
 
 
