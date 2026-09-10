@@ -66,7 +66,7 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
 
           const object: OsmFeature = {
             id: `${<OsmFeatureTypeShort>item.type[0]}${item.id}`,
-            centroid: [coords.lon, coords.lat],
+            centroid: [+coords.lon, +coords.lat],
             metadata: metadata
               ? {
                   changeset: metadata.changeset,
