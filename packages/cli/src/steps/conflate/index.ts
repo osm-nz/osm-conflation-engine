@@ -121,11 +121,12 @@ export async function conflate(
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
-    if (!hasDiff(result.diff)) continue;
 
     const category = result.category || '';
     const sector = result.group || oFeature.sectors[0]!;
     handleExtra(result.extra, category, sector);
+
+    if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][sector] ||= [];
     output[category][sector].push(
@@ -151,6 +152,13 @@ export async function conflate(
       throw new TypeError(MSG);
     }
 
+    const category = result.category || '';
+    handleExtra(
+      result.extra,
+      category,
+      result.group || oFeatures[0]?.sectors[0] || sFeature.sectors[0]!,
+    );
+
     for (const _osmId in result.diffPerFeature) {
       const osmId = <OsmId>_osmId;
       const oFeature = oFeatures.find((f) => f.id === osmId)!;
@@ -158,9 +166,7 @@ export async function conflate(
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const category = result.category || '';
       const group = result.group || oFeature.sectors[0]!;
-      handleExtra(result.extra, category, group);
       output[category] ||= {};
       output[category][group] ||= [];
       output[category][group].push(createFeature(diff, oFeature, sFeature));
@@ -183,12 +189,12 @@ export async function conflate(
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
-    if (typeof result.diff !== 'object') throw new TypeError(MSG);
-    if (!hasDiff(result.diff)) continue;
 
     const category = result.category || '';
     const group = result.group || oFeature.sectors[0]!;
     handleExtra(result.extra, category, group);
+
+    if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
     output[category][group].push(createFeature(result.diff, oFeature));
@@ -212,6 +218,13 @@ export async function conflate(
       throw new TypeError(MSG);
     }
 
+    const category = result.category || '';
+    handleExtra(
+      result.extra,
+      category,
+      result.group || oFeatures[0]?.sectors[0] || sFeature[0]!.sectors[0]!,
+    );
+
     for (const _osmId in result.diffPerFeature) {
       const osmId = <OsmId>_osmId;
       const oFeature = oFeatures.find((f) => f.id === osmId)!;
@@ -219,9 +232,7 @@ export async function conflate(
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const category = result.category || '';
       const group = result.group || oFeature.sectors[0]!;
-      handleExtra(result.extra, category, group);
       output[category] ||= {};
       output[category][group] ||= [];
       output[category][group].push(createFeature(diff, oFeature));
@@ -239,12 +250,12 @@ export async function conflate(
     const result = await ctx.callbacks.deleteFeature?.({ osm: oFeature });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
-    if (typeof result.diff !== 'object') throw new TypeError(MSG);
-    if (!hasDiff(result.diff)) continue;
 
     const category = result.category || '';
     const group = result.group || oFeature.sectors[0]!;
     handleExtra(result.extra, category, group);
+
+    if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
     output[category][group].push(createFeature(result.diff, oFeature));
@@ -260,8 +271,6 @@ export async function conflate(
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
-    if (typeof result.diff !== 'object') throw new TypeError(MSG);
-    if (!hasDiff(result.diff)) continue;
 
     const oFeature = result.selection
       ? osmData.noRef[result.selection]!
@@ -270,6 +279,8 @@ export async function conflate(
     const category = result.category || '';
     const group = result.group || oFeature?.sectors[0] || 'unknown';
     handleExtra(result.extra, category, group);
+
+    if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
     output[category][group].push(
