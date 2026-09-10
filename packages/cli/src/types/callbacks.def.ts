@@ -56,7 +56,9 @@ export interface SourceDataFeature<
 type MaybePromise<T> = T | Promise<T>;
 
 export interface ConflationResultExtra {
+  /** @deprecated this is poorly named, use `extraFeatures` instead */
   createFeatures?: OsmPatchFeature[];
+  extraFeatures?: OsmPatchFeature[];
   warnings?: string[];
 }
 
@@ -68,7 +70,7 @@ export interface ConflationDiff {
 export interface SingleFeatureConflationResult {
   category?: string;
   group?: string;
-  diff: ConflationDiff;
+  diff: ConflationDiff | undefined;
   extra?: ConflationResultExtra;
 }
 
@@ -177,6 +179,17 @@ export interface Callbacks<G extends Geometry, P extends GeoJsonProperties> {
   getChangesetTags?(input: { category: string; group: string }): MaybePromise<{
     instructions?: string;
     changesetTags?: Tags;
+  }>;
+
+  /**
+   * optional, called ONCE after conflation is finished. use this
+   * if you to add any other any other {@link OsmPatchFeature}
+   * features to the output, or any warnings.
+   */
+  addCustomLayers?(): MaybePromise<{
+    [category: string]: {
+      [group: string]: ConflationResultExtra;
+    };
   }>;
 }
 export interface RunOptions {

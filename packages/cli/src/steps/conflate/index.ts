@@ -35,7 +35,8 @@ function isTagDiffEmpty(diff: TagDiff) {
   return true;
 }
 
-function hasDiff(diff: ConflationDiff) {
+function hasDiff(diff: ConflationDiff | undefined): diff is ConflationDiff {
+  if (!diff) return false;
   if (typeof diff !== 'object') throw new TypeError(MSG);
   if (typeof diff.tags !== 'object') throw new TypeError(MSG);
   return !!diff.geometry || !isTagDiffEmpty(diff.tags);
@@ -95,10 +96,11 @@ export async function conflate(
   ) {
     if (!extra) return;
     if (extra.warnings?.length) ctx.warnings.push(...extra.warnings);
-    if (extra.createFeatures) {
+    const extraFeatures = extra.extraFeatures || extra.createFeatures;
+    if (extraFeatures) {
       output[category] ||= {};
       output[category][sector] ||= [];
-      output[category][sector].push(...extra.createFeatures);
+      output[category][sector].push(...extraFeatures);
     }
   }
 
@@ -117,6 +119,7 @@ export async function conflate(
       osm: oFeature,
       source: sFeature,
     });
+    if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
     if (!hasDiff(result.diff)) continue;
 
@@ -272,6 +275,13 @@ export async function conflate(
     output[category][group].push(
       createFeature(result.diff, oFeature, sFeature),
     );
+  }
+
+  const result = await ctx.callbacks.addCustomLayers?.();
+  for (const category in result) {
+    for (const group in result[category]) {
+      handleExtra(result[category][group], category, group);
+    }
   }
 
   const handlerReturn: OutputLayers = {};
