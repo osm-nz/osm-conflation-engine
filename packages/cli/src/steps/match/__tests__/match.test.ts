@@ -20,6 +20,7 @@ import {
 type MockSource = { id: string; house: string };
 
 const ctx = {
+  config: { merge: { osm_key: 'ref:MY_ID', dataset_column: 'id' } },
   callbacks: {
     getLocalKeyForOsm: (o) => o.tags['addr:housenumber'],
     getLocalKeyForSource: (o) => o.properties.house,
@@ -33,14 +34,17 @@ const ctx = {
   },
 } as Ctx<Point, MockSource>;
 
-const createSourceRow = (id: string): SourceData<Point, MockSource> => {
-  const loc: Vec2 = [176, -36 + +id.slice(1) / 1e5];
+const createSourceRow = (
+  id: string,
+  housenumber = id.slice(1),
+): SourceData<Point, MockSource> => {
+  const loc: Vec2 = [176, -36 + +housenumber / 1e5];
   return {
     [<DatasetId>id]: {
       type: 'Feature',
       id,
       centroid: loc,
-      properties: { id, house: id.slice(1) },
+      properties: { id, house: housenumber },
       geometry: { type: 'Point', coordinates: loc },
       sectors: ['s1'],
     },
@@ -74,6 +78,7 @@ const sourceData: SourceData = {
   ...createSourceRow('r8'), // should be many:1 match with r7
   ...createSourceRow('r9'), // should be CREATE (missing in OSM, nothing to auto-match to)
   ...createSourceRow('r10'), // should be CREATE (missing in OSM, two equally good candidates: n11 and n12)
+  ...createSourceRow('r11;r12', '13'), // should be 1:1 match with n13 (which has ref:*=r11;r12)
 };
 
 const osmData: OSMData = {
@@ -98,6 +103,7 @@ const osmData: OSMData = {
   semi: {
     [<DatasetId>'r5;r6']: createOsmFeature('n8', 'r5;r6'),
     [<DatasetId>'r7;r8']: createOsmFeature('n9', 'r7;r8'),
+    [<DatasetId>'r11;r12']: createOsmFeature('n13', 'r11;r12'),
   },
   count: -123,
 };
@@ -110,6 +116,7 @@ describe(match, () => {
           { source: 'r1', osm: 'n1' },
           { source: 'r2', osm: 'n5' }, // auto matched, even tho n5 is missing the ref tag
           { source: 'r4', osm: 'n7' }, // auto matched (r4 has an old ref tag)
+          { source: 'r11;r12', osm: 'n13' }, // auto matched (even tho both osm and the source data have semicolons in the ref)
         ],
         [MatchType.OneToMany]: [
           //

@@ -5,6 +5,7 @@ import {
   type MatchOutput,
   MatchType,
   type OSMData,
+  type OsmFeature,
   type SourceData,
 } from '../../types/index.js';
 import { processDeletions } from './processDeletions.js';
@@ -59,6 +60,20 @@ export async function match(
     }
   }
 
+  // we need this because the source data could also use semicolons
+  // in the primary key. or the source data was preprocessed by some
+  // script that added semicolons.
+  // e.g. key would be `b`, fullRef would be `a;b`. This object is
+  // keyed on `a;b`
+  const semiByFullRef: Record<DatasetId, OsmFeature> = {};
+  for (const key in osmData.semi) {
+    const oFeature = osmData.semi[<DatasetId>key]!;
+    const fullRef = <DatasetId | undefined>(
+      oFeature.tags[ctx.config.merge.osm_key]
+    );
+    if (fullRef) semiByFullRef[fullRef] = oFeature;
+  }
+
   for (const _datasetId in sourceData) {
     const originalDatasetId = <DatasetId>_datasetId;
     let datasetId = refsThatChanged[originalDatasetId] || originalDatasetId;
@@ -74,6 +89,7 @@ export async function match(
     const oFeature = osmData.withRef[datasetId];
     const sourceFeature = sourceData[originalDatasetId]!;
     const duplicate = osmData.duplicateRefs[datasetId];
+    const exactSemi = semiByFullRef[datasetId];
 
     if (individualRefsToSemiRef[datasetId]) {
       // TODO: hardcoded 0 here is not good.
@@ -105,6 +121,12 @@ export async function match(
       output[MatchType.OneToMany].push({
         osm: duplicate.map((feature) => feature.id),
         source: datasetId,
+      });
+    } else if (exactSemi) {
+      // [1:1] both datasets have a semicolon-delimited ref
+      output[MatchType.OneToOne].push({
+        osm: exactSemi.id,
+        source: originalDatasetId,
       });
     } else if (semi) {
       // [many:1] there is one match, but it contains multiple source features merged
