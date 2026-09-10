@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.5.0...cli-v3.5.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* handle 1:1 match for refs with a semicolon in both osm and source ([b06a514](https://github.com/osm-nz/osm-conflation-engine/commit/b06a51423d0b199cfe71d0416fc171ef80fcbabe))
+* stringified coordinates ([d3b3cf2](https://github.com/osm-nz/osm-conflation-engine/commit/d3b3cf21eff8a6010d6aec1b049fd2f72650598b))
+* warnings ignored when a feature is rejected ([75eb7e6](https://github.com/osm-nz/osm-conflation-engine/commit/75eb7e6668c334e33428ed11299ba763df3af130))
+
 ## [3.5.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.4.4...cli-v3.5.0) (2026-09-10)
 
 
