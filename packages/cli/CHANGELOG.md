@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.5.1...cli-v3.6.0) (2026-09-11)
+
+
+### Features
+
+* add a callback for `getAltRefs` ([b7ec641](https://github.com/osm-nz/osm-conflation-engine/commit/b7ec641db50a505000bf6222391b03519a8e7a2a))
+
 ## [3.5.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.5.0...cli-v3.5.1) (2026-09-10)
 
 
