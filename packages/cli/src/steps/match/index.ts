@@ -86,7 +86,13 @@ export async function match(
 
     // skip non-first
 
-    const oFeature = osmData.withRef[datasetId];
+    const oFeature =
+      osmData.withRef[datasetId] ||
+      ctx.callbacks
+        .getAltRefs?.(datasetId)
+        .map((alt) => osmData.withRef[alt])
+        .find(Boolean);
+
     const sourceFeature = sourceData[originalDatasetId]!;
     const duplicate = osmData.duplicateRefs[datasetId];
     const exactSemi = semiByFullRef[datasetId];
@@ -102,8 +108,9 @@ export async function match(
     }
     const semi = osmData.semi[datasetId];
 
-    // (source:o)
+    // (source:osm)
     if (oFeature && semi) {
+      // [many:many]
       const parts = <DatasetId[]>datasetId.split(';');
       output[MatchType.ManyToMany].push({
         osm: [oFeature.id, semi.id],

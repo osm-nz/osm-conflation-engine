@@ -24,6 +24,7 @@ const ctx = {
   callbacks: {
     getLocalKeyForOsm: (o) => o.tags['addr:housenumber'],
     getLocalKeyForSource: (o) => o.properties.house,
+    getAltRefs: (ref) => [ref.toLowerCase(), ref.toUpperCase()],
   },
   tempFileNames: {
     matches: devNull,
@@ -79,6 +80,7 @@ const sourceData: SourceData = {
   ...createSourceRow('r9'), // should be CREATE (missing in OSM, nothing to auto-match to)
   ...createSourceRow('r10'), // should be CREATE (missing in OSM, two equally good candidates: n11 and n12)
   ...createSourceRow('r11;r12', '13'), // should be 1:1 match with n13 (which has ref:*=r11;r12)
+  ...createSourceRow('r14'), // should be 1:1 match with n14 (which has an alt syntax in the ref tag)
 };
 
 const osmData: OSMData = {
@@ -87,6 +89,7 @@ const osmData: OSMData = {
     [<DatasetId>'invalidd']: createOsmFeature('n6', 'invalidd'),
     [<DatasetId>'r4_old']: createOsmFeature('n7', 'r4_old', '4'),
     [<DatasetId>'r7']: createOsmFeature('n10', 'r7'),
+    [<DatasetId>'R14']: createOsmFeature('n14', 'R14'), // uppercase R to test getAltRefs()
   },
   duplicateRefs: {
     [<DatasetId>'r3']: [
@@ -117,6 +120,7 @@ describe(match, () => {
           { source: 'r2', osm: 'n5' }, // auto matched, even tho n5 is missing the ref tag
           { source: 'r4', osm: 'n7' }, // auto matched (r4 has an old ref tag)
           { source: 'r11;r12', osm: 'n13' }, // auto matched (even tho both osm and the source data have semicolons in the ref)
+          { source: 'r14', osm: 'n14' }, // auto matched (via getAltRefs)
         ],
         [MatchType.OneToMany]: [
           //

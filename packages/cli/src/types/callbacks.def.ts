@@ -97,6 +97,13 @@ export interface Callbacks<G extends Geometry, P extends GeoJsonProperties> {
   getLocalKeyForSource(sourceFeature: SourceDataFeature<G, P>): string;
 
   /**
+   * given a ref, this function should return alterantive variants for
+   * matching. For example, if the ref is `00123`, this function could
+   * return `123`, which will also be considered for matching.
+   */
+  getAltRefs?(ref: DatasetId): DatasetId[];
+
+  /**
    * optional, by default a username which ends in `_import` is considered
    * to be an importer. Use this callback if you want to customise the
    * behaviour.

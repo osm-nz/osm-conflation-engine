@@ -19,6 +19,12 @@ export function processDeletions(
       !(datasetId in sourceData) && // we delete every OSM node with a linzRef that does not exist in the LINZ data
       !(oFeature.flags & OsmFlags.IsCheckedRecently) // ...and it does not have a recent check_date
     ) {
+      // skip if an alernative form of this ref is accepted
+      const alts = ctx.callbacks
+        .getAltRefs?.(datasetId)
+        .some((ref) => ref in sourceData);
+      if (alts) continue;
+
       invalidIds.push(datasetId);
     }
   }
