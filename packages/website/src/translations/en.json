@@ -61,6 +61,7 @@
   "OidcBadge.verified": "Verified data",
   "OverallProgress.percent_label": "{$label} ({$percent :integer}%)",
   "PageNotFound.message": "Page not found.",
+  "RegionBadge.global": "Worldwide",
   "ReviewBadge.by": "by {$users}",
   "ReviewBadge.no_comment": "{#em}(no comment){/em}",
   "ReviewDecision.Approved": "Approved",

@@ -61,6 +61,7 @@
   "OidcBadge.verified": "已验证的数据",
   "OverallProgress.percent_label": "{$label}（{$percent :integer}%）",
   "PageNotFound.message": "页面不存在。",
+  "RegionBadge.global": "全球",
   "ReviewBadge.by": "由 {$users}",
   "ReviewBadge.no_comment": "（无评论）",
   "ReviewDecision.Approved": "已通过",
