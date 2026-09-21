@@ -30,11 +30,3 @@ export function parseOperator(operator: string): Operator | undefined {
 
   return undefined;
 }
-
-export function getBaseUrl(operator: Operator) {
-  if (operator.provider === 'github.com') {
-    return `https://${operator.org}.github.io/${operator.repo}`;
-  }
-
-  throw new Error('Invalid provider');
-}

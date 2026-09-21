@@ -1,14 +1,19 @@
 import type { ConflateResult, IndexFile } from '@osm-conflation-engine/cli';
-import { type Operator, getBaseUrl } from '../util/conflation.js';
+import { API_BASE_URL } from './conflation.js';
 
-export async function getMetrics(operator: Operator) {
-  const result = await fetch(`${getBaseUrl(operator)}/metrics.json`);
-  const json: ConflateResult = await result.json();
+async function fetchStaticFile<T>(refTag: string, file: string) {
+  const result = await fetch(`${API_BASE_URL}/api/static/${refTag}/${file}`);
+  if (!result.ok) {
+    throw new Error(`HTTP Error ${result.status} ${result.statusText}`);
+  }
+  const json: T = await result.json();
   return json;
 }
 
-export async function getIndex(operator: Operator) {
-  const result = await fetch(`${getBaseUrl(operator)}/index.geo.json`);
-  const json: IndexFile = await result.json();
-  return json;
+export function getMetrics(refTag: string) {
+  return fetchStaticFile<ConflateResult>(refTag, 'metrics.json');
+}
+
+export function getIndex(refTag: string) {
+  return fetchStaticFile<IndexFile>(refTag, 'index.geo.json');
 }

@@ -2,7 +2,6 @@ import { use, useCallback, useEffect, useMemo, useState } from 'react';
 import type { ConflateResult, IndexFile } from '@osm-conflation-engine/cli';
 import { useParams } from 'react-router';
 import { getIndex, getMetrics } from '../api/static.js';
-import { parseOperator } from '../util/conflation.js';
 import { DataContext } from '../context/DataContext.js';
 import { type IgnoredRow, getIgnoreList } from '../api/conflation.js';
 
@@ -33,9 +32,8 @@ export function useProject() {
     setIndexFile(undefined);
     setIgnoreList(undefined);
 
-    const operator = parseOperator(project.operator)!;
-    getMetrics(operator).then(setMetrics).catch(console.error);
-    getIndex(operator).then(setIndexFile).catch(console.error);
+    getMetrics(project.refTag).then(setMetrics).catch(console.error);
+    getIndex(project.refTag).then(setIndexFile).catch(console.error);
     fetchIgnoreList();
   }, [project, fetchIgnoreList]);
 

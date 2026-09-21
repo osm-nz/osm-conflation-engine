@@ -7,7 +7,7 @@ import type {
 } from '@osm-conflation-engine/server';
 import { getAuthToken } from 'osm-api';
 
-const API_BASE_URL = 'https://osm-conflation-engine.kyle.kiwi';
+export const API_BASE_URL = 'https://osm-conflation-engine.kyle.kiwi';
 
 type WrappedResponse<T = unknown> =
   { success: true; result: T } | { success: false; errors: unknown[] };

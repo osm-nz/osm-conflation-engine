@@ -13,6 +13,7 @@ import { ChangesetWatchSetCheckDate } from './routes/ChangesetWatchSetCheckDate.
 import { RunHistoryGet } from './routes/RunHistoryGet.js';
 import { RunHistoryGetAll } from './routes/RunHistoryGetAll.js';
 import { RunHistoryPut } from './routes/RunHistoryPut.js';
+import { StaticProxy } from './routes/StaticProxy.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -33,6 +34,8 @@ openapi.delete('/api/lock/:refTag/:datasetId', LockDelete);
 openapi.get('/api/run_history', RunHistoryGetAll);
 openapi.get('/api/run_history/:refTag', RunHistoryGet);
 openapi.put('/api/run_history/:refTag', RunHistoryPut);
+
+openapi.get('/api/static/:refTag/:file{.+}', StaticProxy);
 
 openapi.get(
   '/api/changeset_watch/check_date/:refTag',
@@ -59,4 +62,5 @@ export type {
   RunHistoryPut,
   ChangesetWatchGetCheckDate,
   ChangesetWatchSetCheckDate,
+  StaticProxy,
 };
