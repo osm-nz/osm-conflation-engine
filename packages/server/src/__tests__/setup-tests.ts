@@ -51,7 +51,7 @@ const MOCK_LOCKED_LAYERS: LockedLayers[] = [
 
 const MOCK_CHECK_DATES: ChangesetWatchCheckDate[] = [
   {
-    operator: 'https://github.com/example/example',
+    operator: 'https://github.com/octo-org/octo-repo',
     refTag: 'ref:example',
     timestamp: '2021-05-17',
   },
@@ -65,7 +65,7 @@ export const MOCK_METRICS: ConflateResult = {
       name: 'Example',
       description: 'Exampleee',
       wiki_page: 'https://wiki.osm.org/Example',
-      git_repository: 'https://github.com/example/example',
+      git_repository: 'https://github.com/octo-org/octo-repo',
     },
     source_data: {
       type: 'file',
@@ -122,7 +122,7 @@ export const MOCK_METRICS: ConflateResult = {
 
 const MOCK_RUN_HISTORY: RunHistory[] = [
   {
-    operator: 'https://github.com/example/example/actions/runs/2#octocat',
+    operator: 'https://github.com/octo-org/octo-repo/actions/runs/2#octocat',
     refTag: 'ref:example',
     timestamp: '2021-06-17T00:00:00.000Z',
     metrics: MOCK_METRICS,
@@ -130,7 +130,7 @@ const MOCK_RUN_HISTORY: RunHistory[] = [
     regionFlagImage: null,
   },
   {
-    operator: 'https://github.com/example/example/actions/runs/3#octocat',
+    operator: 'https://github.com/octo-org/octo-repo/actions/runs/3#octocat',
     refTag: 'ref:other',
     timestamp: '2021-07-17T00:00:00.000Z',
     metrics: MOCK_METRICS,

@@ -32,7 +32,8 @@ describe('run_history', () => {
       success: true,
       result: {
         refTag: 'ref:example',
-        operator: 'https://github.com/example/example/actions/runs/2#octocat',
+        operator:
+          'https://github.com/octo-org/octo-repo/actions/runs/2#octocat',
         timestamp: '2021-06-17T00:00:00.000Z',
         metrics: MOCK_METRICS,
         image: null,
@@ -51,7 +52,8 @@ describe('run_history', () => {
       result: [
         {
           refTag: 'ref:other',
-          operator: 'https://github.com/example/example/actions/runs/3#octocat',
+          operator:
+            'https://github.com/octo-org/octo-repo/actions/runs/3#octocat',
           timestamp: '2021-07-17T00:00:00.000Z',
           metrics: MOCK_METRICS,
           image: null,
@@ -59,7 +61,8 @@ describe('run_history', () => {
         },
         {
           refTag: 'ref:example',
-          operator: 'https://github.com/example/example/actions/runs/2#octocat',
+          operator:
+            'https://github.com/octo-org/octo-repo/actions/runs/2#octocat',
           timestamp: '2021-06-17T00:00:00.000Z',
           metrics: MOCK_METRICS,
           image: null,

@@ -33,7 +33,7 @@ describe('changeset_watch/check_date', () => {
       result: {
         refTag: 'ref:example',
         timestamp: '2021-05-17',
-        operator: 'https://github.com/example/example',
+        operator: 'https://github.com/octo-org/octo-repo',
       },
     });
   });
