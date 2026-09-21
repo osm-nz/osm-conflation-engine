@@ -24,6 +24,7 @@ export async function downloadFromOverpass(
     console.info('Using cached overpass response');
     const cached: OSMData = JSON.parse(await fs.readFile(cacheFile, 'utf8'));
     await saveLoadedOsmFeatures(ctx, cached);
+    return;
   }
 
   const DEFAULT_SERVER_URL = 'https://overpass-api.de/api/interpreter';
