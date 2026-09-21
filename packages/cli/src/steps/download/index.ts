@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import type { Ctx } from '../../types/index.js';
 import { downloadFromOverpass } from './downloadFromOverpass.js';
 import { downloadFromPlanetPbf } from './downloadFromPlanetPbf.js';
+import { downloadFromPostpass } from './downloadFromPostpass.js';
 import { fetchIgnoreList } from './fetchIgnoreList.js';
 import { osmToJson } from './osmToJson.js';
 
@@ -30,7 +31,12 @@ export async function download(ctx: Ctx) {
     }
 
     case 'postpass': {
-      throw new Error('not supported yet');
+      await downloadFromPostpass(
+        ctx,
+        ctx.config.o_data.source.postpass_query_file,
+        ctx.config.o_data.source.postpass_server_url,
+      );
+      break;
     }
 
     default: {

@@ -51,7 +51,9 @@ export interface Config {
         }
       | {
           type: 'postpass';
-          postpass_query_file: string;
+          /** if a query is not supplied, we will try to download all features with `Config.merge.osm_key` */
+          postpass_query_file?: string;
+          /** optional, if you want to use a different server. Use the full URL (domain + path) */
           postpass_server_url?: string;
         };
 

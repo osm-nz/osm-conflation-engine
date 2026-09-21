@@ -32,7 +32,7 @@ export const ConfigSchema = z.object({
       }),
       z.object({
         type: z.literal('postpass'),
-        postpass_query_file: z.string(),
+        postpass_query_file: z.string().optional(),
         postpass_server_url: z.string().optional(),
       }),
     ]),
