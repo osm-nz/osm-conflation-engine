@@ -67,6 +67,7 @@ export async function getFlagFromWikidata(region: string) {
     headers: { 'User-Agent': USER_AGENT },
   }).then((r) => r.json<CirrusSearchPagesResponse>());
   const qId = searchResults.query.search[0]?.title;
+  if (!qId) return undefined; // invalid country code
 
   const json = await fetch(`${baseUrl}/wiki/Special:EntityData/${qId}.json`, {
     headers: { 'User-Agent': USER_AGENT },
