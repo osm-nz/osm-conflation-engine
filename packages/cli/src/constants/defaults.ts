@@ -26,8 +26,8 @@ export type Step = (typeof STEPS)[number];
 export const FILE_NAMES = <const>{
   // o_data
   PBF: 'o.pbf',
-  OVERPASS: 'o.geo.json',
-  POSTPASS: 'o.geo.json',
+  OVERPASS: 'o.overpass.geo.json',
+  POSTPASS: 'o.postpass.geo.json',
   OSM_PROCESSED_WITH_REF: 'osm-processed-with-ref.jsonl',
   OSM_PROCESSED_NO_REF: 'osm-processed-no-ref.jsonl',
   OSM_PROCESSED_OTHER: 'osm-processed-other.json',
