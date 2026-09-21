@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.7.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.6.0...cli-v3.7.0) (2026-09-21)
+
+
+### Features
+
+* add postpass as a data source ([7f8fc11](https://github.com/osm-nz/osm-conflation-engine/commit/7f8fc11a629c35205fa71ca4162fb0c6f6a6d553))
+
+
+### Bug Fixes
+
+* overpass cache not working ([ed66901](https://github.com/osm-nz/osm-conflation-engine/commit/ed669019778a6baffc27bff2c34ad2e09341b9cf))
+
 ## [3.6.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.5.1...cli-v3.6.0) (2026-09-11)
 
 
