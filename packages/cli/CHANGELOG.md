@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.7.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.0...cli-v3.7.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* handle invalid geojson from postpass ([57133a8](https://github.com/osm-nz/osm-conflation-engine/commit/57133a871b79783482e79969d3a8c4f4d3966312))
+* skip duplicate results from postpass ([d6673a9](https://github.com/osm-nz/osm-conflation-engine/commit/d6673a934f3f99eb8d72dbe3f17c28470410b18e))
+
 ## [3.7.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.6.0...cli-v3.7.0) (2026-09-21)
 
 
