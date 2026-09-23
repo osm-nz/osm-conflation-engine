@@ -8,6 +8,7 @@ import {
   type OsmFeature,
   type OsmFeatureTypeShort,
   OsmFlags,
+  type OsmId,
 } from '../../types/callbacks.def.js';
 import { validateOsmTagsInConfig } from './util/validateOsmTagsInConfig.js';
 import {
@@ -71,10 +72,16 @@ export async function downloadFromPostpass(
     semi: {},
     count: 0,
   };
+  const seen = new Set<OsmId>();
   for (const feature of responseJson.features) {
     const { osm_type, osm_id, tags } = feature.properties;
+    const id: OsmId = `${osm_type.toLowerCase() as OsmFeatureTypeShort}${osm_id}`;
+
+    if (seen.has(id)) continue;
+    seen.add(id);
+
     const object: OsmFeature = {
-      id: `${osm_type.toLowerCase() as OsmFeatureTypeShort}${osm_id}`,
+      id,
       centroid: feature.geometry?.type ? geoCentroid(feature.geometry) : [0, 0],
 
       tags: pickTags(tags),
