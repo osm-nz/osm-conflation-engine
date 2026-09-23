@@ -75,7 +75,7 @@ export async function downloadFromPostpass(
     const { osm_type, osm_id, tags } = feature.properties;
     const object: OsmFeature = {
       id: `${osm_type.toLowerCase() as OsmFeatureTypeShort}${osm_id}`,
-      centroid: feature.geometry ? geoCentroid(feature.geometry) : [0, 0],
+      centroid: feature.geometry?.type ? geoCentroid(feature.geometry) : [0, 0],
 
       tags: pickTags(tags),
       metadata: undefined, // not supported by postpass
