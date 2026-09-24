@@ -4,8 +4,8 @@ import classes from './MetricsPage.module.css';
 
 export const ChartCard: React.FC<
   PropsWithChildren & {
-    title: string;
-    description?: string;
+    title: React.ReactNode;
+    description?: React.ReactNode;
     width?: 'full' | 'half';
     height: number;
     controls?: React.ReactNode;

@@ -89,6 +89,8 @@
   "Sankey.osmSemi": "OSM – {$refTag} 含分号",
   "Sankey.osmWithRef": "OSM – 有 {$refTag}",
   "Sankey.title": "数据流",
+  "TagHistory.description": "{#osmKey/} 的 {#taginfo}taginfo 历史{/taginfo}。",
+  "TagHistory.title": "Ref 标签使用量随时间变化",
   "Venn.both_datasets": "有 {$count :integer} 个要素同时存在于两个数据集中",
   "Venn.delete_tooltip": "{#code}{$label}{/code} – 这些要素存在于 OSM 中，但不在源数据集中。需要{#b}从 OSM 中删除{/b}。",
   "Venn.description": "匹配在合并之前进行，此阶段会尝试将 OSM 与源数据集中相互对应的要素关联起来。",

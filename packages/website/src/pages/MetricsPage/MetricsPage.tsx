@@ -10,6 +10,7 @@ import { OsmTag } from '../../components/OsmTag.js';
 import { Sankey } from './Sankey.js';
 import { Venn } from './Venn.js';
 import { ConflationResult } from './ConflationResult.js';
+import { TagHistory } from './TagHistory.js';
 import { IgnoredByUser } from './IgnoredByUser.js';
 import { IgnoredByReview } from './IgnoredByReview.js';
 import { GenericCard, StatCard } from './StatCard.js';
@@ -32,6 +33,7 @@ export const MetricsPage: React.FC = () => {
   return (
     <Flex wrap="wrap" gap="md" align="stretch">
       <Sankey metrics={metrics} />
+      <TagHistory metrics={metrics} />
 
       <ConflationResult metrics={metrics} />
       <Venn metrics={metrics} />

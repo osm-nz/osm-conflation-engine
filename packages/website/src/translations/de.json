@@ -89,6 +89,8 @@
   "Sankey.osmSemi": "OSM – mit {$refTag} mit Semikolon",
   "Sankey.osmWithRef": "OSM – mit {$refTag}",
   "Sankey.title": "Datenfluss",
+  "TagHistory.description": "Der {#taginfo}taginfo-Verlauf{/taginfo} für {#osmKey/}.",
+  "TagHistory.title": "Nutzung des Ref-Tags im Zeitverlauf",
   "Venn.both_datasets": "{$count :integer} Objekte sind in beiden Datensätzen enthalten",
   "Venn.delete_tooltip": "{#code}{$label}{/code} – diese Objekte gibt es in OSM, aber nicht im Quelldatensatz. Sie müssen {#b}aus OSM gelöscht{/b} werden.",
   "Venn.description": "Die Zuordnung erfolgt vor dem Abgleich; in diesem Schritt werden einander entsprechende Objekte aus OSM und dem Quelldatensatz verknüpft.",

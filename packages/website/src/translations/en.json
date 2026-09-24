@@ -89,6 +89,8 @@
   "Sankey.osmSemi": "OSM – with {$refTag} containing semicolon",
   "Sankey.osmWithRef": "OSM – with {$refTag}",
   "Sankey.title": "Data flow",
+  "TagHistory.description": "The {#taginfo}taginfo history{/taginfo} for {#osmKey/}.",
+  "TagHistory.title": "Ref tag usage over time",
   "Venn.both_datasets": "{$count :integer} features are in both datasets",
   "Venn.delete_tooltip": "{#code}{$label}{/code} – these features exist in OSM, but not in the source dataset. They will need to be {#b}deleted from OSM{/b}.",
   "Venn.description": "Matching happens before conflation, this stage tries to connect corresponding features from OSM and the source dataset.",
