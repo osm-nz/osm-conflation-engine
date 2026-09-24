@@ -47,7 +47,7 @@
   "MegaTable.rows_per_page": "Rows per page",
   "MetricsPage.last_edited_by_importer": "Last edited by an importer",
   "MetricsPage.last_updated": "Last Updated",
-  "MetricsPage.postpass_unavailable": "{#em}This data is not available when using postpass as a data source. If you want this data, switch to overpass or a planet {#code}.pbf{/code} file extract{#em}",
+  "MetricsPage.postpass_unavailable": "{#em}This data is not available when using postpass as a data source. If you want this data, switch to overpass or a planet {#code}.pbf{/code} file extract{/em}",
   "MetricsPage.recent_check_date": "Recent {#osmKey/} field",
   "MetricsPage.recently_modified": "Recently modified",
   "Navbar.api_docs": "API docs",
