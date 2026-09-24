@@ -211,8 +211,8 @@ importers:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
       react-mf2:
-        specifier: ^1.0.0
-        version: 1.0.0(messageformat@4.0.0)(react@19.2.8)
+        specifier: ^1.0.1
+        version: 1.0.1(messageformat@4.0.0)(react@19.2.8)
       react-router:
         specifier: ^8.3.1
         version: 8.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -3243,12 +3243,12 @@ packages:
     peerDependencies:
       react: ^19.2.8
 
-  react-mf2@1.0.0:
-    resolution: {integrity: sha512-Z8NsFaQL9RjEkLikIw3eC6Z2Wtg1Os4ZeYaoRQv0kCT80/v177Lng05+iLsT/dA48Ny449E/I0lgNZS8wY8dng==}
+  react-mf2@1.0.1:
+    resolution: {integrity: sha512-wU8/AthTr7dDIKif8SVEbhCNECIQVH9OV5qiZlje/pbIkOCzwDlt/2rCrzuePF9eWwVZm+lCaoTVH4l03Wmt0Q==}
     engines: {node: ^20.19 || ^22.13 || >=24}
     peerDependencies:
       messageformat: ^4.0.0
-      react: '>=18'
+      react: '>=16.14'
 
   react-number-format@5.4.5:
     resolution: {integrity: sha512-y8O2yHHj3w0aE9XO8d2BCcUOOdQTRSVq+WIuMlLVucAm5XNjJAy+BoOJiuQMldVYVOKTMyvVNfnbl2Oqp+YxGw==}
@@ -6777,7 +6777,7 @@ snapshots:
       react: 19.2.8
       scheduler: 0.27.0
 
-  react-mf2@1.0.0(messageformat@4.0.0)(react@19.2.8):
+  react-mf2@1.0.1(messageformat@4.0.0)(react@19.2.8):
     dependencies:
       messageformat: 4.0.0
       react: 19.2.8

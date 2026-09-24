@@ -14,4 +14,4 @@ catalog:
   vitest: ^4.1.9
 
 minimumReleaseAgeExclude:
-  - react-mf2@1.0.0
+  - react-mf2@1.0.1
