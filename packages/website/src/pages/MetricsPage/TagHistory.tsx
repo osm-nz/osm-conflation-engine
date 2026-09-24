@@ -26,6 +26,12 @@ interface LineSeries {
   data: { x: string; y: number }[];
 }
 
+function nDaysAgo(date: string, n: number) {
+  return new Date(+new Date(date) - 1000 * 60 * 60 * 24 * n)
+    .toISOString()
+    .split('T', 1)[0]!;
+}
+
 /**
  * taginfo returns the diff (+ or -), not the sum. So we convert
  * to a sum, and then batch the rows into 1 point per month.
@@ -51,13 +57,22 @@ function parseTaginfoData(chronology: Chronology[]): LineSeries[] {
     };
   }
 
-  return OSM_TYPES.map((osmType): LineSeries => ({
-    id: osmType,
-    data: Object.values(byMonth).map((month) => ({
+  return OSM_TYPES.map((osmType): LineSeries => {
+    const data = Object.values(byMonth).map((month) => ({
       x: month.date,
       y: month[osmType],
-    })),
-  }));
+    }));
+
+    // make sure the first item in the graph is 0
+    if (data[0] && data[0].y !== 0) {
+      data.unshift(
+        { x: nDaysAgo(data[0].x, 90), y: 0 },
+        { x: nDaysAgo(data[0].x, 31), y: 0 },
+      );
+    }
+
+    return { id: osmType, data };
+  });
 }
 
 export const TagHistory: React.FC<{ metrics: ConflateResult }> = ({
