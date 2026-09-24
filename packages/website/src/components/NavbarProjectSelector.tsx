@@ -1,5 +1,5 @@
 import { use, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { CheckIcon, type ComboboxItem, Group, Select } from '@mantine/core';
 import { DataContext } from '../context/DataContext.js';
 import { LocaleContext } from '../context/LocaleContext.js';
@@ -16,9 +16,13 @@ export const NavbarProjectSelector: React.FC = () => {
   const { $ } = use(LocaleContext);
   const { refTag } = useParams<'refTag'>();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const { allProjects } = use(DataContext);
   const project = useProject();
+
+  const subpath =
+    pathname.split('/project/', 2)[1]?.split('/').slice(1).join('/') || '';
 
   const options = useMemo<ProjectOption[]>(
     () =>
@@ -36,7 +40,7 @@ export const NavbarProjectSelector: React.FC = () => {
       <Select
         data={options}
         value={refTag}
-        onChange={(value) => value && navigate(`/project/${value}`)}
+        onChange={(value) => value && navigate(`/project/${value}/${subpath}`)}
         renderOption={({ option, checked }) => {
           const { region, regionFlag } = option as ProjectOption;
           return (
