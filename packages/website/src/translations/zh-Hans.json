@@ -57,7 +57,7 @@
   "NavbarLanguageSwitcher.language": "语言",
   "NavbarProjectSelector.select": "选择项目",
   "OidcBadge.explanation": "该项目使用 {#oidc}OpenID Connect{/oidc} 以密码学方式证明这些数据由 {#repo/} 通过 {#provider}{$brandName}{/provider} 生成。",
-  "OidcBadge.trigger": "{#task}最近一次合并任务{/task}于{#when/}代表 {#triggerer/} 触发。",
+  "OidcBadge.trigger": "这些数据于{#when/}代表 {#triggerer/} {#task}生成{/task}。",
   "OidcBadge.verified": "已验证的数据",
   "OverallProgress.percent_label": "{$label}（{$percent :integer}%）",
   "PageNotFound.message": "页面不存在。",

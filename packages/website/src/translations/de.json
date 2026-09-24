@@ -57,7 +57,7 @@
   "NavbarLanguageSwitcher.language": "Sprache",
   "NavbarProjectSelector.select": "Projekt auswählen",
   "OidcBadge.explanation": "Dieses Projekt hat mit {#oidc}OpenID Connect{/oidc} kryptografisch nachgewiesen, dass die Daten von {#repo/} mit {#provider}{$brandName}{/provider} erzeugt wurden.",
-  "OidcBadge.trigger": "Die {#task}letzte Abgleichsaufgabe{/task} wurde {#when/} im Auftrag von {#triggerer/} ausgelöst.",
+  "OidcBadge.trigger": "Diese Daten wurden {#when/} im Auftrag von {#triggerer/} {#task}erzeugt{/task}.",
   "OidcBadge.verified": "Verifizierte Daten",
   "OverallProgress.percent_label": "{$label} ({$percent :integer} %)",
   "PageNotFound.message": "Seite nicht gefunden.",
