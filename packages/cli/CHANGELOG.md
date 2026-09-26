@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.1...cli-v3.8.0) (2026-09-26)
+
+
+### Features
+
+* create step 1 and 2 of the new import page ([749b727](https://github.com/osm-nz/osm-conflation-engine/commit/749b727746f6b876080b807bda2d550b0d576ec2))
+
 ## [3.7.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.0...cli-v3.7.1) (2026-09-23)
 
 
