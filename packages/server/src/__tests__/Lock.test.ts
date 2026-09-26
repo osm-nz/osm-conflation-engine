@@ -98,7 +98,7 @@ describe('lock', () => {
       refTag: 'my_key',
       datasetId: 'row1',
       timestamp: expect.any(String),
-      ttl: 3600,
+      ttl: 1209600,
       username: 'exampleUser',
     };
     expect(await lockResponse.json()).toStrictEqual({

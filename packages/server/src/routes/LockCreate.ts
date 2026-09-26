@@ -63,7 +63,7 @@ export class LockCreate extends OpenAPIRoute {
       datasetId: data.params.datasetId,
       username: user.display_name,
       timestamp: new Date().toISOString(),
-      ttl: 60 * 60, // 1 hour, can't be customized at the moment
+      ttl: 14 * 24 * 60 * 60, // 14 days, can't be customized at the moment
     };
 
     const db = drizzle(ctx.env.d1_db);
