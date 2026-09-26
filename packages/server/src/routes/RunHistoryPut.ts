@@ -6,6 +6,7 @@ import {
 } from 'chanfana';
 import { z } from 'zod';
 import { drizzle } from 'drizzle-orm/d1';
+import { eq } from 'drizzle-orm';
 import type { AppContext } from '../types.def.js';
 import {
   MetricsSchema,
@@ -13,6 +14,7 @@ import {
   RunHistoryModel,
   RunHistorySchema,
 } from '../db/index.js';
+import { LockedLayersModel } from '../db/LockedLayers.js';
 import { createOIDCAuthor, verifyOIDC } from '../auth/oidc.js';
 import {
   getFlagFromWikidata,
@@ -92,14 +94,21 @@ export class RunHistoryPut extends OpenAPIRoute {
     };
 
     const db = drizzle(ctx.env.d1_db);
-    const result = await db
-      .insert(RunHistoryModel)
-      .values(newRow)
-      .onConflictDoUpdate({
-        target: [RunHistoryModel.refTag],
-        set: newRow,
-      })
-      .returning();
+    const [result] = await db.batch([
+      // create/update the new row:
+      db
+        .insert(RunHistoryModel)
+        .values(newRow)
+        .onConflictDoUpdate({
+          target: [RunHistoryModel.refTag],
+          set: newRow,
+        })
+        .returning(),
+      // and wipe the list of locked layers:
+      db
+        .delete(LockedLayersModel)
+        .where(eq(LockedLayersModel.refTag, data.params.refTag)),
+    ]);
 
     return {
       success: true,
