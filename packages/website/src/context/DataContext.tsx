@@ -14,6 +14,7 @@ import {
   type MissingStreets,
   getMissingStreets,
 } from '../api/missing-streets.js';
+import { isTruthy } from '../util/object.js';
 import { LocaleContext } from './LocaleContext.js';
 
 export interface HomePageItem {
@@ -89,7 +90,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
             image: extra.image,
           };
         })
-        .filter((x) => !!x),
+        .filter(isTruthy),
     ];
   }, [allProjects, extraInfo]);
 

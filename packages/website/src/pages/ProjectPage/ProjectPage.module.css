@@ -1,0 +1,101 @@
+/* eslint-disable css/no-invalid-properties -- mantine variables */
+
+.page {
+  --subnav-height: 64px;
+  padding-top: var(--subnav-height);
+}
+
+.subnav {
+  position: fixed;
+  z-index: 2;
+  top: var(--app-shell-header-offset);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+  height: var(--subnav-height);
+  padding: 0 var(--mantine-spacing-md);
+  background: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.stepper {
+  flex: 1;
+  min-width: 0;
+}
+
+.split {
+  display: flex;
+  height: calc(
+    100vh - var(--app-shell-header-offset) - var(--app-shell-footer-offset) -
+      var(--subnav-height) - 2 * var(--app-shell-padding)
+  );
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.tablePane {
+  width: calc(50vw - 2 * var(--app-shell-padding));
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.mapPane {
+  position: fixed;
+  top: calc(var(--app-shell-header-offset) + var(--subnav-height));
+  right: 0;
+  bottom: 0;
+  width: 50vw;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 6px 8px;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-body);
+  box-shadow: var(--mantine-shadow-sm);
+  font-size: var(--mantine-font-size-xs);
+  line-height: 1.6;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border-radius: 2px;
+}
+
+@media (max-width: 62em) {
+  /** divide the page vertically on small screens */
+  .split {
+    flex-direction: column;
+  }
+
+  .tablePane {
+    width: 100%;
+    flex: 1 1 50%;
+  }
+
+  .mapPane {
+    position: relative;
+    width: 100%;
+    flex: 1 1 50%;
+    min-height: 0;
+  }
+}

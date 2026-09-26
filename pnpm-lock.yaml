@@ -229,6 +229,9 @@ importers:
       '@osm-conflation-engine/server':
         specifier: 'workspace:'
         version: link:../server
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
       '@types/react':
         specifier: ^19.2.18
         version: 19.2.18

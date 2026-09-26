@@ -27,11 +27,14 @@ export function calcBBox(features: Feature[]): BBox {
 
         break;
       }
+
+      case 'MultiPoint':
       case 'LineString': {
         f.geometry.coordinates.forEach(visit);
 
         break;
       }
+      case 'MultiLineString':
       case 'Polygon': {
         for (const ring of f.geometry.coordinates) ring.forEach(visit);
 

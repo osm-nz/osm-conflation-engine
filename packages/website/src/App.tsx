@@ -6,7 +6,7 @@ import { DataWrapper } from './context/DataContext.js';
 import { ThemeWrapper } from './context/ThemeContext.js';
 import { Layout } from './components/Layout.js';
 import { HomePage } from './pages/HomePage.js';
-import { ProjectPage } from './pages/ProjectPage.js';
+import { ProjectPage } from './pages/ProjectPage/ProjectPage.js';
 import { CreateNewProjectPage } from './pages/CreateNewProjectPage.js';
 import { WarningsPage } from './pages/WarningsPage.js';
 import { IgnoredPage } from './pages/IgnoredPage/IgnoredPage.js';

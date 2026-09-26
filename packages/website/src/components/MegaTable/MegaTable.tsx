@@ -10,6 +10,7 @@ import {
   Text,
 } from '@mantine/core';
 import { LocaleContext } from '../../context/LocaleContext.js';
+import { toggle } from '../../util/object.js';
 import { HeaderCell } from './HeaderCell.js';
 import type { MegaTableProps } from './types.def.js';
 import { useMegaTable } from './useMegaTable.js';
@@ -44,11 +45,7 @@ export function MegaTable<Row, ColumnKey extends string>({
 
   const toggleRow = (rowId: string) => {
     if (!selection) return;
-
-    const newState = new Set(selection.selected);
-    if (!newState.delete(rowId)) newState.add(rowId);
-
-    selection.onChange(newState);
+    selection.onChange(toggle(selection.selected, rowId));
   };
 
   const ids = table.filteredRows.map((row) => row[rowKey] as string);

@@ -1,6 +1,7 @@
 import { use, useMemo, useState } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
 import { LocaleContext } from '../../context/LocaleContext.js';
+import { isTruthy } from '../../util/object.js';
 import type {
   FilterValue,
   Filters,
@@ -71,7 +72,7 @@ export function useMegaTable<Row, ColumnKey extends string>({
         const allowed = new Set(value);
         return (row) => allowed.has(get(row));
       })
-      .filter((x) => !!x);
+      .filter(isTruthy);
 
     const filtered = filterFuncs.length
       ? allRows.filter((row) => filterFuncs.every((f) => f(row)))

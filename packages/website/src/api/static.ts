@@ -1,4 +1,5 @@
 import type { ConflateResult, IndexFile } from '@osm-conflation-engine/cli';
+import type { OsmPatch } from 'osm-api';
 import { API_BASE_URL } from './conflation.js';
 
 async function fetchStaticFile<T>(refTag: string, file: string) {
@@ -16,4 +17,11 @@ export function getMetrics(refTag: string) {
 
 export function getIndex(refTag: string) {
   return fetchStaticFile<IndexFile>(refTag, 'index.geo.json');
+}
+
+export function getDataset(refTag: string, datasetId: string) {
+  return fetchStaticFile<OsmPatch>(
+    refTag,
+    `suburbs/${datasetId}.osmPatch.geo.json`,
+  );
 }
