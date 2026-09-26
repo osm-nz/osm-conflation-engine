@@ -5,11 +5,12 @@ import {
 } from 'cloudflare:test';
 import { env } from 'cloudflare:workers';
 import { describe, expect, it, vi } from 'vitest';
+import { getUser } from 'osm-api';
 import worker from '../index.js';
 
 vi.mock('osm-api', async () => ({
   ...(await vi.importActual('osm-api')),
-  getUser: async () => ({ display_name: 'exampleUser' }),
+  getUser: vi.fn(async () => ({ display_name: 'exampleUser' })),
 }));
 
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
@@ -44,20 +45,43 @@ describe('lock', () => {
     });
   });
 
-  it('errors if no authentication provided', async () => {
+  it("redacts the username fields if no there's no authentication", async () => {
+    vi.mocked(getUser).mockClear();
+
     const request = new IncomingRequest(
       'https://example.com/api/lock/ref:example',
     );
     const response = await send(request);
+
+    expect(response.status).toBe(200);
     expect(await response.json()).toStrictEqual({
-      success: false,
-      errors: [
+      success: true,
+      result: [
         {
-          code: 7001,
-          message: 'Invalid input: expected string, received null',
-          path: ['headers', 'Authorization'],
+          datasetId: 'r1',
+          refTag: 'ref:example',
+          timestamp: '2045-01-01',
+          ttl: 3600,
+          username: '', // redacted
         },
       ],
+    });
+    expect(getUser).not.toHaveBeenCalled();
+  });
+
+  it('errors if the token is invalid', async () => {
+    vi.mocked(getUser).mockRejectedValueOnce(new Error('401 Unauthorized'));
+
+    const request = new IncomingRequest(
+      'https://example.com/api/lock/ref:example',
+      { headers: { Authorization: 'Bearer invalid' } },
+    );
+    const response = await send(request);
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toStrictEqual({
+      success: false,
+      errors: [{ code: 7004, message: 'Error: 401 Unauthorized' }],
       result: {},
     });
   });

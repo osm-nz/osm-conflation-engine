@@ -23,6 +23,7 @@ export class LockGet extends OpenAPIRoute {
         Authorization: z
           .string()
           .startsWith('Bearer ')
+          .nullish()
           .describe('An OSM OAuth 2.0 token'),
       }),
     },
@@ -45,18 +46,25 @@ export class LockGet extends OpenAPIRoute {
 
   override async handle(ctx: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
-    configure({
-      authHeader: data.headers.Authorization,
-      userAgent: USER_AGENT,
-    });
-    // this will throw an error if the token is invalid
-    await getUser('me').catch((ex) => {
-      throw new ForbiddenException(`${ex}`);
-    });
-    // we do nothing with the getUser() response, we just confirm that
-    // the user has an account, implying that they've agreed to the
-    // TOS, and therefore we don't need to worry about returning
-    // usernames in the API response.
+
+    const authHeader = data.headers?.Authorization;
+    let isLoggedIn = false;
+
+    if (authHeader) {
+      configure({
+        authHeader,
+        userAgent: USER_AGENT,
+      });
+      // this will throw an error if the token is invalid
+      await getUser('me').catch((ex) => {
+        throw new ForbiddenException(`${ex}`);
+      });
+      // we do nothing with the getUser() response, we just confirm that
+      // the user has an account, implying that they've agreed to the
+      // TOS, and therefore we don't need to worry about returning
+      // usernames in the API response.
+      isLoggedIn = true;
+    }
 
     const db = drizzle(ctx.env.d1_db);
     const result = await db
@@ -68,6 +76,12 @@ export class LockGet extends OpenAPIRoute {
           sql`datetime(${LockedLayersModel.timestamp}, '+' || ${LockedLayersModel.ttl} || ' seconds') > datetime('now')`,
         ),
       );
+
+    if (!isLoggedIn) {
+      // if not logged in, then we redact all usernames, to avoid
+      // hypothetical GDPR issues.
+      for (const row of result) row.username = '';
+    }
 
     return {
       success: true,
