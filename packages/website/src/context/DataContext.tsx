@@ -22,7 +22,7 @@ export interface HomePageItem {
   region: string;
   regionFlag: string | null;
   osmKey: string | undefined;
-  to: string;
+  refTag: string;
   timestamp: string;
   operator: string;
   name: string;
@@ -59,7 +59,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         name: p.metrics.config.metadata.name,
         description: p.metrics.config.metadata.description,
         osmKey: p.metrics.config.merge.osm_key,
-        to: `/project/${p.refTag}`,
+        refTag: p.refTag,
         timestamp: p.timestamp,
         operator: p.operator,
         metrics: p.metrics.countsByPhase.conflated,
@@ -79,7 +79,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
             operator: extraInfo.operator,
             timestamp: extraInfo.lastUpdated,
             osmKey: undefined,
-            to: `https://osm-nz.github.io/missing-streets/?region=${extra.code}`,
+            refTag: `::missing_streets::${extra.code}`,
             wikiPageLink: extra.source,
             metrics: {
               delete: 0,

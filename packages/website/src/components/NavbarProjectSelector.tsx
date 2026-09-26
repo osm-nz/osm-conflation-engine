@@ -18,7 +18,7 @@ export const NavbarProjectSelector: React.FC = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const { allProjects } = use(DataContext);
+  const { homePageItems } = use(DataContext);
   const project = useProject();
 
   const subpath =
@@ -26,13 +26,13 @@ export const NavbarProjectSelector: React.FC = () => {
 
   const options = useMemo<ProjectOption[]>(
     () =>
-      allProjects.map((p) => ({
+      homePageItems.map((p) => ({
         value: p.refTag,
-        label: p.metrics.config.metadata.name,
-        region: p.metrics.config.metadata.region,
-        regionFlag: p.regionFlagImage,
+        label: p.name,
+        region: p.region,
+        regionFlag: p.regionFlag,
       })),
-    [allProjects],
+    [homePageItems],
   );
 
   return (
@@ -40,7 +40,10 @@ export const NavbarProjectSelector: React.FC = () => {
       <Select
         data={options}
         value={refTag}
-        onChange={(value) => value && navigate(`/project/${value}/${subpath}`)}
+        onChange={(value) =>
+          value &&
+          navigate(`/project/${value}/${value.startsWith('::') ? '' : subpath}`)
+        }
         renderOption={({ option, checked }) => {
           const { region, regionFlag } = option as ProjectOption;
           return (
@@ -61,6 +64,7 @@ export const NavbarProjectSelector: React.FC = () => {
         w={260}
         searchable
         allowDeselect={false}
+        comboboxProps={{ width: 'auto' }}
       />
       {project.project && (
         <OidcBadge

@@ -73,18 +73,22 @@ export const Navbar: React.FC = () => {
               <NavItem to={`/project/${refTag}`}>
                 {$('Navbar.features')}
               </NavItem>
-              <Divider orientation="vertical" />
-              <NavItem to={`/project/${refTag}/metrics`}>
-                {$('Navbar.metrics')}
-              </NavItem>
-              <Divider orientation="vertical" />
-              <NavItem to={`/project/${refTag}/warnings`}>
-                {$('Navbar.warnings')}
-              </NavItem>
-              <Divider orientation="vertical" />
-              <NavItem to={`/project/${refTag}/ignored`}>
-                {$('Common.ignored')}
-              </NavItem>
+              {!refTag.startsWith('::') && (
+                <>
+                  <Divider orientation="vertical" />
+                  <NavItem to={`/project/${refTag}/metrics`}>
+                    {$('Navbar.metrics')}
+                  </NavItem>
+                  <Divider orientation="vertical" />
+                  <NavItem to={`/project/${refTag}/warnings`}>
+                    {$('Navbar.warnings')}
+                  </NavItem>
+                  <Divider orientation="vertical" />
+                  <NavItem to={`/project/${refTag}/ignored`}>
+                    {$('Common.ignored')}
+                  </NavItem>
+                </>
+              )}
             </>
           )}
         </Group>

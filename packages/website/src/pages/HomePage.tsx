@@ -25,7 +25,7 @@ const HomePageCard: React.FC<HomePageItem> = ({
   count,
   region,
   osmKey,
-  to,
+  refTag,
   timestamp,
   operator,
   name,
@@ -79,8 +79,7 @@ const HomePageCard: React.FC<HomePageItem> = ({
 
       <Text fw={500} mt="md" mb="xs">
         <Link
-          to={to}
-          reloadDocument={to.startsWith('https://')}
+          to={`/project/${refTag}`}
           className={classes.title} // this css maximises the link so it covers the whole card
         >
           {name}

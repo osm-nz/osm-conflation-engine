@@ -14,6 +14,7 @@ import { SelectFeaturesStep } from './SelectFeaturesStep/SelectFeaturesStep.js';
 import { ImportStep } from './ImportStep/ImportStep.js';
 import { useOsmPatchFiles } from './useOsmPatchFiles.js';
 import classes from './ProjectPage.module.css';
+import { IframePage } from './IframePage.js';
 
 const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
   const { $ } = use(LocaleContext);
@@ -163,5 +164,10 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
 
 export const ProjectPage: React.FC = () => {
   const { refTag } = useParams<'refTag'>();
+
+  if (refTag?.startsWith('::')) {
+    return <IframePage refTag={refTag} />;
+  }
+
   return <ProjectPageInner key={refTag} refTag={refTag!} />; // hack
 };
