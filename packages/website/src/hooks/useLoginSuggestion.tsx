@@ -55,7 +55,7 @@ export function useLoginSuggestion({
       <Text size="sm">{options.reason}</Text>
       <Group justify="flex-end" gap="xs" mt="md">
         {options.canSkip && (
-          <Button variant="default" onClick={() => onComplete(true)}>
+          <Button variant="default" onClick={() => onComplete(false)}>
             {$('LoginPrompt.skip')}
           </Button>
         )}
