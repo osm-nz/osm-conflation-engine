@@ -149,7 +149,11 @@ export const TagHistory: React.FC<{ metrics: ConflateResult }> = ({
           sliceTooltip={({ slice }) => {
             const total = {
               id: '',
-              seriesColor: 'transparent',
+              seriesColor: `conic-gradient(
+                ${COLOURS.nodes} 0deg 120deg,
+                ${COLOURS.ways} 120deg 240deg,
+                ${COLOURS.relations} 240deg 360deg
+              )`,
               seriesId: $('Common.total'),
               data: {
                 y: slice.points.reduce((Σ, point) => Σ + point.data.y, 0),
@@ -179,7 +183,7 @@ export const TagHistory: React.FC<{ metrics: ConflateResult }> = ({
                             width: 8,
                             height: 8,
                             marginRight: 6,
-                            borderRadius: 2,
+                            borderRadius: '100%',
                             background: point.seriesColor,
                           }}
                         />
