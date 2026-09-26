@@ -39,6 +39,7 @@ export const SourceCodeLink: React.FC<
       leftSection={
         showProfilePic ? (
           <Avatar
+            component="span"
             src={profilePicUrl.replace('$1', org)}
             name={org}
             size={12}

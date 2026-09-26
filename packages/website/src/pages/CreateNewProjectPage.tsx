@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Radio, SimpleGrid, Stack, Text } from '@mantine/core';
+import { Anchor, Radio, SimpleGrid, Stack, Text } from '@mantine/core';
 import {
   IconBuildingStore,
+  IconBusFilled,
   IconDots,
   IconMailbox,
   IconRoad,
@@ -26,6 +27,33 @@ const PROJECT_TYPES = [
     label: 'All The Places',
     Icon: IconBuildingStore,
     blurb: <>TODO:??</>,
+  },
+  {
+    value: 'gtfs',
+    label: 'GTFS (Public Transport)',
+    Icon: IconBusFilled,
+    blurb: (
+      <>
+        The GTFS conflation tool is not integrated with the new conflation
+        engine yet. For now, the{' '}
+        <Anchor
+          href="https://kyle.kiwi/osm-gtfs-sync/"
+          target="_blank"
+          rel="noopener"
+        >
+          legacy UI is still available
+        </Anchor>{' '}
+        for some regions, and the{' '}
+        <Anchor
+          href="https://kyle.kiwi/gtfs-sqlite/"
+          target="_blank"
+          rel="noopener"
+        >
+          sqlite query tool
+        </Anchor>{' '}
+        is also still avialable.
+      </>
+    ),
   },
   {
     value: 'roadnames',
@@ -65,7 +93,7 @@ export const CreateNewProjectPage: React.FC = () => {
       <Radio.Group
         value={type}
         onChange={(value) => setType(value as ProjectType)}
-        label="What type of data do you want to importing?"
+        label="What type of data do you want to import?"
         mt="md"
       >
         <SimpleGrid
