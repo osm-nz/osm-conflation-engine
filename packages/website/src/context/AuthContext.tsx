@@ -10,16 +10,27 @@ import {
   useState,
 } from 'react';
 import { useCallback } from 'react';
-import { type OsmOwnUser, getUser, isLoggedIn, login, logout } from 'osm-api';
+import {
+  type OsmOwnUser,
+  getUser,
+  isLoggedIn,
+  logout,
+  login as osmLogin,
+} from 'osm-api';
 import { Button, LoadingOverlay } from '@mantine/core';
 import { FullPageError } from '../components/FullPageError.js';
+import {
+  type LoginSuggestionOptions,
+  useLoginSuggestion,
+} from '../hooks/useLoginSuggestion.js';
 import { LocaleContext } from './LocaleContext.js';
 
-type IAuthContext = {
+export interface IAuthContext {
   user: OsmOwnUser | undefined;
-  login(): void;
+  login(): Promise<void>;
   logout(): void;
-};
+  maybeSuggestLoggingIn(options: LoginSuggestionOptions): Promise<boolean>;
+}
 export const AuthContext = createContext<IAuthContext>(undefined!);
 AuthContext.displayName = 'AuthContext';
 
@@ -39,9 +50,9 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, [loggedIn]);
 
-  const onClickLogin = useCallback(async () => {
+  const login = useCallback(async () => {
     try {
-      await login({
+      await osmLogin({
         clientId:
           // the clientId is not confidential, it's alright to define it here
           window.location.hostname === '127.0.0.1'
@@ -69,9 +80,19 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     setError(undefined);
   }, []);
 
+  const [maybeSuggestLoggingIn, loginSuggestionModal] = useLoginSuggestion({
+    login,
+    user,
+  });
+
   const ctx = useMemo(
-    () => ({ user, logout: onLogout, login: onClickLogin }),
-    [user, onLogout, onClickLogin],
+    () => ({
+      user,
+      logout: onLogout,
+      login,
+      maybeSuggestLoggingIn,
+    }),
+    [user, onLogout, login, maybeSuggestLoggingIn],
   );
 
   if (window.location.hostname === 'localhost') return <>use 127.0.0.1</>;
@@ -92,6 +113,7 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         pos="fixed"
         loaderProps={{ size: 'lg' }}
       />
+      {loginSuggestionModal}
       {children}
     </AuthContext>
   );

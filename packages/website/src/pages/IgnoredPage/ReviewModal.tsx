@@ -11,7 +11,7 @@ import {
   Text,
   Textarea,
 } from '@mantine/core';
-import { IconAlertTriangle, IconLogin } from '@tabler/icons-react';
+import { IconAlertTriangle } from '@tabler/icons-react';
 import { useParams } from 'react-router';
 import { markIgnoreListAsReviewed } from '../../api/conflation.js';
 import { AuthContext } from '../../context/AuthContext.js';
@@ -33,7 +33,7 @@ export const ReviewModal: React.FC<{
   onSave(): void;
 }> = ({ rowIds, opened, onClose, onSave: onSaved }) => {
   const refTag = useParams<'refTag'>().refTag!;
-  const { user, login } = use(AuthContext);
+  const { user } = use(AuthContext);
   const { $, $$ } = use(LocaleContext);
 
   const [decision, setDecision] = useState<ReviewDecision | null>(null);
@@ -187,19 +187,13 @@ export const ReviewModal: React.FC<{
           <Button variant="default" onClick={close} disabled={isLoading}>
             {$('Common.cancel')}
           </Button>
-          {user ? (
-            <Button
-              onClick={onSave}
-              disabled={decision === null}
-              loading={isLoading}
-            >
-              {$('Common.save')}
-            </Button>
-          ) : (
-            <Button onClick={login} leftSection={<IconLogin size={18} />}>
-              {$('AuthContext.login')}
-            </Button>
-          )}
+          <Button
+            onClick={onSave}
+            disabled={decision === null}
+            loading={isLoading}
+          >
+            {$('Common.save')}
+          </Button>
         </Group>
       </Stack>
     </Modal>

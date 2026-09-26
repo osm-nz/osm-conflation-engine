@@ -2,6 +2,7 @@ import { use, useMemo, useState } from 'react';
 import { Button, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FullPageLoading } from '../../components/FullPageLoading.js';
+import { AuthContext } from '../../context/AuthContext.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
 import { useProject } from '../../hooks/useProject.js';
 import { MegaTable } from '../../components/MegaTable/index.js';
@@ -12,12 +13,20 @@ import { ReviewProgress } from './ReviewProgress.js';
 
 export const IgnoredPage: React.FC = () => {
   const { $ } = use(LocaleContext);
+  const { maybeSuggestLoggingIn } = use(AuthContext);
   const { ignoreList, fetchIgnoreList, notFound } = useProject();
   const columns = useMemo(() => getColumns($), [$]);
   const [selected, setSelected] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
   const [modalOpen, modal] = useDisclosure(false);
+
+  async function onClickReview() {
+    const isLoggedIn = await maybeSuggestLoggingIn({
+      reason: $('IgnoredPage.loginReason'),
+    });
+    if (isLoggedIn) modal.open();
+  }
 
   if (notFound) return <PageNotFound />;
   if (!ignoreList) return <FullPageLoading />;
@@ -43,7 +52,7 @@ export const IgnoredPage: React.FC = () => {
         toolbar={
           !!selected.size && (
             <>
-              <Button size="xs" onClick={modal.open}>
+              <Button size="xs" onClick={onClickReview}>
                 {$('IgnoredPage.review', { count: selected.size })}
               </Button>
               <Button

@@ -1,6 +1,7 @@
 import { use, useState } from 'react';
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
+import { AuthContext } from '../../../context/AuthContext.js';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import { getDataset } from '../../../api/static.js';
 import { downloadFile } from '../../../util/download.js';
@@ -10,12 +11,20 @@ export const DownloadOsmPatchFileButton: React.FC<{
   datasetId: string;
 }> = ({ refTag, datasetId }) => {
   const { $ } = use(LocaleContext);
+  const { maybeSuggestLoggingIn } = use(AuthContext);
   const [loading, setLoading] = useState(false);
 
   async function onClick() {
     setLoading(true);
     try {
+      const isLoggedIn = await maybeSuggestLoggingIn({
+        reason: $('DownloadOsmPatchFileButton.loginReason'),
+        canSkip: true,
+      });
       const osmPatch = await getDataset(refTag, datasetId);
+      if (isLoggedIn) {
+        // TODO: call the locked layers API
+      }
       downloadFile(osmPatch, `${datasetId}.osmPatch.geo.json`);
     } catch (error) {
       console.error(error);
