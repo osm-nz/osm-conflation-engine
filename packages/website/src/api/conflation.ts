@@ -3,6 +3,7 @@ import type {
   GetChanfanaResponse,
   IgnoreListGet,
   IgnoreListMarkAsReviewed,
+  LockCreate,
   RunHistoryGetAll,
 } from '@osm-conflation-engine/server';
 import { getAuthToken } from 'osm-api';
@@ -65,6 +66,13 @@ export function markIgnoreListAsReviewed(
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     },
+  );
+}
+
+export function lockDataset(refTag: string, datasetId: string) {
+  return wrappedFetch<GetChanfanaResponse<LockCreate>>(
+    `/api/lock/${refTag}/${datasetId}`,
+    { method: 'PUT' },
   );
 }
 

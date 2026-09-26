@@ -4,6 +4,7 @@ import { IconDownload } from '@tabler/icons-react';
 import { AuthContext } from '../../../context/AuthContext.js';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import { getDataset } from '../../../api/static.js';
+import { lockDataset } from '../../../api/conflation.js';
 import { downloadFile } from '../../../util/download.js';
 
 export const DownloadOsmPatchFileButton: React.FC<{
@@ -23,7 +24,7 @@ export const DownloadOsmPatchFileButton: React.FC<{
       });
       const osmPatch = await getDataset(refTag, datasetId);
       if (isLoggedIn) {
-        // TODO: call the locked layers API
+        await lockDataset(refTag, datasetId);
       }
       downloadFile(osmPatch, `${datasetId}.osmPatch.geo.json`);
     } catch (error) {
