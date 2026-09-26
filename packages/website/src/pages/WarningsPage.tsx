@@ -4,6 +4,7 @@ import { useProject } from '../hooks/useProject.js';
 import { FullPageLoading } from '../components/FullPageLoading.js';
 import { PageNotFound } from '../components/PageNotFound.js';
 import { LocaleContext } from '../context/LocaleContext.js';
+import { RenderMarkdown } from '../components/RenderMarkdown.js';
 
 export const WarningsPage: React.FC = () => {
   const { $ } = use(LocaleContext);
@@ -33,7 +34,7 @@ export const WarningsPage: React.FC = () => {
                   <Table.Tr key={message}>
                     <Table.Td>
                       <Text size="sm" style={{ wordBreak: 'break-word' }}>
-                        {message}
+                        <RenderMarkdown text={message} />
                       </Text>
                     </Table.Td>
                   </Table.Tr>
