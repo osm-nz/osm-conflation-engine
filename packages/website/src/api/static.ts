@@ -22,6 +22,6 @@ export function getIndex(refTag: string) {
 export function getDataset(refTag: string, datasetId: string) {
   return fetchStaticFile<OsmPatch>(
     refTag,
-    `suburbs/${datasetId}.osmPatch.geo.json`,
+    `datasets/${datasetId}.osmPatch.geo.json`,
   );
 }

@@ -33,7 +33,7 @@ export async function createIndexAndSaveToDisk(
   if (!githubParts) throw new Error('git_repository is not a valid github url');
   const outputFolder =
     ctx.config.output?.folder || join(process.cwd(), 'output');
-  const subFolderName = 'suburbs';
+  const subFolderName = 'datasets';
 
   const reports = generateReports(matches, suburbs);
 
