@@ -21,7 +21,7 @@ export interface Config {
     file: string;
   };
 
-  o_data: {
+  osm_data: {
     /**
      * if you choose `pbf`, you should also define an environment
      * variable called `OSM_AUTH`, so that metadata can be considered
@@ -61,6 +61,7 @@ export interface Config {
     tags_to_keep: string[];
     check_date_key?: string;
   };
+  /** @deprecated */ o_data?: unknown;
 
   merge: {
     /** the key */

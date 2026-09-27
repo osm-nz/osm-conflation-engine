@@ -44,17 +44,17 @@ function hasDiff(diff: ConflationDiff | undefined): diff is ConflationDiff {
 
 function createFeature(
   diff: ConflationDiff,
-  o?: OsmFeature,
-  s?: SourceDataFeature,
+  osm?: OsmFeature,
+  source?: SourceDataFeature,
 ): OsmPatchFeature {
-  if (!o && !s) throw new Error('requires either o or s');
+  if (!osm && !source) throw new Error('requires either osm or source');
 
-  if (o) diff.tags.__action ||= 'edit';
+  if (osm) diff.tags.__action ||= 'edit';
 
-  const [lng, lat] = (o?.centroid || s?.centroid)!;
+  const [lng, lat] = (osm?.centroid || source?.centroid)!;
   return {
     type: 'Feature',
-    id: o?.id || s?.id,
+    id: osm?.id || source?.id,
     geometry:
       diff.tags.__action === 'delete'
         ? { type: 'Polygon', coordinates: createSquare({ lat, lng }) }
@@ -109,42 +109,42 @@ export async function conflate(
   );
 
   // 1.
-  for (const { source: s, osm: o } of matches[MatchType.OneToOne]) {
-    const oFeature = osmDataById[o]!;
-    const sFeature = sourceData[s]!;
+  for (const { source, osm } of matches[MatchType.OneToOne]) {
+    const osmFeature = osmDataById[osm]!;
+    const sourceFeature = sourceData[source]!;
 
-    if (oFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
 
     const result = await ctx.callbacks.mergeOneToOne({
-      osm: oFeature,
-      source: sFeature,
+      osm: osmFeature,
+      source: sourceFeature,
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
 
     const category = result.category || '';
-    const sector = result.group || oFeature.sectors[0]!;
+    const sector = result.group || osmFeature.sectors[0]!;
     handleExtra(result.extra, category, sector);
 
     if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][sector] ||= [];
     output[category][sector].push(
-      createFeature(result.diff, oFeature, sFeature),
+      createFeature(result.diff, osmFeature, sourceFeature),
     );
   }
 
   // 2.
   for (const { source, osm } of matches[MatchType.OneToMany]) {
-    const oFeatures = osm
+    const osmFeatures = osm
       .map((id) => osmDataById[id]!)
-      .filter((oFeature) => !(oFeature.flags & OsmFlags.IsCheckedRecently));
+      .filter((osmFeature) => !(osmFeature.flags & OsmFlags.IsCheckedRecently));
 
-    const sFeature = sourceData[source]!;
+    const sourceFeature = sourceData[source]!;
 
     const result = await ctx.callbacks.mergeOneToMany?.({
-      osm: oFeatures,
-      source: sFeature,
+      osm: osmFeatures,
+      source: sourceFeature,
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
@@ -156,61 +156,63 @@ export async function conflate(
     handleExtra(
       result.extra,
       category,
-      result.group || oFeatures[0]?.sectors[0] || sFeature.sectors[0]!,
+      result.group || osmFeatures[0]?.sectors[0] || sourceFeature.sectors[0]!,
     );
 
     for (const _osmId in result.diffPerFeature) {
       const osmId = <OsmId>_osmId;
-      const oFeature = oFeatures.find((f) => f.id === osmId)!;
+      const osmFeature = osmFeatures.find((f) => f.id === osmId)!;
       const diff = result.diffPerFeature[osmId]!;
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const group = result.group || oFeature.sectors[0]!;
+      const group = result.group || osmFeature.sectors[0]!;
       output[category] ||= {};
       output[category][group] ||= [];
-      output[category][group].push(createFeature(diff, oFeature, sFeature));
+      output[category][group].push(
+        createFeature(diff, osmFeature, sourceFeature),
+      );
     }
   }
 
   // 3.
   for (const _osmId in matches[MatchType.ManyToOne]) {
     const osmId = <OsmId>_osmId;
-    const oFeature = osmDataById[osmId]!;
-    const sFeatures = matches[MatchType.ManyToOne][osmId]!.map(
+    const osmFeature = osmDataById[osmId]!;
+    const sourceFeatures = matches[MatchType.ManyToOne][osmId]!.map(
       (id) => sourceData[id]!,
     );
 
-    if (oFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
 
     const result = await ctx.callbacks.mergeManyToOne?.({
-      osm: oFeature,
-      source: sFeatures,
+      osm: osmFeature,
+      source: sourceFeatures,
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
 
     const category = result.category || '';
-    const group = result.group || oFeature.sectors[0]!;
+    const group = result.group || osmFeature.sectors[0]!;
     handleExtra(result.extra, category, group);
 
     if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
-    output[category][group].push(createFeature(result.diff, oFeature));
+    output[category][group].push(createFeature(result.diff, osmFeature));
   }
 
   // 4.
   for (const { source, osm } of matches[MatchType.ManyToMany]) {
-    const oFeatures = osm
+    const osmFeatures = osm
       .map((id) => osmDataById[id]!)
-      .filter((oFeature) => !(oFeature.flags & OsmFlags.IsCheckedRecently));
+      .filter((osmFeature) => !(osmFeature.flags & OsmFlags.IsCheckedRecently));
 
-    const sFeature = source.map((id) => sourceData[id]!);
+    const sourceFeature = source.map((id) => sourceData[id]!);
 
     const result = await ctx.callbacks.mergeManyToMany?.({
-      osm: oFeatures,
-      source: sFeature,
+      osm: osmFeatures,
+      source: sourceFeature,
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
@@ -222,69 +224,71 @@ export async function conflate(
     handleExtra(
       result.extra,
       category,
-      result.group || oFeatures[0]?.sectors[0] || sFeature[0]!.sectors[0]!,
+      result.group ||
+        osmFeatures[0]?.sectors[0] ||
+        sourceFeature[0]!.sectors[0]!,
     );
 
     for (const _osmId in result.diffPerFeature) {
       const osmId = <OsmId>_osmId;
-      const oFeature = oFeatures.find((f) => f.id === osmId)!;
+      const osmFeature = osmFeatures.find((f) => f.id === osmId)!;
       const diff = result.diffPerFeature[osmId]!;
       if (typeof diff !== 'object') throw new TypeError(MSG);
       if (!hasDiff(diff)) continue;
 
-      const group = result.group || oFeature.sectors[0]!;
+      const group = result.group || osmFeature.sectors[0]!;
       output[category] ||= {};
       output[category][group] ||= [];
-      output[category][group].push(createFeature(diff, oFeature));
+      output[category][group].push(createFeature(diff, osmFeature));
     }
   }
 
   // 5. deletions
   for (const idToDelete of matches[MatchType.Delete]) {
-    const oFeature = osmData.withRef[idToDelete]!;
+    const osmFeature = osmData.withRef[idToDelete]!;
 
-    if (oFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
 
     // the business-side needs to decide for each feature, if it will outright
     // delete it, or just remove the relevant tags.
-    const result = await ctx.callbacks.deleteFeature?.({ osm: oFeature });
+    const result = await ctx.callbacks.deleteFeature?.({ osm: osmFeature });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
 
     const category = result.category || '';
-    const group = result.group || oFeature.sectors[0]!;
+    const group = result.group || osmFeature.sectors[0]!;
     handleExtra(result.extra, category, group);
 
     if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
-    output[category][group].push(createFeature(result.diff, oFeature));
+    output[category][group].push(createFeature(result.diff, osmFeature));
   }
 
   // 6. to avoid reënqueuing these features twice, the business-side needs to
   // make a selection, and process the tagDiff at the same time.
   for (const pair of matches[MatchType.Guess]) {
-    const sFeature = sourceData[pair.source]!;
+    const sourceFeature = sourceData[pair.source]!;
     const result = await ctx.callbacks.create({
-      source: sFeature,
+      source: sourceFeature,
       osmCandidates: pair.osmCandidates.map((osmId) => osmData.noRef[osmId]!),
     });
     if (!result) continue;
     if (typeof result !== 'object') throw new TypeError(MSG);
 
-    const oFeature = result.selection
+    const osmFeature = result.selection
       ? osmData.noRef[result.selection]!
       : undefined;
 
     const category = result.category || '';
-    const group = result.group || oFeature?.sectors[0] || 'unknown';
+    const group = result.group || osmFeature?.sectors[0] || 'unknown';
     handleExtra(result.extra, category, group);
 
     if (!hasDiff(result.diff)) continue;
     output[category] ||= {};
     output[category][group] ||= [];
     output[category][group].push(
-      createFeature(result.diff, oFeature, sFeature),
+      createFeature(result.diff, osmFeature, sourceFeature),
     );
   }
 

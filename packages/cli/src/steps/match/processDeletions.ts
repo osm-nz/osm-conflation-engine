@@ -14,10 +14,10 @@ export function processDeletions(
   const invalidIds: DatasetId[] = [];
   for (const _datasetId in osmData.withRef) {
     const datasetId = <DatasetId>_datasetId;
-    const oFeature = osmData.withRef[datasetId]!;
+    const osmFeature = osmData.withRef[datasetId]!;
     if (
       !(datasetId in sourceData) && // we delete every OSM node with a linzRef that does not exist in the LINZ data
-      !(oFeature.flags & OsmFlags.IsCheckedRecently) // ...and it does not have a recent check_date
+      !(osmFeature.flags & OsmFlags.IsCheckedRecently) // ...and it does not have a recent check_date
     ) {
       // skip if an alernative form of this ref is accepted
       const alts = ctx.callbacks
@@ -56,19 +56,19 @@ export function processDeletions(
   const toDelete: DatasetId[] = [];
 
   for (const datasetIdToDelete of invalidIds) {
-    const oFeature = osmData.withRef[datasetIdToDelete]!;
+    const osmFeature = osmData.withRef[datasetIdToDelete]!;
 
-    const localKey = ctx.callbacks.getLocalKeyForOsm(oFeature);
+    const localKey = ctx.callbacks.getLocalKeyForOsm(osmFeature);
 
     const newDatasetIds = new Set(
-      oFeature.sectors
+      osmFeature.sectors
         .map((sector) => datasetByLocalKey[sector]?.[localKey])
         .filter(Boolean),
     );
 
     if (newDatasetIds.size > 1) {
       console.warn(
-        `${oFeature.id} spans multiple sectors, and there are conflicting localKeys across the sectors. Therefore, it will be straight-up deleted`,
+        `${osmFeature.id} spans multiple sectors, and there are conflicting localKeys across the sectors. Therefore, it will be straight-up deleted`,
       );
     }
     if (newDatasetIds.size === 1) {

@@ -14,18 +14,18 @@ export async function download(ctx: Ctx) {
     return;
   }
 
-  switch (ctx.config.o_data.source.type) {
+  switch (ctx.config.osm_data.source.type) {
     case 'pbf': {
-      await downloadFromPlanetPbf(ctx, ctx.config.o_data.source.pbf_url);
-      await osmToJson(ctx, ctx.config.o_data.source.pbf_filter);
+      await downloadFromPlanetPbf(ctx, ctx.config.osm_data.source.pbf_url);
+      await osmToJson(ctx, ctx.config.osm_data.source.pbf_filter);
       break;
     }
 
     case 'overpass': {
       await downloadFromOverpass(
         ctx,
-        ctx.config.o_data.source.overpass_query_file,
-        ctx.config.o_data.source.overpass_server_url,
+        ctx.config.osm_data.source.overpass_query_file,
+        ctx.config.osm_data.source.overpass_server_url,
       );
       break;
     }
@@ -33,14 +33,14 @@ export async function download(ctx: Ctx) {
     case 'postpass': {
       await downloadFromPostpass(
         ctx,
-        ctx.config.o_data.source.postpass_query_file,
-        ctx.config.o_data.source.postpass_server_url,
+        ctx.config.osm_data.source.postpass_query_file,
+        ctx.config.osm_data.source.postpass_server_url,
       );
       break;
     }
 
     default: {
-      throw new TypeError(ctx.config.o_data.source satisfies never);
+      throw new TypeError(ctx.config.osm_data.source satisfies never);
     }
   }
 }

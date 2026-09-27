@@ -24,7 +24,7 @@ export const STEPS = <const>['download', 'match', 'conflate'];
 export type Step = (typeof STEPS)[number];
 
 export const FILE_NAMES = <const>{
-  // o_data
+  // osm data
   PBF: 'o.pbf',
   OVERPASS: 'o.overpass.geo.json',
   POSTPASS: 'o.postpass.geo.json',

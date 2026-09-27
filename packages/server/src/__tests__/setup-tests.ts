@@ -71,7 +71,7 @@ export const MOCK_METRICS: ConflateResult = {
       type: 'file',
       file: '/path/to/processed.geo.jsonl',
     },
-    o_data: {
+    osm_data: {
       source: {
         type: 'pbf',
         pbf_url:

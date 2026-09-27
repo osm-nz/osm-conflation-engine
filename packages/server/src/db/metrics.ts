@@ -18,7 +18,7 @@ export const ConfigSchema = z.object({
     file: z.string(),
   }),
 
-  o_data: z.object({
+  osm_data: z.object({
     source: z.discriminatedUnion('type', [
       z.object({
         type: z.literal('pbf'),
@@ -39,6 +39,7 @@ export const ConfigSchema = z.object({
     tags_to_keep: z.array(z.string()),
     check_date_key: z.string().optional(),
   }),
+  /** @deprecated */ o_data: z.any().optional(),
 
   merge: z.object({
     osm_key: z.string(),

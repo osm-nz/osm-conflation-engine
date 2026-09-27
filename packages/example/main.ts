@@ -23,7 +23,7 @@ const config: Config = {
     type: 'file',
     file: join(import.meta.dirname, 'example_dataset.jsonl'),
   },
-  o_data: {
+  osm_data: {
     source: {
       type: 'pbf',
       pbf_url:

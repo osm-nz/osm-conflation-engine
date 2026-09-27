@@ -26,7 +26,7 @@ export const MetricsPage: React.FC = () => {
   const totalOsm = osm.withRef + osm.duplicateRefs + osm.semi + osm.noRef;
 
   const disabledMessage =
-    metrics.config.o_data.source.type === 'postpass'
+    metrics.config.osm_data.source.type === 'postpass'
       ? $$('MetricsPage.postpass_unavailable')
       : undefined;
 
@@ -47,7 +47,7 @@ export const MetricsPage: React.FC = () => {
           {
             osmKey: () => (
               <OsmTag
-                tag={metrics.config.o_data.check_date_key || 'check_date'}
+                tag={metrics.config.osm_data?.check_date_key || 'check_date'}
               />
             ),
           },

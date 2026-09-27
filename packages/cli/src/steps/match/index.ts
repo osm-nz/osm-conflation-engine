@@ -9,7 +9,7 @@ import {
   type SourceData,
 } from '../../types/index.js';
 import { processDeletions } from './processDeletions.js';
-import { findPotentialOFeatures } from './findPotentialOFeatures.js';
+import { findPotentialOsmFeatures } from './findPotentialOsmFeatures.js';
 
 export async function match(
   ctx: Ctx,
@@ -67,11 +67,11 @@ export async function match(
   // keyed on `a;b`
   const semiByFullRef: Record<DatasetId, OsmFeature> = {};
   for (const key in osmData.semi) {
-    const oFeature = osmData.semi[<DatasetId>key]!;
+    const osmFeature = osmData.semi[<DatasetId>key]!;
     const fullRef = <DatasetId | undefined>(
-      oFeature.tags[ctx.config.merge.osm_key]
+      osmFeature.tags[ctx.config.merge.osm_key]
     );
-    if (fullRef) semiByFullRef[fullRef] = oFeature;
+    if (fullRef) semiByFullRef[fullRef] = osmFeature;
   }
 
   for (const _datasetId in sourceData) {
@@ -86,7 +86,7 @@ export async function match(
 
     // skip non-first
 
-    const oFeature =
+    const osmFeature =
       osmData.withRef[datasetId] ||
       ctx.callbacks
         .getAltRefs?.(datasetId)
@@ -109,18 +109,18 @@ export async function match(
     const semi = osmData.semi[datasetId];
 
     // (source:osm)
-    if (oFeature && semi) {
+    if (osmFeature && semi) {
       // [many:many]
       const parts = <DatasetId[]>datasetId.split(';');
       output[MatchType.ManyToMany].push({
-        osm: [oFeature.id, semi.id],
+        osm: [osmFeature.id, semi.id],
         source: parts,
       });
-    } else if (oFeature) {
+    } else if (osmFeature) {
       // [1:1] found an exact match
       // the tags might be wrong, but we'll deal with that later
       output[MatchType.OneToOne].push({
-        osm: oFeature.id,
+        osm: osmFeature.id,
         source: originalDatasetId,
       });
     } else if (duplicate) {
@@ -142,7 +142,7 @@ export async function match(
       output[MatchType.ManyToOne][semi.id]?.push(...parts);
     } else {
       // if there is no match, try to guess based on nearby candidates
-      const possibleAddresses = findPotentialOFeatures(
+      const possibleAddresses = findPotentialOsmFeatures(
         ctx,
         sourceFeature,
         osmFeaturesWithNoRef,

@@ -28,7 +28,7 @@ export function loadOsmFeature(ctx: Ctx, out: OSMData, object: OsmFeature) {
     ctx.config.merge.sector_resolution,
   );
 
-  const checkDateKey = ctx.config.o_data.check_date_key || CHECK_DATE_KEY;
+  const checkDateKey = ctx.config.osm_data?.check_date_key || CHECK_DATE_KEY;
 
   // boolean flags
   if (+new Date(object.metadata?.timestamp ?? 0) > THRESHOLD_DATE) {

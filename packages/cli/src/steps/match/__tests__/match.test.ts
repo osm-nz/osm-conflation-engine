@@ -53,14 +53,14 @@ const createSourceRow = (
 };
 
 const createOsmFeature = (
-  oId: OsmId,
-  sId: string | undefined,
+  osmId: OsmId,
+  sourceId: string | undefined,
   houseNumber?: string,
 ): OsmFeature => ({
   // should be delete
-  id: oId,
+  id: osmId,
   tags: {
-    ...(sId ? { 'ref:MY_ID': <DatasetId>sId } : {}),
+    ...(sourceId ? { 'ref:MY_ID': <DatasetId>sourceId } : {}),
     ...(houseNumber ? { 'addr:housenumber': houseNumber } : {}),
   },
   centroid: [176, -36],
