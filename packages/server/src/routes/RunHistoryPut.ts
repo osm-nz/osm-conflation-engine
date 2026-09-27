@@ -89,8 +89,10 @@ export class RunHistoryPut extends OpenAPIRoute {
         ...data.body,
         warnings: [], // don't store warnings
       },
-      image: image || null,
-      regionFlagImage: regionFlagImage || null,
+      extra: {
+        image,
+        regionFlagImage,
+      },
     };
 
     const db = drizzle(ctx.env.d1_db);

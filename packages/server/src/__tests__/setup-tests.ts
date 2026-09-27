@@ -126,16 +126,14 @@ const MOCK_RUN_HISTORY: RunHistory[] = [
     refTag: 'ref:example',
     timestamp: '2021-06-17T00:00:00.000Z',
     metrics: MOCK_METRICS,
-    image: null,
-    regionFlagImage: null,
+    extra: {},
   },
   {
     operator: 'https://github.com/octo-org/octo-repo/actions/runs/3#octocat',
     refTag: 'ref:other',
     timestamp: '2021-07-17T00:00:00.000Z',
     metrics: MOCK_METRICS,
-    image: null,
-    regionFlagImage: null,
+    extra: {},
   },
 ];
 

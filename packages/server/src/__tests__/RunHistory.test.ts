@@ -36,8 +36,7 @@ describe('run_history', () => {
           'https://github.com/octo-org/octo-repo/actions/runs/2#octocat',
         timestamp: '2021-06-17T00:00:00.000Z',
         metrics: MOCK_METRICS,
-        image: null,
-        regionFlagImage: null,
+        extra: {},
       },
     });
   });
@@ -56,8 +55,7 @@ describe('run_history', () => {
             'https://github.com/octo-org/octo-repo/actions/runs/3#octocat',
           timestamp: '2021-07-17T00:00:00.000Z',
           metrics: MOCK_METRICS,
-          image: null,
-          regionFlagImage: null,
+          extra: {},
         },
         {
           refTag: 'ref:example',
@@ -65,8 +63,7 @@ describe('run_history', () => {
             'https://github.com/octo-org/octo-repo/actions/runs/2#octocat',
           timestamp: '2021-06-17T00:00:00.000Z',
           metrics: MOCK_METRICS,
-          image: null,
-          regionFlagImage: null,
+          extra: {},
         },
       ],
     });
@@ -95,8 +92,7 @@ describe('run_history', () => {
         'https://github.com/octo-org/octo-repo/actions/runs/example-run-id#octocat',
       timestamp: expect.any(String),
       metrics: MOCK_METRICS,
-      image: null,
-      regionFlagImage: null,
+      extra: {},
     });
     expect(result).not.toHaveProperty('timestamp', '2021-06-17T00:00:00.000Z'); // should not be the old value
   });
@@ -108,8 +104,7 @@ describe('run_history', () => {
         'https://github.com/octo-org/octo-repo/actions/runs/example-run-id#octocat',
       timestamp: expect.any(String),
       metrics: MOCK_METRICS,
-      image: null,
-      regionFlagImage: null,
+      extra: {},
     };
 
     const putResponse = await send(

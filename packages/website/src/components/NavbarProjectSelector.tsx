@@ -9,7 +9,7 @@ import { OidcBadge } from './OidcBadge.js';
 
 interface ProjectOption extends ComboboxItem {
   region: string;
-  regionFlag: string | null;
+  regionFlag: string | undefined;
 }
 
 export const NavbarProjectSelector: React.FC = () => {

@@ -20,7 +20,7 @@ import { LocaleContext } from './LocaleContext.js';
 export interface HomePageItem {
   count: number;
   region: string;
-  regionFlag: string | null;
+  regionFlag: string | undefined;
   osmKey: string | undefined;
   refTag: string;
   timestamp: string;
@@ -29,7 +29,7 @@ export interface HomePageItem {
   description: string;
   metrics: ConflateResult['countsByPhase']['conflated'];
   wikiPageLink: string;
-  image: string | null;
+  image: string | undefined;
 }
 
 export interface IDataContext {
@@ -55,7 +55,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
       ...(allProjects || []).map((p): HomePageItem => ({
         count: p.metrics.countsByPhase.init.sourceDataset,
         region: p.metrics.config.metadata.region,
-        regionFlag: p.regionFlagImage,
+        regionFlag: p.extra.regionFlagImage,
         name: p.metrics.config.metadata.name,
         description: p.metrics.config.metadata.description,
         osmKey: p.metrics.config.merge.osm_key,
@@ -64,7 +64,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         operator: p.operator,
         metrics: p.metrics.countsByPhase.conflated,
         wikiPageLink: p.metrics.config.metadata.wiki_page,
-        image: p.image,
+        image: p.extra.image,
       })),
       ...(extraInfo?.metadata || [])
         .map((extra): HomePageItem | undefined => {
