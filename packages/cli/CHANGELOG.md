@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.8.0...cli-v3.9.0) (2026-09-27)
+
+
+### Features
+
+* setup metrics history, which will be stored on the CDN ([eb64c5d](https://github.com/osm-nz/osm-conflation-engine/commit/eb64c5d16edfff2431b891c6e6efb81390c87199))
+
 ## [3.8.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.1...cli-v3.8.0) (2026-09-27)
 
 
