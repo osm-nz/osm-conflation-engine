@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.8.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.1...cli-v3.8.0) (2026-09-27)
+
+
+### Features
+
+* create step 1 and 2 of the new import page ([749b727](https://github.com/osm-nz/osm-conflation-engine/commit/749b727746f6b876080b807bda2d550b0d576ec2))
+* generate additional reports for matching and conflation result ([82d61c7](https://github.com/osm-nz/osm-conflation-engine/commit/82d61c7d812ccd4b0aa01d7ffd4a1378cf7e2e9d))
+* rename `o` -&gt; `osm` ([1cdc328](https://github.com/osm-nz/osm-conflation-engine/commit/1cdc3281fbabe2c92a0588a645fe77e275885534))
+
+
+### Bug Fixes
+
+* rename output subfolder ([884d706](https://github.com/osm-nz/osm-conflation-engine/commit/884d706b8a02d42d27e6d586e09c17e388e86bb6))
+
 ## [3.7.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.7.0...cli-v3.7.1) (2026-09-23)
 
 
