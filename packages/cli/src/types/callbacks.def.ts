@@ -25,6 +25,10 @@ export type DatasetId = string & Identity<'DatasetId'>;
 
 export type Vec2 = [lon: number, lat: number];
 
+/** the action from an {@link OsmPatch} file */
+export type Action =
+  'create' | (OsmPatchFeature['properties']['__action'] & {});
+
 export enum OsmFlags {
   None = 0,
   IsLastEditedByImporter = 1 << 0,
@@ -249,4 +253,6 @@ export interface IndexFileProperties {
 }
 
 /** the shape of `index.geo.json` */
-export type IndexFile = FeatureCollection<Polygon, IndexFileProperties>;
+export type IndexFile = FeatureCollection<Polygon, IndexFileProperties> & {
+  __reports: string[];
+};

@@ -40,7 +40,7 @@ export async function download(ctx: Ctx) {
     }
 
     default: {
-      ctx.config.o_data.source satisfies never;
+      throw new TypeError(ctx.config.o_data.source satisfies never);
     }
   }
 }

@@ -1,17 +1,20 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import type { OsmPatch } from 'osm-api';
-import type { Feature, FeatureCollection, Polygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 import type {
   ConflateResult,
   Ctx,
+  IndexFile,
   IndexFileProperties,
+  MatchOutput,
   OutputLayers,
 } from '../../types/index.js';
 import { IS_UNIT_TEST } from '../../constants/defaults.js';
 import { sha256 as hash } from '../../helpers.js';
 import { calcCount } from '../../common/calcCount.js';
 import { bboxToPolygon } from '../../common/bboxToPolygon.js';
+import { generateReports } from './stats/generateReports.js';
 
 function toId(suburb: string) {
   // macrons are url safe
@@ -21,6 +24,7 @@ function toId(suburb: string) {
 export async function createIndexAndSaveToDisk(
   ctx: Ctx,
   metrics: ConflateResult,
+  matches: MatchOutput,
   suburbs: OutputLayers,
 ): Promise<void> {
   const githubParts = ctx.config.metadata.git_repository.match(
@@ -30,6 +34,8 @@ export async function createIndexAndSaveToDisk(
   const outputFolder =
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'suburbs';
+
+  const reports = generateReports(matches, suburbs);
 
   const meta = Object.entries(suburbs).flatMap(([category, groups]) =>
     Object.entries(groups).map(([group, items]) => {
@@ -71,7 +77,7 @@ export async function createIndexAndSaveToDisk(
   };
 
   // create index.geo.json
-  const newIndexFile: FeatureCollection<Polygon, IndexFileProperties> = {
+  const newIndexFile: IndexFile = {
     type: 'FeatureCollection',
     features: meta
       .map(({ bbox, ...other }): Feature<Polygon, IndexFileProperties> => {
@@ -82,6 +88,11 @@ export async function createIndexAndSaveToDisk(
         };
       })
       .toSorted((a, b) => a.properties.title.localeCompare(b.properties.title)),
+
+    __reports: [
+      ...Object.keys(reports),
+      ...(ctx.config.output?.custom_report_file_names || []),
+    ],
   };
 
   await fs.mkdir(join(outputFolder, subFolderName), { recursive: true });
@@ -97,6 +108,9 @@ export async function createIndexAndSaveToDisk(
     join(outputFolder, 'metrics.json'),
     JSON.stringify(metrics, null, 2),
   );
+  for (const reportName in reports) {
+    await fs.writeFile(join(outputFolder, reportName), reports[reportName]!);
+  }
 
   // save each suburb
   for (const v of meta) {

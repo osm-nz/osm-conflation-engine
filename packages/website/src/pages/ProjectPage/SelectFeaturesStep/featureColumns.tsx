@@ -7,13 +7,12 @@ import {
   Text,
 } from '@mantine/core';
 import type { OsmPatchFeature, Tags } from 'osm-api';
-import type { OsmId } from '@osm-conflation-engine/cli';
+import type { Action, OsmId } from '@osm-conflation-engine/cli';
 import type { Column, Sort } from '../../../components/MegaTable/index.js';
 import type { I$ } from '../../../context/LocaleContext.js';
 import { utilDisplayName } from '../../../util/utilDisplayName.js';
 import { osmLink } from '../../../util/osm.js';
 
-export type Action = 'create' | 'edit' | 'move' | 'delete';
 export const ACTIONS: Action[] = ['create', 'edit', 'move', 'delete'];
 
 export const ACTION_COLOURS: Record<

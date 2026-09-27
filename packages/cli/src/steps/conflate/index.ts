@@ -341,7 +341,7 @@ export async function conflate(
     matches,
     handlerReturn,
   );
-  await createIndexAndSaveToDisk(ctx, metrics, handlerReturn);
+  await createIndexAndSaveToDisk(ctx, metrics, matches, handlerReturn);
   // TODO: generate stats and stats history
   await writeToRunHistory(metrics);
 
