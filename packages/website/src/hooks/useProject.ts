@@ -27,7 +27,6 @@ export function useProject() {
     if (!project) return;
 
     // when the ref changes, fetch the new data
-    /* eslint-disable @eslint-react/set-state-in-effect, react-hooks/set-state-in-effect  */
     setMetrics(undefined);
     setIndexFile(undefined);
     setIgnoreList(undefined);

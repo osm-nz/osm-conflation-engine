@@ -2,13 +2,17 @@ import type { ConflateResult, IndexFile } from '@osm-conflation-engine/cli';
 import type { OsmPatch } from 'osm-api';
 import { API_BASE_URL } from './conflation.js';
 
-async function fetchStaticFile<T>(refTag: string, file: string) {
+export async function fetchStaticFile<T>(
+  refTag: string,
+  file: string,
+  plainText?: boolean,
+) {
   const result = await fetch(`${API_BASE_URL}/api/static/${refTag}/${file}`);
   if (!result.ok) {
     throw new Error(`HTTP Error ${result.status} ${result.statusText}`);
   }
-  const json: T = await result.json();
-  return json;
+  const output = (plainText ? await result.text() : await result.json()) as T;
+  return output;
 }
 
 export function getMetrics(refTag: string) {

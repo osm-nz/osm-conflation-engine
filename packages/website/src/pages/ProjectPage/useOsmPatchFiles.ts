@@ -34,7 +34,6 @@ export function useOsmPatchFiles(
       inflightRef.current.add(dataset.title);
     }
 
-    /* eslint-disable-next-line @eslint-react/set-state-in-effect */
     setState((current) => ({
       ...current,
       pending: current.pending + toFetch.length,

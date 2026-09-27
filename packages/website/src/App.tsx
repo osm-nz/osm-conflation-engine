@@ -10,6 +10,8 @@ import { ProjectPage } from './pages/ProjectPage/ProjectPage.js';
 import { CreateNewProjectPage } from './pages/CreateNewProjectPage.js';
 import { WarningsPage } from './pages/WarningsPage.js';
 import { IgnoredPage } from './pages/IgnoredPage/IgnoredPage.js';
+import { ReportListPage } from './pages/ReportListPage.js';
+import { ReportDetailsPage } from './pages/ReportDetailsPage.js';
 
 const router = createHashRouter([
   {
@@ -24,6 +26,11 @@ const router = createHashRouter([
         lazy: () => import('./pages/MetricsPage/MetricsPage.js'), // bc of @nivo/*
       },
       { path: '/project/:refTag/ignored', Component: IgnoredPage },
+      { path: '/project/:refTag/reports', Component: ReportListPage },
+      {
+        path: '/project/:refTag/reports/:fileName',
+        Component: ReportDetailsPage,
+      },
     ],
   },
 ]);

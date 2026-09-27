@@ -84,7 +84,6 @@ export const TagHistory: React.FC<{ metrics: ConflateResult }> = ({
   const refTag = metrics.config.merge.osm_key;
 
   useEffect(() => {
-    /* eslint-disable-next-line @eslint-react/set-state-in-effect, react-hooks/set-state-in-effect */
     setRaw(undefined);
     getTaginfoKeyChronology(refTag).then(setRaw).catch(console.error);
   }, [refTag]);

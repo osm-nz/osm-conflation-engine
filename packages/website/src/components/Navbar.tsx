@@ -87,6 +87,10 @@ export const Navbar: React.FC = () => {
                   <NavItem to={`/project/${refTag}/ignored`}>
                     {$('Common.ignored')}
                   </NavItem>
+                  <Divider orientation="vertical" />
+                  <NavItem to={`/project/${refTag}/reports`}>
+                    {$('Common.reports')}
+                  </NavItem>
                 </>
               )}
             </>
