@@ -25,7 +25,7 @@ export async function createIndexAndSaveToDisk(
   ctx: Ctx,
   metrics: ConflateResult,
   matches: MatchOutput,
-  suburbs: OutputLayers,
+  output: OutputLayers,
 ): Promise<void> {
   const githubParts = ctx.config.metadata.git_repository.match(
     'https://github.com/([^/]+)/([^/]+)',
@@ -35,9 +35,9 @@ export async function createIndexAndSaveToDisk(
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'datasets';
 
-  const reports = generateReports(matches, suburbs);
+  const reports = generateReports(matches, output);
 
-  const meta = Object.entries(suburbs).flatMap(([category, groups]) =>
+  const meta = Object.entries(output).flatMap(([category, groups]) =>
     Object.entries(groups).map(([group, items]) => {
       const title = [category, group].filter(Boolean).join(' - ');
       return {
@@ -116,7 +116,7 @@ export async function createIndexAndSaveToDisk(
   for (const v of meta) {
     const geojson: OsmPatch = {
       type: 'FeatureCollection',
-      ...suburbs[v.category]![v.group]!,
+      ...output[v.category]![v.group]!,
     };
 
     await fs.writeFile(
