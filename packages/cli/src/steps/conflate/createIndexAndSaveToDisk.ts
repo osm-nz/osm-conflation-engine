@@ -15,6 +15,10 @@ import { sha256 as hash } from '../../helpers.js';
 import { calcCount } from '../../common/calcCount.js';
 import { bboxToPolygon } from '../../common/bboxToPolygon.js';
 import { generateReports } from './stats/generateReports.js';
+import {
+  RECURSIVE_HISTORY_FILE_NAME,
+  amendRecursiveHistory,
+} from './stats/amendRecursiveHistory.js';
 
 function toId(suburb: string) {
   // macrons are url safe
@@ -95,6 +99,8 @@ export async function createIndexAndSaveToDisk(
     ],
   };
 
+  const recursiveHistory = await amendRecursiveHistory(ctx, metrics);
+
   await fs.mkdir(join(outputFolder, subFolderName), { recursive: true });
   await fs.writeFile(
     join(outputFolder, 'index.json'),
@@ -108,6 +114,11 @@ export async function createIndexAndSaveToDisk(
     join(outputFolder, 'metrics.json'),
     JSON.stringify(metrics, null, 2),
   );
+  await fs.writeFile(
+    join(outputFolder, RECURSIVE_HISTORY_FILE_NAME),
+    JSON.stringify(recursiveHistory, null, 2),
+  );
+
   for (const reportName in reports) {
     await fs.writeFile(join(outputFolder, reportName), reports[reportName]!);
   }

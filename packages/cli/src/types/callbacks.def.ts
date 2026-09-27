@@ -229,13 +229,26 @@ export interface ConflateResult {
       ignored: number;
     };
     matched: Record<MatchType, number>;
-    conflated: {
-      create: number;
-      edit: number;
-      delete: number;
-      perfect: number;
-    };
+    conflated: ConflationResult;
   };
+}
+
+export interface ConflationResult {
+  create: number;
+  edit: number;
+  delete: number;
+  perfect: number;
+}
+
+export interface RecursiveHistoryRow {
+  date: string;
+  conflated: ConflationResult;
+}
+
+export interface RecursiveHistoryFile {
+  /** ISO Date */
+  lastUpdated: string;
+  rows: RecursiveHistoryRow[];
 }
 
 export interface RunResult {
