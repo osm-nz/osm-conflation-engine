@@ -19,6 +19,7 @@ import {
 import { AuthContext } from '../context/AuthContext.js';
 import { LocaleContext } from '../context/LocaleContext.js';
 import { NavbarLanguageSwitcher } from './NavbarLanguageSwitcher.js';
+import { NavbarProjectInfo } from './NavbarProjectInfo.js';
 import { NavbarProjectSelector } from './NavbarProjectSelector.js';
 
 const GITHUB_URL = 'https://github.com/osm-nz/osm-conflation-engine';
@@ -69,6 +70,7 @@ export const Navbar: React.FC = () => {
           {refTag && (
             <>
               <NavbarProjectSelector />
+              <NavbarProjectInfo />
               <Divider orientation="vertical" />
               <NavItem to={`/project/${refTag}`}>{$('Navbar.import')}</NavItem>
               {!refTag.startsWith('::') && (

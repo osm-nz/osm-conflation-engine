@@ -20,7 +20,7 @@ export const OverallProgress: React.FC<{
   );
 
   return (
-    <Progress.Root size="xl">
+    <Progress.Root size="xl" style={{ contain: 'inline-size' }}>
       <Progress.Section value={perfectPercent} color="green">
         <Progress.Label>
           {$('OverallProgress.percent_label', {
