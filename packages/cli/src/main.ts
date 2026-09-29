@@ -24,6 +24,7 @@ import { match } from './steps/match/index.js';
 import { conflate } from './steps/conflate/index.js';
 import { sha256 } from './helpers.js';
 import { readData } from './steps/match/readData.js';
+import { getFormatterUrl } from './api/tag2link.js';
 
 function validateSteps(steps: readonly unknown[]): asserts steps is Step[] {
   for (const value of steps) {
@@ -89,6 +90,7 @@ export async function run<G extends Geometry, P extends GeoJsonProperties>(
     tempFileNames,
     config,
     callbacks,
+    formatterUrl: getFormatterUrl(config.merge.osm_key),
     warnings: [],
   };
 

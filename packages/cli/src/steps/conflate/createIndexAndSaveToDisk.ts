@@ -39,7 +39,7 @@ export async function createIndexAndSaveToDisk(
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'datasets';
 
-  const reports = generateReports(matches, output);
+  const reports = generateReports(ctx, matches, output);
 
   const meta = Object.entries(output).flatMap(([category, groups]) =>
     Object.entries(groups).map(([group, items]) => {
