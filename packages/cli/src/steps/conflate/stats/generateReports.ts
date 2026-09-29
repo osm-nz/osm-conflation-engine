@@ -8,6 +8,7 @@ import type {
   Vec2,
 } from '../../../types/callbacks.def.js';
 import {
+  type Ctx,
   type MatchOutput,
   MatchType,
   type OutputLayers,
@@ -25,7 +26,13 @@ const osmIdToUrl = (osmId: string) =>
 
 const osmIdToLink = (osmId: string) => `[${osmId}](${osmIdToUrl(osmId)})`;
 
-function generateMatchReport(data: MatchOutput, type: MatchType) {
+function generateMatchReport(ctx: Ctx, data: MatchOutput, type: MatchType) {
+  function sourceIdToLink(id: string) {
+    if (!ctx.formatterUrl) return id;
+    const url = ctx.formatterUrl.replaceAll('$1', id);
+    return `[${id}](${url})`;
+  }
+
   let report = `# Matches – ${MatchType[type]}\n\n`;
   const list = data[type];
   if (Array.isArray(list)) {
@@ -52,13 +59,13 @@ function generateMatchReport(data: MatchOutput, type: MatchType) {
 
       const sep = 'osmCandidates' in row ? ' or ' : ' + ';
 
-      report += `- ${source.join(' + ') || '?'} ⇄ ${osm.map(osmIdToLink).join(sep) || '?'}\n`;
+      report += `- ${source.map(sourceIdToLink).join(' + ') || '?'} ⇄ ${osm.map(osmIdToLink).join(sep) || '?'}\n`;
     }
   } else {
     // must be many:1
     for (const osmId in list) {
       const source = list[osmId as OsmId] || [];
-      report += `- ${source.join(' + ') || '?'} ⇄ ${osmIdToLink(osmId)}\n`;
+      report += `- ${source.map(sourceIdToLink).join(' + ') || '?'} ⇄ ${osmIdToLink(osmId)}\n`;
     }
   }
 
@@ -125,27 +132,39 @@ function generateConflationReport(data: OutputLayers, action: Action) {
   return report;
 }
 
-export function generateReports(matches: MatchOutput, conflated: OutputLayers) {
+export function generateReports(
+  ctx: Ctx,
+  matches: MatchOutput,
+  conflated: OutputLayers,
+) {
   const reports: Record<string, string> = {
     // match
     'report-match-OneToOne.md': generateMatchReport(
+      ctx,
       matches,
       MatchType.OneToOne,
     ),
     'report-match-OneToMany.md': generateMatchReport(
+      ctx,
       matches,
       MatchType.OneToMany,
     ),
     'report-match-ManyToMany.md': generateMatchReport(
+      ctx,
       matches,
       MatchType.ManyToMany,
     ),
     'report-match-ManyToOne.md': generateMatchReport(
+      ctx,
       matches,
       MatchType.ManyToOne,
     ),
-    'report-match-Delete.md': generateMatchReport(matches, MatchType.Delete),
-    'report-match-Guess.md': generateMatchReport(matches, MatchType.Guess),
+    'report-match-Delete.md': generateMatchReport(
+      ctx,
+      matches,
+      MatchType.Delete,
+    ),
+    'report-match-Guess.md': generateMatchReport(ctx, matches, MatchType.Guess),
 
     // conflation
     'report-conflation-create.md': generateConflationReport(

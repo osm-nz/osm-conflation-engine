@@ -30,6 +30,7 @@ export interface Ctx<
   tempFileNames: Record<Lowercase<FileNames>, string>;
   config: Config;
   callbacks: Callbacks<G, P>;
+  formatterUrl: string | undefined;
   warnings: string[];
 }
 
