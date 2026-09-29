@@ -56,30 +56,6 @@ export async function createIndexAndSaveToDisk(
     }),
   );
 
-  // create index.json
-  const indexFile = {
-    fields: [],
-    results: meta
-      .map((v) => {
-        return {
-          id: v.id,
-          url: `https://${githubParts[1]}.github.io/${githubParts[2]}/${subFolderName}/${v.id}.osmPatch.geo.json`,
-          name: v.title,
-          title: v.title,
-          totalCount: v.totalCount,
-          source: '',
-          snippet: v.count,
-          extent: [
-            [v.bbox.minLng, v.bbox.minLat],
-            [v.bbox.maxLng, v.bbox.maxLat],
-          ],
-          instructions: v.instructions,
-          groupCategories: [v.category, '/Categories/Addresses'],
-        };
-      })
-      .toSorted((a, b) => a.name.localeCompare(b.name)),
-  };
-
   // create index.geo.json
   const newIndexFile: IndexFile = {
     type: 'FeatureCollection',
@@ -102,10 +78,6 @@ export async function createIndexAndSaveToDisk(
   const recursiveHistory = await amendRecursiveHistory(ctx, metrics);
 
   await fs.mkdir(join(outputFolder, subFolderName), { recursive: true });
-  await fs.writeFile(
-    join(outputFolder, 'index.json'),
-    JSON.stringify(indexFile, null, IS_UNIT_TEST ? 2 : undefined),
-  );
   await fs.writeFile(
     join(outputFolder, 'index.geo.json'),
     JSON.stringify(newIndexFile, null, IS_UNIT_TEST ? 2 : undefined),
