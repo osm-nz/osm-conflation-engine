@@ -6,7 +6,6 @@ export const ConfigSchema = z.object({
   $schema: z.string(),
 
   metadata: z.object({
-    git_repository: z.string(),
     name: z.string(),
     description: z.string(),
     wiki_page: z.string(),

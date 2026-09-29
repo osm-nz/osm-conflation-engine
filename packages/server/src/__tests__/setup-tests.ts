@@ -65,7 +65,6 @@ export const MOCK_METRICS: ConflateResult = {
       name: 'Example',
       description: 'Exampleee',
       wiki_page: 'https://wiki.osm.org/Example',
-      git_repository: 'https://github.com/octo-org/octo-repo',
     },
     source_data: {
       type: 'file',

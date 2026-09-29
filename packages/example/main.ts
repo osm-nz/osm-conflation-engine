@@ -39,7 +39,6 @@ const config: Config = {
   metadata: {
     name: 'Example Import Project',
     description: 'this is just an example',
-    git_repository: 'https://github.com/example/example',
     region: 'AU-WA',
     wiki_page: 'https://osm.wiki/Example',
   },

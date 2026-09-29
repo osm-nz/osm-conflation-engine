@@ -31,10 +31,6 @@ export async function createIndexAndSaveToDisk(
   matches: MatchOutput,
   output: OutputLayers,
 ): Promise<void> {
-  const githubParts = ctx.config.metadata.git_repository.match(
-    'https://github.com/([^/]+)/([^/]+)',
-  );
-  if (!githubParts) throw new Error('git_repository is not a valid github url');
   const outputFolder =
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'datasets';

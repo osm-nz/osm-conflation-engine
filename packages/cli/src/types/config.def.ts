@@ -8,8 +8,6 @@ export interface Config {
     | 'node_modules/@osm-conflation-engine/cli/config.schema.json';
 
   metadata: {
-    /** format should be `https://github.com/a/b` */
-    git_repository: string;
     name: string;
     description: string;
     wiki_page: string;
