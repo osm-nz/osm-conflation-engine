@@ -37,9 +37,9 @@ jobs:
       - name: 🚀 npm publish (cli)
         if: ${{ steps.release.outputs['packages/cli--release_created'] }}
         working-directory: packages/cli
-        run: npm publish --provenance
+        run: pnpm publish --provenance
 
       - name: 🚀 npm publish (changeset-watcher)
         if: ${{ steps.release.outputs['packages/changeset-watcher--release_created'] }}
         working-directory: packages/changeset-watcher
-        run: npm publish --provenance
+        run: pnpm publish --provenance
