@@ -20,6 +20,7 @@ import {
   getFlagFromWikidata,
   getImageFromOsmWikibase,
 } from '../api/wikibase.js';
+import { getFormatterUrl } from '../api/tag2link.js';
 
 export class RunHistoryPut extends OpenAPIRoute {
   override schema = {
@@ -92,6 +93,7 @@ export class RunHistoryPut extends OpenAPIRoute {
       extra: {
         image,
         regionFlagImage,
+        formatterUrl: getFormatterUrl(data.params.refTag),
       },
     };
 

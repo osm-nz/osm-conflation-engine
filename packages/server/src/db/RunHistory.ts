@@ -22,6 +22,12 @@ export const RunHistoryExtraSchema = z.object({
     .string()
     .optional()
     .describe('A link to an image for this import, derived on the server side'),
+  formatterUrl: z
+    .string()
+    .optional()
+    .describe(
+      'The URL from tag2link for this refTag, if tag2link has an entry',
+    ),
 });
 export type RunHistoryExtra = z.infer<typeof RunHistoryExtraSchema>;
 
