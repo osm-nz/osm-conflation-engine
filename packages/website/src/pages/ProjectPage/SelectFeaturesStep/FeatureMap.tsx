@@ -28,8 +28,38 @@ const CIRCLE_LAYER = 'features-circle';
 const CENTROID_LAYER = 'features-centroid';
 const LAYERS = [FILL_LAYER, LINE_LAYER, CIRCLE_LAYER, CENTROID_LAYER];
 
-/** at lower zoom levels, polygons are also drawn as a centroid point */
+/**
+ * at lower zoom levels, polygons and polylines are also drawn as a centroid point */
 const CENTROID_MAX_ZOOM = 14;
+
+function getLowZoomMarker(feature: Feature): Feature | undefined {
+  const { geometry } = feature;
+  switch (geometry.type) {
+    case 'Polygon':
+    case 'MultiPolygon': {
+      return getCentroid(feature);
+    }
+
+    case 'LineString':
+    case 'MultiLineString': {
+      // for lines, it's actually the first point, not the centroid
+      const [first] =
+        geometry.type === 'LineString'
+          ? geometry.coordinates
+          : geometry.coordinates.flat();
+      if (!first) return undefined;
+      return {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: first },
+        properties: { ...feature.properties, centroid: true },
+      };
+    }
+
+    default: {
+      return undefined; // render nothing for Points
+    }
+  }
+}
 
 const isType = (...types: GeoJsonGeometryTypes[]): ExpressionSpecification => [
   'in',
@@ -154,12 +184,8 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
             label: [row.label, row.dataset].filter(Boolean).join(' — '),
           },
         };
-        const { type } = row.original.geometry;
-        const centroid =
-          (type === 'Polygon' || type === 'MultiPolygon') &&
-          getCentroid(feature);
-
-        return centroid ? [feature, centroid] : [feature];
+        const marker = getLowZoomMarker(feature);
+        return marker ? [feature, marker] : [feature];
       }),
     });
 
