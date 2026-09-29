@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { OsmPatchFeature as GeoJsonFeature } from 'osm-api';
 
 import {
-  normalizeName,
+  normaliseNames,
   splitUntilSmallEnough,
 } from '../splitUntilSmallEnough.js';
 import type { Ctx } from '../../../types/internal.def.js';
@@ -115,7 +115,7 @@ describe(splitUntilSmallEnough, () => {
   });
 });
 
-describe(normalizeName, () => {
+describe(normaliseNames, () => {
   it.each`
     inKeys                                                   | outKeys
     ${['a^N^S']}                                             | ${['a 1']}
@@ -125,6 +125,6 @@ describe(normalizeName, () => {
     const input = Object.fromEntries(inKeys.map((k: string) => [k, 1]));
     const output = Object.fromEntries(outKeys.map((k: string) => [k, 1]));
 
-    expect(normalizeName(input as never)).toStrictEqual(output);
+    expect(normaliseNames(input as never)).toStrictEqual(output);
   });
 });

@@ -18,7 +18,10 @@ import {
   type TagDiff,
 } from '../../types/index.js';
 import { createDiamond, createSquare } from './createDiamond.js';
-import { splitUntilSmallEnough } from './splitUntilSmallEnough.js';
+import {
+  normaliseNames,
+  splitUntilSmallEnough,
+} from './splitUntilSmallEnough.js';
 import { shiftOverlappingPoints } from './spreadToGrid.js';
 import { createIndexAndSaveToDisk } from './createIndexAndSaveToDisk.js';
 import { mergeTinyDatasets } from './mergeTinyDatasets.js';
@@ -325,12 +328,13 @@ export async function conflate(
         });
       }
 
-      const groups = splitUntilSmallEnough(
+      let groups = splitUntilSmallEnough(
         ctx,
         group,
         { changesetTags, instructions },
         features,
       );
+      groups = normaliseNames(groups);
       Object.assign(handlerReturn[category], groups);
     }
 
