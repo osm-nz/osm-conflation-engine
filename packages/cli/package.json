@@ -35,7 +35,8 @@
     "h3-js": "^4.4.0",
     "osm-api": "^4.0.0",
     "pbf2json": "https://github.com/osm-nz/pbf2json",
-    "protobufjs": "^8.6.5"
+    "protobufjs": "^8.6.5",
+    "tag2link": "latest"
   },
   "devDependencies": {
     "@types/d3-geo": "^3.1.0",
