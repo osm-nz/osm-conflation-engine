@@ -19,7 +19,7 @@ export const ReportListPage: React.FC = () => {
       <Text c="dimmed">
         {$$(
           'ReportListPage.description',
-          { features: $('Common.features') },
+          { import: $('Navbar.import') },
           {
             a: ({ children }) => (
               <Anchor

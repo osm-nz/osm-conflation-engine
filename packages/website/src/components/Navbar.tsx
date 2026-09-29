@@ -70,9 +70,7 @@ export const Navbar: React.FC = () => {
             <>
               <NavbarProjectSelector />
               <Divider orientation="vertical" />
-              <NavItem to={`/project/${refTag}`}>
-                {$('Navbar.features')}
-              </NavItem>
+              <NavItem to={`/project/${refTag}`}>{$('Navbar.import')}</NavItem>
               {!refTag.startsWith('::') && (
                 <>
                   <Divider orientation="vertical" />
