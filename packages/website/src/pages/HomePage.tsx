@@ -67,13 +67,9 @@ const HomePageCard: React.FC<HomePageItem> = ({
         </Group>
 
         {osmKey && (
-          <OsmTag
-            tag={osmKey}
-            pos="absolute"
-            left={8}
-            bottom={8}
-            style={{ zIndex: 1 }}
-          />
+          <Box pos="absolute" left={8} bottom={8} style={{ zIndex: 1 }}>
+            <OsmTag tag={osmKey} />
+          </Box>
         )}
       </Card.Section>
 

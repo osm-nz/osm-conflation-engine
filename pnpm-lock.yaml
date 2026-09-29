@@ -228,6 +228,9 @@ importers:
       react-timeago-i18n:
         specifier: ^2.4.0
         version: 2.4.0(react@19.2.8)
+      tag2link:
+        specifier: latest
+        version: 2026.9.21
     devDependencies:
       '@osm-conflation-engine/cli':
         specifier: 'workspace:'

@@ -14,8 +14,8 @@ import { ReviewProgress } from './ReviewProgress.js';
 export const IgnoredPage: React.FC = () => {
   const { $ } = use(LocaleContext);
   const { maybeSuggestLoggingIn } = use(AuthContext);
-  const { ignoreList, fetchIgnoreList, notFound } = useProject();
-  const columns = useMemo(() => getColumns($), [$]);
+  const { project, ignoreList, fetchIgnoreList, notFound } = useProject();
+  const columns = useMemo(() => getColumns($, project), [$, project]);
   const [selected, setSelected] = useState<ReadonlySet<string>>(
     () => new Set(),
   );

@@ -1,17 +1,11 @@
-import {
-  Anchor,
-  Badge,
-  Code,
-  Group,
-  type MantineColor,
-  Text,
-} from '@mantine/core';
+import { Anchor, Badge, Group, type MantineColor, Text } from '@mantine/core';
 import type { OsmPatchFeature, Tags } from 'osm-api';
 import type { Action, OsmId } from '@osm-conflation-engine/cli';
 import type { Column, Sort } from '../../../components/MegaTable/index.js';
 import type { I$ } from '../../../context/LocaleContext.js';
 import { utilDisplayName } from '../../../util/utilDisplayName.js';
 import { osmLink } from '../../../util/osm.js';
+import { OsmTag } from '../../../components/OsmTag.js';
 
 export const ACTIONS: Action[] = ['create', 'edit', 'move', 'delete'];
 
@@ -104,9 +98,7 @@ export const getFeatureColumns = ($: I$): Column<FeatureRow, ColumnKey>[] => {
       render: (row) => (
         <Group gap={4}>
           {Object.entries(row.tags).map(([key, value]) => (
-            <Code key={key} fz="xs">
-              {key}={value}
-            </Code>
+            <OsmTag key={key} fz="xs" tag={`${key}=${value}`} />
           ))}
         </Group>
       ),

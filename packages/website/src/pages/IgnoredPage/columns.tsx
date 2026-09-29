@@ -1,9 +1,10 @@
 import { Anchor, Group, Text } from '@mantine/core';
 import TimeAgo from 'react-timeago-i18n';
-import type { IgnoredRow } from '../../api/conflation.js';
+import type { IgnoredRow, Project } from '../../api/conflation.js';
 import type { Column, Filters } from '../../components/MegaTable/index.js';
 import type { I$ } from '../../context/LocaleContext.js';
 import { OidcBadge } from '../../components/OidcBadge.js';
+import { OsmTag } from '../../components/OsmTag.js';
 import { ReviewBadge } from './ReviewBadge.js';
 
 export enum ReviewDecision {
@@ -15,7 +16,10 @@ export enum ReviewDecision {
 type SortKey =
   'feature' | 'username' | 'timestamp' | 'source' | 'review' | 'note';
 
-export const getColumns = ($: I$): readonly Column<IgnoredRow, SortKey>[] => {
+export const getColumns = (
+  $: I$,
+  project: Project | undefined,
+): readonly Column<IgnoredRow, SortKey>[] => {
   const reviewLabels: Record<ReviewDecision, string> = {
     [ReviewDecision.UnReviewed]: $('ReviewDecision.UnReviewed'),
     [ReviewDecision.Rejected]: $('ReviewDecision.Rejected'),
@@ -33,7 +37,8 @@ export const getColumns = ($: I$): readonly Column<IgnoredRow, SortKey>[] => {
             {row.local_key}
           </Text>
           <Text size="xs" c="dimmed">
-            {row.label} · {row.rowId}
+            {row.label} ·{' '}
+            <OsmTag tag={`${project?.refTag}=${row.rowId}`} hideKey />
           </Text>
         </>
       ),
