@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.9.0...cli-v3.10.0) (2026-09-29)
+
+
+### Features
+
+* use tag2link to linkify the primary key in reports ([e1312c6](https://github.com/osm-nz/osm-conflation-engine/commit/e1312c65b5a912fdcf23bff61a54b9476c6a9a79))
+
 ## [3.9.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.8.0...cli-v3.9.0) (2026-09-27)
 
 
