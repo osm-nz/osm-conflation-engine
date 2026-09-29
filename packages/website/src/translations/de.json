@@ -61,6 +61,8 @@
   "MegaTable.clear_filters": "Filter zurücksetzen",
   "MegaTable.no_match": "Keine Zeilen entsprechen diesen Filtern.",
   "MegaTable.rows_per_page": "Zeilen pro Seite",
+  "MetricsHistory.description": "Ergebnisse aller bisherigen Abgleichsläufe. {$perfect} wird nicht angezeigt.",
+  "MetricsHistory.title": "Abgleichsverlauf",
   "MetricsPage.last_edited_by_importer": "Zuletzt von einem Import bearbeitet",
   "MetricsPage.last_updated": "Zuletzt aktualisiert",
   "MetricsPage.postpass_unavailable": "{#em}Diese Daten sind nicht verfügbar, wenn postpass als Datenquelle verwendet wird. Wenn du diese Daten benötigst, wechsle zu overpass oder einem {#code}.pbf{/code}-Extrakt des Planet-Files{/em}",

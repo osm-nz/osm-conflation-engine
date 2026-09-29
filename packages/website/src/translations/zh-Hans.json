@@ -61,6 +61,8 @@
   "MegaTable.clear_filters": "清除筛选",
   "MegaTable.no_match": "没有符合筛选条件的行。",
   "MegaTable.rows_per_page": "每页行数",
+  "MetricsHistory.description": "每次运行合并的历史结果。不显示“{$perfect}”。",
+  "MetricsHistory.title": "合并历史",
   "MetricsPage.last_edited_by_importer": "最后由导入程序编辑",
   "MetricsPage.last_updated": "最后更新",
   "MetricsPage.postpass_unavailable": "使用 postpass 作为数据源时，此数据不可用。如需此数据，请改用 overpass 或 planet {#code}.pbf{/code} 文件提取",

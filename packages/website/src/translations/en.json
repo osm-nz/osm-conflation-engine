@@ -61,6 +61,8 @@
   "MegaTable.clear_filters": "Clear filters",
   "MegaTable.no_match": "No rows match these filters.",
   "MegaTable.rows_per_page": "Rows per page",
+  "MetricsHistory.description": "Historical results of every time that the conflation ran. {$perfect} is not shown.",
+  "MetricsHistory.title": "Conflation History",
   "MetricsPage.last_edited_by_importer": "Last edited by an importer",
   "MetricsPage.last_updated": "Last Updated",
   "MetricsPage.postpass_unavailable": "{#em}This data is not available when using postpass as a data source. If you want this data, switch to overpass or a planet {#code}.pbf{/code} file extract{/em}",

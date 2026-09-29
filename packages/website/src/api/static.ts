@@ -1,4 +1,8 @@
-import type { ConflateResult, IndexFile } from '@osm-conflation-engine/cli';
+import type {
+  ConflateResult,
+  IndexFile,
+  RecursiveHistoryFile,
+} from '@osm-conflation-engine/cli';
 import type { OsmPatch } from 'osm-api';
 import { API_BASE_URL } from './conflation.js';
 
@@ -17,6 +21,10 @@ export async function fetchStaticFile<T>(
 
 export function getMetrics(refTag: string) {
   return fetchStaticFile<ConflateResult>(refTag, 'metrics.json');
+}
+
+export function getMetricsHistory(refTag: string) {
+  return fetchStaticFile<RecursiveHistoryFile>(refTag, 'metrics-history.json');
 }
 
 export function getIndex(refTag: string) {

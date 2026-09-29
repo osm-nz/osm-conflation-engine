@@ -11,6 +11,7 @@ import { Sankey } from './Sankey.js';
 import { Venn } from './Venn.js';
 import { ConflationResult } from './ConflationResult.js';
 import { TagHistory } from './TagHistory.js';
+import { MetricsHistory } from './MetricsHistory.js';
 import { IgnoredByUser } from './IgnoredByUser.js';
 import { IgnoredByReview } from './IgnoredByReview.js';
 import { GenericCard, StatCard } from './StatCard.js';
@@ -34,6 +35,7 @@ export const MetricsPage: React.FC = () => {
     <Flex wrap="wrap" gap="md" align="stretch">
       <Sankey metrics={metrics} />
       <TagHistory metrics={metrics} />
+      <MetricsHistory metrics={metrics} />
 
       <ConflationResult metrics={metrics} />
       <Venn metrics={metrics} />
