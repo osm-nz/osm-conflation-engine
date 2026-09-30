@@ -1,0 +1,3 @@
+# so that GitHub's UI recognises these files
+*.overpassql linguist-detectable
+*.sql linguist-detectable

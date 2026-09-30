@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/taginfo/taginfo-projects/master/taginfo-project-schema.json",
+  "data_format": 1,
+  "data_url": "https://raw.githubusercontent.com/k-yle/osm-gtfs-sync/main/taginfo.json",
+  "data_updated": "20250505T000000Z",
+  "project": {
+    "name": "OSM↔GTFS Sync",
+    "description": "Tags used by the automatic conflation/sync service for GTFS data",
+    "project_url": "https://github.com/k-yle/osm-gtfs-sync",
+    "doc_url": "https://osm.wiki",
+    "icon_url": "https://kyle.kiwi/osm-gtfs-sync/logo.png",
+    "contact_name": "Kyle Hensel",
+    "contact_email": "message @kylenz on OpenStreetMap"
+  },
+  "tags": [
+    { "key": "type", "value": "route", "object_types": ["relation"] },
+    { "key": "type", "value": "route_master", "object_types": ["relation"] },
+    { "key": "route", "object_types": ["relation"] },
+    { "key": "route_master", "object_types": ["relation"] },
+
+    { "key": "network", "object_types": ["node", "relation"] },
+    { "key": "network:wikidata", "object_types": ["node", "relation"] },
+    { "key": "operator", "object_types": ["relation"] },
+    { "key": "operator:wikidata", "object_types": ["relation"] },
+    { "key": "ref", "object_types": ["node", "relation"] },
+    { "key": "local_ref", "object_types": ["node", "relation"] },
+    { "key": "name", "object_types": ["node", "relation"] },
+    { "key": "official_name", "object_types": ["node", "relation"] },
+    { "key": "wheelchair", "object_types": ["node", "relation"] },
+    { "key": "bicycle", "value": "no", "object_types": ["node", "relation"] },
+    { "key": "bicycle", "value": "yes", "object_types": ["node", "relation"] },
+    { "key": "colour", "object_types": ["relation"] },
+    { "key": "to", "object_types": ["relation"] },
+    { "key": "from", "object_types": ["relation"] },
+    { "key": "via", "object_types": ["relation"] },
+
+    { "key": "gtfs:stop_id:*", "object_types": ["node"] },
+    { "key": "gtfs:stop_code:*", "object_types": ["node"] },
+    { "key": "gtfs:route_id:*", "object_types": ["relation"] },
+    { "key": "gtfs:route_short_name:*", "object_types": ["relation"] },
+    { "key": "gtfs:trip_headsign", "object_types": ["relation"] },
+
+    {
+      "key": "school_bus",
+      "value": "designated",
+      "object_types": ["node", "relation"]
+    },
+    {
+      "key": "public_transport",
+      "value": "stop_area",
+      "object_types": ["relation"]
+    },
+    {
+      "key": "public_transport",
+      "value": "stop_position",
+      "object_types": ["node"]
+    },
+    {
+      "key": "public_transport",
+      "value": "platform",
+      "object_types": ["node"]
+    },
+    { "key": "highway", "value": "bus_stop", "object_types": ["node"] },
+    {
+      "key": "public_transport:version",
+      "value": "1",
+      "object_types": ["relation"]
+    },
+    {
+      "key": "public_transport:version",
+      "value": "2",
+      "object_types": ["relation"]
+    },
+    { "key": "direction", "value": "north", "object_types": ["relation"] },
+    { "key": "direction", "value": "south", "object_types": ["relation"] },
+    { "key": "direction", "value": "west", "object_types": ["relation"] },
+    { "key": "direction", "value": "east", "object_types": ["relation"] }
+  ]
+}
