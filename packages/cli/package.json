@@ -33,19 +33,19 @@
     "ajv": "^8.20.0",
     "d3-geo": "^3.1.1",
     "h3-js": "^4.4.0",
-    "osm-api": "^4.0.0",
+    "osm-api": "catalog:",
     "pbf2json": "https://github.com/osm-nz/pbf2json",
     "protobufjs": "^8.6.5",
-    "tag2link": "latest"
+    "tag2link": "catalog:"
   },
   "devDependencies": {
     "@types/d3-geo": "^3.1.0",
-    "@types/geojson": "^7946.0.16",
+    "@types/geojson": "catalog:",
     "@types/node": "catalog:",
     "@types/pbf2json": "^6.6.4",
     "@vitest/coverage-v8": "catalog:",
     "ts-json-schema-generator": "^2.9.0",
-    "tsdown": "^0.22.3",
+    "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

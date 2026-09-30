@@ -15,26 +15,25 @@
     "idb-keyval": "^6.2.1",
     "leaflet": "^1.9.4",
     "md5": "^2.3.0",
-    "osm-api": "^4.0.0",
+    "osm-api": "catalog:",
     "react-leaflet": "^5.0.0"
   },
   "peerDependencies": {
-    "react": "^19.2.8",
-    "react-router": "^8.3.1"
+    "react": "catalog:",
+    "react-router": "catalog:"
   },
   "devDependencies": {
-    "@types/geojson": "^7946.0.16",
+    "@types/geojson": "catalog:",
     "@types/leaflet": "^1.9.17",
     "@types/md5": "^2.3.5",
     "@types/node": "catalog:",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/web-worker": "^3.1.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "typescript": "catalog:",
-    "vite": "^6.1.0",
+    "vite": "catalog:",
     "vitest": "catalog:"
   }
 }
