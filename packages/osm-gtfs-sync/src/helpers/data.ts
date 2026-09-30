@@ -1,7 +1,7 @@
 import type { Stop } from 'gtfs-types';
 import type { Tags } from 'osm-api';
-import type { NetworkConfig } from '../types/config.def';
-import { version } from '../../package.json';
+import type { NetworkConfig } from '../types/config.def.js';
+import pkg from '../../package.json' with { type: 'json' };
 
 /**
  * Some datasets don't specify a `stop_code`, and just
@@ -57,7 +57,7 @@ export function getOsmRef(
 
 export function getChangesetTags(network: NetworkConfig) {
   return {
-    created_by: `osm-gtfs-sync ${version}`,
+    created_by: `osm-gtfs-sync ${pkg.version}`,
     source: `GTFS feed for ${network.networkName}`,
   };
 }

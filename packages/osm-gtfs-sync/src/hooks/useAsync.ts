@@ -15,7 +15,7 @@ export function useAsync<T>(
       .then(setData)
       .catch(setError)
       .then(() => setIsLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- itentional, enforced by eslint in the consumers
+    // eslint-disable-next-line react-hooks/exhaustive-deps, @eslint-react/exhaustive-deps -- itentional, enforced by eslint in the consumers
   }, deps);
 
   return <const>[data, error, isLoading];

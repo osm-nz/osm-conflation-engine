@@ -1,5 +1,5 @@
 import type { Tags } from 'osm-api';
-import type { NetworkConfig } from '../../types/config.def';
+import type { NetworkConfig } from '../../types/config.def.js';
 
 /**
  * removes any tags from the diff that are listed

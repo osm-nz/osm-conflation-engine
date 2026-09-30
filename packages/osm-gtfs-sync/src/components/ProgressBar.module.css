@@ -1,7 +1,7 @@
+/* eslint-disable css/use-baseline */
 .ProgressBar {
   display: flex;
   border-radius: 8px;
-  /* eslint-disable-next-line css/require-baseline -- bullshit */
   overflow: hidden;
   min-width: 300px;
   height: 26px;

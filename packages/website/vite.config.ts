@@ -8,6 +8,10 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 4884,
   },
+  optimizeDeps: {
+    exclude: ['@sqlite.org/sqlite-wasm', 'gtfs-sqlite'],
+    include: ['@osm-conflation-engine/osm-gtfs-sync > gtfs-sqlite > papaparse'],
+  },
   base: '/osm-conflation-engine',
   build: {
     sourcemap: true,

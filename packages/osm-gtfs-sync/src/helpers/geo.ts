@@ -2,7 +2,7 @@
 // copied from the linz-address-import repo
 //
 
-import type { BBox } from '../types/config.def';
+import type { BBox } from '../types/config.def.js';
 
 const { sin, cos, sqrt, PI: π, atan2 } = Math;
 

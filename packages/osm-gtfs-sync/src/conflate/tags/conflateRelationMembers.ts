@@ -34,7 +34,7 @@ export function conflateRelationMembers(
   if (options?.removeAllOtherNodes) {
     // remove all other nodes from the relation (but not ways or relations)
     for (const actual of actualMembers) {
-      const isExpected = expectedMembers.find(
+      const isExpected = expectedMembers.some(
         (m) => m.type === actual.type && m.ref === actual.ref,
       );
       if (actual.type === 'node' && !isExpected) {

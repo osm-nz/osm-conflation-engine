@@ -34,8 +34,8 @@ export const hhmmss = {
   fromSeconds(seconds: number, stripSeconds?: boolean) {
     const parts = [
       (seconds / 60 / 60) | 0, // hh
-      (seconds / 60) % 60 | 0, // mm
-      seconds % 60 | 0, // ss
+      ((seconds / 60) % 60) | 0, // mm
+      (seconds % 60) | 0, // ss
     ];
 
     // osm allows hh:mm[:ss] so remove the seconds if it's :00

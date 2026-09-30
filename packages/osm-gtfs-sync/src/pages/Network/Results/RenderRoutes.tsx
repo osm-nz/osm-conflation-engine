@@ -1,9 +1,9 @@
 import { GTFSBool, VehicleType } from 'gtfs-types';
-import { getOkayCount } from '../../../components/ProgressBar';
-import type { ConflationResult } from '../../../conflate';
-import type { FinalGTFSOutput } from '../../../conflate/conflateStops';
-import { createBlob } from '../../../helpers/js';
-import { Warnings } from './Warnings';
+import { getOkayCount } from '../../../components/ProgressBar.js';
+import type { ConflationResult } from '../../../conflate/index.js';
+import type { FinalGTFSOutput } from '../../../conflate/conflateStops.js';
+import { createBlob } from '../../../helpers/js.js';
+import { Warnings } from './Warnings.js';
 
 export const RenderDuration: React.FC<{
   durations: number[];

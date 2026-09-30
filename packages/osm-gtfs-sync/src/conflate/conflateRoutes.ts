@@ -7,24 +7,24 @@ import type {
 } from 'osm-api';
 import { LocationType, type Stop, type StopId } from 'gtfs-types';
 import type { SqlWorker } from 'gtfs-sqlite';
-import type { NetworkConfig } from '../types/config.def';
-import { getRouteTagsForTransportMode } from '../helpers/tagging';
-import { distanceBetween, getBearingBetweenCoords } from '../helpers/geo';
-import { createDiamond } from '../helpers/createDiamond';
+import type { NetworkConfig } from '../types/config.def.js';
+import { getRouteTagsForTransportMode } from '../helpers/tagging.js';
+import { distanceBetween, getBearingBetweenCoords } from '../helpers/geo.js';
+import { createDiamond } from '../helpers/createDiamond.js';
 import {
   getBaseRole,
   getChangesetTags,
   getOsmRef,
   getStopCode,
-} from '../helpers/data';
-import type { Count } from '../types/general.def';
+} from '../helpers/data.js';
+import type { Count } from '../types/general.def.js';
 import {
   NON_MEANINGFUL_ROUTE_TAGS,
   conflateRouteTags,
-} from './tags/conflateRouteTags';
-import { conflateRelationMembers } from './tags/conflateRelationMembers';
-import { Flags, type Journey, flagsToString } from './conflateStops';
-import type { ConflationResult } from '.';
+} from './tags/conflateRouteTags.js';
+import { conflateRelationMembers } from './tags/conflateRelationMembers.js';
+import { Flags, type Journey, flagsToString } from './conflateStops.js';
+import type { ConflationResult } from './index.js';
 
 /** only edit the tags if at least 1 tag is meaningful */
 const anyMeaningfulTagChanges = (tagChanges: Tags) =>
@@ -257,7 +257,7 @@ export async function conflateRoutes(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Add missing transit route relations from GTFS data`,
+      comment: 'Add missing transit route relations from GTFS data',
     },
   };
   const edit: OsmPatch = {
@@ -266,7 +266,8 @@ export async function conflateRoutes(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Auto-update the stop/platform roles of transit route relations from GTFS data`,
+      comment:
+        'Auto-update the stop/platform roles of transit route relations from GTFS data',
     },
   };
   const editRouteMaster: OsmPatch = {
@@ -303,7 +304,7 @@ export async function conflateRoutes(
         ...relation,
         score: getRanking(config, relation),
       }))
-      .sort((a, b) => b.score - a.score);
+      .toSorted((a, b) => b.score - a.score);
 
     if (candiateOsmRouteMasters.length) {
       // MARK: PTv2
@@ -349,7 +350,7 @@ export async function conflateRoutes(
               config,
             ),
           }))
-          .sort((a, b) => b.score - a.score);
+          .toSorted((a, b) => b.score - a.score);
 
         const bestScore = bestMatch[0]?.score;
         const numberWithSameScore = bestMatch.filter(
@@ -476,7 +477,7 @@ export async function conflateRoutes(
           ...relation,
           score: getRanking(config, relation),
         }))
-        .sort((a, b) => b.score - a.score);
+        .toSorted((a, b) => b.score - a.score);
 
       const bestScore = candiateOsmRoutes[0]?.score;
       const numberWithSameScore = candiateOsmRoutes.filter(

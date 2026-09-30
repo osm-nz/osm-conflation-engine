@@ -1,7 +1,7 @@
-import { getOkayCount } from '../../../components/ProgressBar';
-import type { ConflationResult } from '../../../conflate';
-import { createBlob } from '../../../helpers/js';
-import { Warnings } from './Warnings';
+import { getOkayCount } from '../../../components/ProgressBar.js';
+import type { ConflationResult } from '../../../conflate/index.js';
+import { createBlob } from '../../../helpers/js.js';
+import { Warnings } from './Warnings.js';
 
 export const RenderStations: React.FC<{
   data: NonNullable<ConflationResult['stations']>;

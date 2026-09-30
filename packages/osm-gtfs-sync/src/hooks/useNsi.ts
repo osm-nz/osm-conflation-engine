@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import { useAsync } from './useAsync';
+import { useAsync } from './useAsync.js';
 
 export interface NsiLogos {
   facebook?: string;

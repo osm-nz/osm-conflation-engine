@@ -1,9 +1,9 @@
 import { CommsChannel } from 'gtfs-sqlite';
-import { fetchFromOverpass } from '../api/overpass';
-import type { BBox, NetworkConfig } from '../types/config.def';
-import { conflateStops } from './conflateStops';
-import { conflateStations } from './conflateStations';
-import { conflateRoutes } from './conflateRoutes';
+import { fetchFromOverpass } from '../api/overpass.js';
+import type { BBox, NetworkConfig } from '../types/config.def.js';
+import { conflateStops } from './conflateStops.js';
+import { conflateStations } from './conflateStations.js';
+import { conflateRoutes } from './conflateRoutes.js';
 
 export interface ConflationResult {
   isComplete: boolean;
@@ -26,7 +26,7 @@ export async function conflate(
   onProgress?.(result);
   const log = (message?: string) => {
     if (message) {
-      console.log(message);
+      console.info(message);
       result.message = message;
     }
 

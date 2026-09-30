@@ -21,7 +21,7 @@ export const Warnings: React.FC<{
         {[...warnings].map((w) => (
           <li
             key={w}
-            // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- safeish
+            // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml -- safeish
             dangerouslySetInnerHTML={{
               __html: htmlEscape(w).replaceAll(
                 /\b([nwr])(\d+)\b/g,

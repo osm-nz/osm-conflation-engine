@@ -1,6 +1,5 @@
-import { Link } from 'react-router';
-import { getLogo, useNsi } from '../../hooks/useNsi';
-import type { NetworkConfig } from '../../types/config.def';
+import { getLogo, useNsi } from '../../hooks/useNsi.js';
+import type { NetworkConfig } from '../../types/config.def.js';
 
 export const NetworkNavbar: React.FC<{
   network: NetworkConfig;
@@ -11,8 +10,6 @@ export const NetworkNavbar: React.FC<{
 
   return (
     <header>
-      <Link to="/">&lt;- Back</Link>
-      {' | '}
       {nsiItem ? (
         <>
           {nsiItem.logos && (

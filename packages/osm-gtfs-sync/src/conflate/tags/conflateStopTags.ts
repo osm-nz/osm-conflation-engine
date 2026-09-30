@@ -1,9 +1,9 @@
 import { type Stop, VehicleType, WheelchairBoardingType } from 'gtfs-types';
 import type { Tags } from 'osm-api';
-import type { NetworkConfig } from '../../types/config.def';
-import { getStopTagsForTransportMode } from '../../helpers/tagging';
-import { getOsmRef } from '../../helpers/data';
-import { deleteIgnoredTags } from './tagHelpers';
+import type { NetworkConfig } from '../../types/config.def.js';
+import { getStopTagsForTransportMode } from '../../helpers/tagging.js';
+import { getOsmRef } from '../../helpers/data.js';
+import { deleteIgnoredTags } from './tagHelpers.js';
 
 // no point editting a node if it's purely to edit these tags
 export const NON_MEANINGFUL_TAGS = new Set([

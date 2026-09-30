@@ -14,6 +14,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@osm-conflation-engine/osm-gtfs-sync": "workspace:",
     "@mantine/core": "^9.0.1",
     "@mantine/hooks": "^9.0.1",
     "@nivo/line": "^0.99.0",

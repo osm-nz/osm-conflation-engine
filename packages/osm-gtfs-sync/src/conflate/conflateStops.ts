@@ -8,20 +8,23 @@ import {
   type VehicleType,
 } from 'gtfs-types';
 import type { SqlWorker } from 'gtfs-sqlite';
-import type { NetworkConfig } from '../types/config.def';
-import { distanceBetween, isInBbox } from '../helpers/geo';
-import { createDiamond } from '../helpers/createDiamond';
-import { TRIP_PERCENT_THRESHOLD } from '../config/constants';
-import type { Count, Merged } from '../types/general.def';
+import type { NetworkConfig } from '../types/config.def.js';
+import { distanceBetween, isInBbox } from '../helpers/geo.js';
+import { createDiamond } from '../helpers/createDiamond.js';
+import { TRIP_PERCENT_THRESHOLD } from '../config/constants.js';
+import type { Count, Merged } from '../types/general.def.js';
 import {
   type BaseRole,
   getBaseRole,
   getChangesetTags,
   getOsmRef,
   getStopCode,
-} from '../helpers/data';
-import { hhmmss } from '../helpers/js';
-import { NON_MEANINGFUL_TAGS, conflateStopTags } from './tags/conflateStopTags';
+} from '../helpers/data.js';
+import { hhmmss } from '../helpers/js.js';
+import {
+  NON_MEANINGFUL_TAGS,
+  conflateStopTags,
+} from './tags/conflateStopTags.js';
 
 export enum Flags {
   None = 0,
@@ -150,7 +153,7 @@ export function getOsmStopsByRef(osmRaw: OsmFeature[], config: NetworkConfig) {
             getRanking(config, stop) +
             (getBaseRole(stop.tags) === 'platform' ? 0.5 : 0),
         }))
-        .sort((a, b) => b.ranking - a.ranking);
+        .toSorted((a, b) => b.ranking - a.ranking);
 
       if (withRanking[0].ranking === withRanking[1].ranking) {
         // we couldn't resolve the ambiguity, the 2 best candidates
@@ -442,7 +445,7 @@ export async function conflateStops(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Auto-add missing transit stops from GTFS data`,
+      comment: 'Auto-add missing transit stops from GTFS data',
     },
   };
   const osmPatchWrong: OsmPatch = {
@@ -451,7 +454,7 @@ export async function conflateStops(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Auto-fix transit stops from GTFS data`,
+      comment: 'Auto-fix transit stops from GTFS data',
     },
   };
   const osmPatchDisused: OsmPatch = {

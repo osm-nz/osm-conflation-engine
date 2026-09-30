@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { hhmmss } from '../js';
+import { hhmmss } from '../js.js';
 
+// eslint-disable-next-line vitest/prefer-describe-function-title
 describe('hhmmss', () => {
   it.each`
     input           | output

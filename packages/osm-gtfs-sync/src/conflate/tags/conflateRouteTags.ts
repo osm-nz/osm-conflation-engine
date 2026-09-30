@@ -1,11 +1,11 @@
 import { GTFSBool } from 'gtfs-types';
 import type { Tags } from 'osm-api';
-import { getRouteTagsForTransportMode } from '../../helpers/tagging';
-import type { NetworkConfig } from '../../types/config.def';
-import type { GtfsDetailedRoute, Journey } from '../conflateStops';
-import { getOsmRef } from '../../helpers/data';
-import { hhmmss } from '../../helpers/js';
-import { deleteIgnoredTags } from './tagHelpers';
+import { getRouteTagsForTransportMode } from '../../helpers/tagging.js';
+import type { NetworkConfig } from '../../types/config.def.js';
+import type { GtfsDetailedRoute, Journey } from '../conflateStops.js';
+import { getOsmRef } from '../../helpers/data.js';
+import { hhmmss } from '../../helpers/js.js';
+import { deleteIgnoredTags } from './tagHelpers.js';
 
 // no point editting a route if it's purely to edit these tags
 export const NON_MEANINGFUL_ROUTE_TAGS = new Set([

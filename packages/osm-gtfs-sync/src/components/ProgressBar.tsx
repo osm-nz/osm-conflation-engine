@@ -1,4 +1,4 @@
-import type { Count } from '../types/general.def';
+import type { Count } from '../types/general.def.js';
 import classes from './ProgressBar.module.css';
 
 const { format: formatNumber } = new Intl.NumberFormat(navigator.languages);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { importDBFromZip } from 'gtfs-sqlite';
-import type { NetworkConfig } from '../../types/config.def';
+import type { NetworkConfig } from '../../types/config.def.js';
 
 export const ImportNetwork: React.FC<{
   network: NetworkConfig;

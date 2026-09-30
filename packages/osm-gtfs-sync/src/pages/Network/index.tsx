@@ -1,16 +1,12 @@
-import { use, useCallback, useState } from 'react';
-import { useParams } from 'react-router';
+import { useCallback, useState } from 'react';
 import { getAllDatabaseNames } from 'gtfs-sqlite';
-import { ConfigContext } from '../../context/ConfigContext';
-import { useAsync } from '../../hooks/useAsync';
-import { ImportNetwork } from './ImportNetwork';
-import { Execute } from './Execute';
-import { NetworkNavbar } from './NetworkNavbar';
+import { useAsync } from '../../hooks/useAsync.js';
+import { config } from '../../config/config.ts';
+import { ImportNetwork } from './ImportNetwork.js';
+import { Execute } from './Execute.js';
+import { NetworkNavbar } from './NetworkNavbar.js';
 
-export const Network: React.FC = () => {
-  const { qId } = useParams();
-  const { config } = use(ConfigContext);
-
+export const App: React.FC<{ qId: string }> = ({ qId }) => {
   const [key, setKey] = useState(0);
   const reloadDBList = useCallback(() => setKey((c) => c + 1), []);
 
@@ -20,7 +16,7 @@ export const Network: React.FC = () => {
 
   if (error) return <>DB error</>;
 
-  if (!network) return <>Could not find network “{network}”</>;
+  if (!network) return <>Could not find network “{qId}”</>;
 
   if (!databaseNames) return <>Loading...</>;
 

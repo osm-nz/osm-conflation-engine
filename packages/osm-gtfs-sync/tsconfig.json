@@ -1,21 +1,12 @@
 {
+  "extends": "eslint-config-kyle/tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2020",
-    "useDefineForClassFields": true,
-    "lib": ["esnext", "dom", "webworker"],
-    "module": "esnext",
-    "skipLibCheck": true,
-
-    "moduleResolution": "bundler",
+    "rootDir": ".",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "types": ["vite/client", "node"],
     "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "types": ["vite/client"],
-
-    "strict": true,
-    "noUncheckedSideEffectImports": true
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false
   },
-  "include": ["src", "scripts"]
+  "include": ["src", "scripts", "package.json"]
 }

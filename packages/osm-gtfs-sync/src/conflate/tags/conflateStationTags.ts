@@ -1,9 +1,9 @@
 import type { Stop } from 'gtfs-types';
 import type { Tags } from 'osm-api';
-import { getOsmRef, getStopCode } from '../../helpers/data';
-import type { NetworkConfig } from '../../types/config.def';
-import { normalizeName, transformName } from './conflateStopTags';
-import { deleteIgnoredTags } from './tagHelpers';
+import { getOsmRef, getStopCode } from '../../helpers/data.js';
+import type { NetworkConfig } from '../../types/config.def.js';
+import { normalizeName, transformName } from './conflateStopTags.js';
+import { deleteIgnoredTags } from './tagHelpers.js';
 
 const transformStationName = (name: string) =>
   name

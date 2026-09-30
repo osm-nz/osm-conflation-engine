@@ -1,6 +1,7 @@
-{
-  "$schema": "../../dist/config.schema.json",
-  // FIXME: auto detect if there are duplicate stop_codes, if so, suggest turning on useStopId
+import type { NetworkConfigFile } from '../types/config.def.ts';
+
+/* eslint-disable quotes, quote-props */ // prettier-ignore
+export const config: NetworkConfigFile = {
   "networks": [
     {
       "code": "NZ-AKL",
@@ -282,6 +283,7 @@
       "networkWikidata": "Q112189811",
       "gtfsSource": {
         "mode": "automatic",
+        // eslint-disable-next-line unicorn/prefer-https -- website only supports http
         "url": "http://gtfs.dynamis.live/boprc/prod/boprc-nz.zip"
       }
     },
@@ -332,7 +334,7 @@
       }
     },
     {
-      // FIXME: follow up to the latest response
+      // TODO: follow up to the latest response
       "code": "NZ-NTH",
       "networkName": "Citylink Whangārei",
       "networkWikidata": "Q112189837",
@@ -342,7 +344,7 @@
       }
     },
     {
-      // FIXME: follow up to the latest response
+      // TODO: follow up to the latest response
       "code": "NZ-HWK",
       "networkName": "goBay",
       "networkWikidata": "Q112189822",
@@ -424,4 +426,4 @@
       }
     }
   ]
-}
+};

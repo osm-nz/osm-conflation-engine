@@ -8,18 +8,18 @@ import type {
 import type { Geometry } from 'geojson';
 import { LocationType, type Stop } from 'gtfs-types';
 import type { SqlWorker } from 'gtfs-sqlite';
-import type { NetworkConfig } from '../types/config.def';
-import { createDiamond } from '../helpers/createDiamond';
+import type { NetworkConfig } from '../types/config.def.js';
+import { createDiamond } from '../helpers/createDiamond.js';
 import {
   getBaseRole,
   getChangesetTags,
   getOsmRef,
   getStopCode,
-} from '../helpers/data';
-import type { Count } from '../types/general.def';
-import { conflateRelationMembers } from './tags/conflateRelationMembers';
-import { conflateStationTags } from './tags/conflateStationTags';
-import { getOsmStopsByRef } from './conflateStops';
+} from '../helpers/data.js';
+import type { Count } from '../types/general.def.js';
+import { conflateRelationMembers } from './tags/conflateRelationMembers.js';
+import { conflateStationTags } from './tags/conflateStationTags.js';
+import { getOsmStopsByRef } from './conflateStops.js';
 
 export type OsmStation = OsmRelation & {
   children: OsmFeature[];
@@ -83,7 +83,7 @@ export async function conflateStations(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Auto-add missing stop_area relations from GTFS data`,
+      comment: 'Auto-add missing stop_area relations from GTFS data',
     },
   };
   const edit: OsmPatch = {
@@ -92,7 +92,7 @@ export async function conflateStations(
     size: 'medium',
     changesetTags: {
       ...getChangesetTags(config),
-      comment: `Auto-fix stop_area relations from GTFS data`,
+      comment: 'Auto-fix stop_area relations from GTFS data',
     },
   };
 

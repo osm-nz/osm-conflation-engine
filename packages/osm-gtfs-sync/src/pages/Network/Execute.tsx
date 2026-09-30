@@ -1,15 +1,15 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { MapContainer, Rectangle, TileLayer } from 'react-leaflet';
 import { CommsChannel, deleteDatabase } from 'gtfs-sqlite';
-import { type ConflationResult, conflate } from '../../conflate';
-import type { NetworkConfig } from '../../types/config.def';
-import { clearOverpassCache } from '../../api/overpass';
-import { bboxToCentroid } from '../../helpers/geo';
-import { ProgressBar } from '../../components/ProgressBar';
-import { downloadBlob } from '../../helpers/js';
-import { RenderStops } from './Results/RenderStops';
-import { RenderStations } from './Results/RenderStations';
-import { RenderRoutes } from './Results/RenderRoutes';
+import { type ConflationResult, conflate } from '../../conflate/index.js';
+import type { NetworkConfig } from '../../types/config.def.js';
+import { clearOverpassCache } from '../../api/overpass.js';
+import { bboxToCentroid } from '../../helpers/geo.js';
+import { ProgressBar } from '../../components/ProgressBar.js';
+import { downloadBlob } from '../../helpers/js.js';
+import { RenderStops } from './Results/RenderStops.js';
+import { RenderStations } from './Results/RenderStations.js';
+import { RenderRoutes } from './Results/RenderRoutes.js';
 import 'leaflet/dist/leaflet.css';
 
 export const Execute = memo<{
@@ -18,20 +18,20 @@ export const Execute = memo<{
 }>(({ network, reloadDBList }) => {
   const [result, setResult] = useState<ConflationResult>();
   const [error, setError] = useState<Error>();
-  const inflight = useRef<Promise<void>>(undefined);
+  const inflightRef = useRef<Promise<void>>(undefined);
 
   const [key, setKey] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    inflight.current ||= conflate(network, setResult, controller.signal)
+    inflightRef.current ||= conflate(network, setResult, controller.signal)
       .then(() => {
-        inflight.current = undefined;
+        inflightRef.current = undefined;
       })
       .catch(setError);
 
     return () => {
       controller.abort();
-      inflight.current = undefined;
+      inflightRef.current = undefined;
     };
   }, [key, network]);
 
@@ -118,7 +118,7 @@ export const Execute = memo<{
           clearOverpassCache(network.networkWikidata);
           setKey((c) => c + 1);
         }}
-        disabled={!!inflight.current}
+        disabled={!!inflightRef.current}
       >
         Re-fetch from OSM
       </button>
@@ -129,7 +129,7 @@ export const Execute = memo<{
           const blobUrl = await comms.dump();
           downloadBlob(`${network.networkName}.sqlite3`, blobUrl);
         }}
-        disabled={!!inflight.current}
+        disabled={!!inflightRef.current}
       >
         Export sqlite3 DB dump
       </button>

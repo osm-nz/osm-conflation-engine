@@ -1,6 +1,6 @@
 import type { OsmFeature } from 'osm-api';
 import { del, get, set } from 'idb-keyval';
-import type { BBox } from '../types/config.def';
+import type { BBox } from '../types/config.def.js';
 import query from './query.overpassql?raw';
 
 export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
