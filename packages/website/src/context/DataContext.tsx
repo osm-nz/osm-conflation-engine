@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import type { ConflateResult } from '@osm-conflation-engine/cli';
+import { CONFIG as GTFS_CONFIG } from '@osm-conflation-engine/osm-gtfs-sync/src/config/_index.js';
 import { type Project, getAllProjects } from '../api/conflation.js';
 import { FullPageError } from '../components/FullPageError.js';
 import { FullPageLoading } from '../components/FullPageLoading.js';
@@ -91,6 +92,27 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
           };
         })
         .filter(isTruthy),
+      ...GTFS_CONFIG.map((config): HomePageItem => {
+        return {
+          region: config.code.split('-', 1)[0]!,
+          regionFlag: '', // TODO:
+          count: -1, // TODO:
+          name: `Public Transport — ${config.networkName}`,
+          description: `GTFS data in ${config.code}`,
+          operator: '', // TODO:
+          timestamp: new Date().toISOString(), // TODO:
+          osmKey: `network:wikidata=${config.networkWikidata}`,
+          refTag: `::gtfs::${config.networkWikidata}`,
+          wikiPageLink: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
+          metrics: {
+            delete: 1, // TODO:
+            edit: 0, // TODO:
+            perfect: 0, // TODO:
+            create: 0, // TODO:
+          },
+          image: '', // TODO:
+        };
+      }),
     ];
   }, [allProjects, extraInfo]);
 

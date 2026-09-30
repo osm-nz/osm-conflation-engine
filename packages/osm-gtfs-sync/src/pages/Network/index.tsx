@@ -6,7 +6,7 @@ import { ImportNetwork } from './ImportNetwork.js';
 import { Execute } from './Execute.js';
 import { NetworkNavbar } from './NetworkNavbar.js';
 
-export const App: React.FC<{ qId: string }> = ({ qId }) => {
+const GtfsApp: React.FC<{ qId: string }> = ({ qId }) => {
   const [key, setKey] = useState(0);
   const reloadDBList = useCallback(() => setKey((c) => c + 1), []);
 
@@ -38,3 +38,5 @@ export const App: React.FC<{ qId: string }> = ({ qId }) => {
     </>
   );
 };
+
+export default GtfsApp;

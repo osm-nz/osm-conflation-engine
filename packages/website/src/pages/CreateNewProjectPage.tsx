@@ -34,24 +34,33 @@ const PROJECT_TYPES = [
     Icon: IconBusFilled,
     blurb: (
       <>
-        The GTFS conflation tool is not integrated with the new conflation
-        engine yet. For now, the{' '}
+        To configure Public Transport (GTFS) conflation for a new region, create
+        or edit the configuration file for the corresponding country, which is
+        located in{' '}
         <Anchor
-          href="https://kyle.kiwi/osm-gtfs-sync/"
+          href="https://github.com/osm-nz/osm-conflation-engine/tree/test/packages/osm-gtfs-sync/src/config"
           target="_blank"
           rel="noopener"
+          fw={600}
         >
-          legacy UI is still available
+          this folder
         </Anchor>{' '}
-        for some regions, and the{' '}
+        of{' '}
+        <SourceCodeLink
+          provider="github.com"
+          org="osm-nz"
+          repo="osm-conflation-engine"
+          size="sm"
+        />
+        . For your own data analysis and prototyping, you can use the separate{' '}
         <Anchor
           href="https://kyle.kiwi/gtfs-sqlite/"
           target="_blank"
           rel="noopener"
         >
           sqlite query tool
-        </Anchor>{' '}
-        is also still avialable.
+        </Anchor>
+        .
       </>
     ),
   },

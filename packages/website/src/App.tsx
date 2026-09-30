@@ -31,10 +31,6 @@ const router = createHashRouter([
         path: '/project/:refTag/reports/:fileName',
         Component: ReportDetailsPage,
       },
-      {
-        path: '/network/:qId',
-        lazy: () => import('./pages/NetworkPage.js'), // bc of sqlite
-      },
     ],
   },
 ]);
