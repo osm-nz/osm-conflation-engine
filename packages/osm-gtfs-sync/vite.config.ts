@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: '', // use relative paths
   plugins: [react()],
-  esbuild: {
+  oxc: {
     target: 'es2022',
   },
   server: {

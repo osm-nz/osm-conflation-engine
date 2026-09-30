@@ -101,7 +101,3 @@ export interface NetworkConfig {
 }
 
 export type DownloadType = NetworkConfig['gtfsSource']['mode'];
-
-export interface NetworkConfigFile {
-  networks: NetworkConfig[];
-}

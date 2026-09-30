@@ -11,7 +11,7 @@ import type { SqlWorker } from 'gtfs-sqlite';
 import type { NetworkConfig } from '../types/config.def.js';
 import { distanceBetween, isInBbox } from '../helpers/geo.js';
 import { createDiamond } from '../helpers/createDiamond.js';
-import { TRIP_PERCENT_THRESHOLD } from '../config/constants.js';
+import { TRIP_PERCENT_THRESHOLD } from '../config/_global.ts';
 import type { Count, Merged } from '../types/general.def.js';
 import {
   type BaseRole,

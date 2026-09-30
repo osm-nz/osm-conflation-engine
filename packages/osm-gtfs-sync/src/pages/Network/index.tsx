@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { getAllDatabaseNames } from 'gtfs-sqlite';
 import { useAsync } from '../../hooks/useAsync.js';
-import { config } from '../../config/config.ts';
+import { CONFIG } from '../../config/_index.ts';
 import { ImportNetwork } from './ImportNetwork.js';
 import { Execute } from './Execute.js';
 import { NetworkNavbar } from './NetworkNavbar.js';
@@ -12,7 +12,7 @@ export const App: React.FC<{ qId: string }> = ({ qId }) => {
 
   const [databaseNames, error] = useAsync(getAllDatabaseNames, [key]);
 
-  const network = config.networks.find((n) => n.networkWikidata === qId);
+  const network = CONFIG.find((n) => n.networkWikidata === qId);
 
   if (error) return <>DB error</>;
 
