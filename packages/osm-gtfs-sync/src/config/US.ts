@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const US: NetworkConfig[] = [
   {
     code: 'US-NY-MTA',
+    region: 'US-NY',
     networkName: 'NYC Subway',
     networkWikidata: 'Q7733',
     gtfsSource: {

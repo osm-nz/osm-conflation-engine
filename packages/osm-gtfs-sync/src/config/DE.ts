@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const DE: NetworkConfig[] = [
   {
     code: 'DE-BY-MVV',
+    region: 'DE-BY',
     networkName: 'Münchner Verkehrs- und Tarifverbund',
     networkWikidata: 'Q259000',
     gtfsSource: {
@@ -14,6 +15,7 @@ export const DE: NetworkConfig[] = [
   },
   {
     code: 'DE-SN-MDV',
+    region: 'DE-SN',
     networkName: 'Mitteldeutscher Verkehrsverbund',
     networkWikidata: 'Q1742463',
     gtfsSource: {

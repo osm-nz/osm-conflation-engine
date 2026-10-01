@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const AU: NetworkConfig[] = [
   {
     code: 'AU-NSW',
+    region: 'AU-NSW',
     networkName: 'TfNSW',
     networkWikidata: 'Q7834923',
     gtfsSource: {
@@ -19,6 +20,7 @@ export const AU: NetworkConfig[] = [
   },
   {
     code: 'AU-ACT-Bus',
+    region: 'AU-ACT',
     networkName: 'Transport Canberra',
     networkWikidata: 'Q4650892',
     gtfsSource: {
@@ -29,6 +31,7 @@ export const AU: NetworkConfig[] = [
   },
   {
     code: 'AU-ACT-LightRail',
+    region: 'AU-ACT',
     networkName: 'Canberra Metro',
     networkWikidata: 'Q16927042',
     gtfsSource: {
@@ -46,6 +49,7 @@ export const AU: NetworkConfig[] = [
   },
   {
     code: 'AU-QLD-Translink-SEQ',
+    region: 'AU-QLD',
     networkName: 'Translink',
     networkWikidata: 'Q7833625',
     gtfsSource: {
@@ -57,6 +61,7 @@ export const AU: NetworkConfig[] = [
   },
   {
     code: 'AU-QLD-Translink-WHT',
+    region: 'AU-QLD',
     networkName: 'Translink',
     networkWikidata: 'Q7833625',
     gtfsSource: {

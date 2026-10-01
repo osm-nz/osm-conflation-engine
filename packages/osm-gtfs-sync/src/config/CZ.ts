@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const CZ: NetworkConfig[] = [
   {
     code: 'CZ-IDSJMK',
+    region: 'CZ-64',
     networkName: 'Integrovaný dopravní systém Jihomoravského kraje',
     networkWikidata: 'Q12020731',
     gtfsSource: {

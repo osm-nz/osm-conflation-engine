@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const NZ: NetworkConfig[] = [
   {
     code: 'NZ-AKL',
+    region: 'NZ-AUK',
     networkName: 'AT',
     networkWikidata: 'Q4819567',
     gtfsSource: {
@@ -91,6 +92,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-WLG',
+    region: 'NZ-WGN',
     networkName: 'Metlink',
     networkWikidata: 'Q7258026',
     gtfsSource: {
@@ -264,6 +266,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-WKT',
+    region: 'NZ-WKO',
     networkName: 'BUSIT',
     networkWikidata: 'Q24998601',
     gtfsSource: {
@@ -280,6 +283,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-BOP',
+    region: 'NZ-BOP',
     networkName: 'BayBus',
     networkWikidata: 'Q112189811',
     gtfsSource: {
@@ -292,6 +296,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-MWT',
+    region: 'NZ-MWT',
     networkName: 'Horizons',
     networkWikidata: 'Q124314259',
     gtfsSource: {
@@ -302,6 +307,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-TKI',
+    region: 'NZ-TKI',
     networkName: 'Taranaki Regional Council',
     networkWikidata: 'Q16926647',
     gtfsSource: {
@@ -322,6 +328,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-NSN',
+    region: 'NZ-NSN',
     networkName: 'eBus',
     networkWikidata: 'Q133818760',
     gtfsSource: {
@@ -332,6 +339,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-CHC',
+    region: 'NZ-CAN',
     networkName: 'Metro Christchurch',
     networkWikidata: 'Q7258007',
     gtfsSource: {
@@ -342,6 +350,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-NTH',
+    region: 'NZ-NTL',
     networkName: 'Citylink Whangārei',
     networkWikidata: 'Q112189837',
     gtfsSource: {
@@ -352,6 +361,7 @@ export const NZ: NetworkConfig[] = [
   },
   {
     code: 'NZ-HWK',
+    region: 'NZ-HKB',
     networkName: 'goBay',
     networkWikidata: 'Q112189822',
     gtfsSource: {
@@ -367,6 +377,7 @@ export const NZ: NetworkConfig[] = [
   // Chatham Islands have no public transport
   {
     code: 'NZ-OTG',
+    region: 'NZ-OTA',
     networkName: 'Otago Regional Council',
     networkWikidata: 'Q7108351',
     gtfsSource: {

@@ -94,7 +94,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         .filter(isTruthy),
       ...GTFS_CONFIG.map((config): HomePageItem => {
         return {
-          region: config.code.split('-', 1)[0]!,
+          region: config.region,
           regionFlag: '', // TODO:
           count: -1, // TODO:
           name: `Public Transport — ${config.networkName}`,

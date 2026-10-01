@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const AT: NetworkConfig[] = [
   {
     code: 'AT-OOeVV',
+    region: 'AT-4',
     networkName: 'Oberösterreichischer Verkehrsverbund',
     networkWikidata: 'Q2011605',
     gtfsSource: {
@@ -14,6 +15,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-SVV',
+    region: 'AT-5',
     networkName: 'Salzburger Verkehrsverbund',
     networkWikidata: 'Q1254319',
     gtfsSource: {
@@ -25,6 +27,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-VKG',
+    region: 'AT-2',
     networkName: 'Kärntner Linien',
     networkWikidata: 'Q2516465',
     gtfsSource: {
@@ -36,6 +39,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-VOR',
+    region: 'AT-9',
     networkName: 'VOR',
     networkWikidata: 'Q2516485',
     gtfsSource: {
@@ -47,6 +51,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-VVSt',
+    region: 'AT-6',
     networkName: 'Verkehrsverbund Steiermark',
     networkWikidata: 'Q2341954',
     gtfsSource: {
@@ -58,6 +63,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-VVT',
+    region: 'AT-7',
     networkName: 'Verkehrsverbund Tirol',
     networkWikidata: 'Q1668732',
     gtfsSource: {
@@ -69,6 +75,7 @@ export const AT: NetworkConfig[] = [
   },
   {
     code: 'AT-VVV',
+    region: 'AT-8',
     networkName: 'Verkehrsverbund Vorarlberg',
     networkWikidata: 'Q2516495',
     gtfsSource: {

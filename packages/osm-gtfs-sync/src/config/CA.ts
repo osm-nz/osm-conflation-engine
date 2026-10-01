@@ -3,6 +3,7 @@ import type { NetworkConfig } from '../types/config.def.js';
 export const CA: NetworkConfig[] = [
   {
     code: 'CA-QC-STLevis',
+    region: 'CA-QC',
     networkName: 'STLévis',
     networkWikidata: 'Q3488027',
     gtfsSource: {

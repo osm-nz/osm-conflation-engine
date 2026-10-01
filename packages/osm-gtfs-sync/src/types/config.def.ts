@@ -17,6 +17,9 @@ export interface NetworkConfig {
    */
   code: string;
 
+  /** region or subdivison code */
+  region: string;
+
   gtfsSource: {
     url: string;
     /**
