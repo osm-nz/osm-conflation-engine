@@ -16,7 +16,7 @@ export const ImportNetwork: React.FC<{
 
       await importDBFromZip({
         zipFile: file,
-        databaseName: network.networkWikidata,
+        databaseName: network.code,
         onProgress: setProgress,
         exclude: ['shapes.txt'],
       });

@@ -19,7 +19,7 @@ export const IframePage: React.FC<{ refTag: string }> = ({ refTag }) => {
   }
 
   if (type === 'gtfs') {
-    return <LazyGtfsApp qId={id!} />;
+    return <LazyGtfsApp code={id!} />;
   }
 
   return <PageNotFound />;

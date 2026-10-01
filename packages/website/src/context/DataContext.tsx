@@ -102,7 +102,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
           operator: '', // TODO:
           timestamp: new Date().toISOString(), // TODO:
           osmKey: `network:wikidata=${config.networkWikidata}`,
-          refTag: `::gtfs::${config.networkWikidata}`,
+          refTag: `::gtfs::${config.code}`,
           wikiPageLink: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
           metrics: {
             delete: 1, // TODO:

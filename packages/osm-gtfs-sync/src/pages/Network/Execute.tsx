@@ -101,7 +101,7 @@ export const Execute = memo<{
           if (!confirm('sure?')) return;
 
           try {
-            await deleteDatabase(network.networkWikidata);
+            await deleteDatabase(network.code);
             reloadDBList();
           } catch (ex) {
             console.error(ex);
@@ -115,7 +115,7 @@ export const Execute = memo<{
       <button
         type="button"
         onClick={() => {
-          clearOverpassCache(network.networkWikidata);
+          clearOverpassCache(network.code);
           setKey((c) => c + 1);
         }}
         disabled={!!inflightRef.current}
@@ -125,7 +125,7 @@ export const Execute = memo<{
       <button
         type="button"
         onClick={async () => {
-          const comms = CommsChannel(network.networkWikidata);
+          const comms = CommsChannel(network.code);
           const blobUrl = await comms.dump();
           downloadBlob(`${network.networkName}.sqlite3`, blobUrl);
         }}

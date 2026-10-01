@@ -36,7 +36,7 @@ export async function conflate(
     onProgress?.(structuredClone(result));
   };
 
-  const comms = CommsChannel(config.networkWikidata);
+  const comms = CommsChannel(config.code);
 
   // just to test that the sqlite WebWorker connection is working, before
   // attempting to do a SQL query. The result is discarded
@@ -53,10 +53,7 @@ export async function conflate(
   window.comms = comms;
 
   log('Fetching OSM data from overpass...');
-  const osmData = await fetchFromOverpass(
-    config.bbox || bbox,
-    config.networkWikidata,
-  );
+  const osmData = await fetchFromOverpass(config.bbox || bbox, config.code);
   if (signal?.aborted) return;
 
   // @ts-expect-error -- TODO: temp for experimenting
