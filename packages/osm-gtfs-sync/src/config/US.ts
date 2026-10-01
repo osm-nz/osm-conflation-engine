@@ -1,4 +1,4 @@
-import type { NetworkConfig } from '../types/config.def.ts';
+import type { NetworkConfig } from '../types/config.def.js';
 
 export const US: NetworkConfig[] = [
   {
@@ -9,5 +9,6 @@ export const US: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip',
     },
+    licenseWaiverUrl: undefined,
   },
 ];

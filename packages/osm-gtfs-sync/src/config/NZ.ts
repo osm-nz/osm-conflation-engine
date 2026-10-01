@@ -1,4 +1,4 @@
-import type { NetworkConfig } from '../types/config.def.ts';
+import type { NetworkConfig } from '../types/config.def.js';
 
 export const NZ: NetworkConfig[] = [
   {
@@ -9,6 +9,7 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://gtfs.at.govt.nz/gtfs.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/Contributors#Auckland_Transport',
     ignoreRoutes: [
       'HCRU', // private harbour cruise
       'MTAR', // private prebooked waiheke ferry
@@ -96,6 +97,7 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://static.opendata.metlink.org.nz/v1/gtfs/full.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/File:Metlink-License-Email.pdf',
     ignoreTags: [
       'colour', // colours are wrong, they've used a generic blue for many bus routes
       'bicycle', // it's wrong, they've set it to 'no' for every bus, train, and ferry
@@ -274,6 +276,7 @@ export const NZ: NetworkConfig[] = [
     overrideTransportModes: {
       HUIA: 106,
     },
+    licenseWaiverUrl: 'https://osm.wiki/File:WRC-License-Email.pdf',
   },
   {
     code: 'NZ-BOP',
@@ -284,6 +287,8 @@ export const NZ: NetworkConfig[] = [
       // eslint-disable-next-line unicorn/prefer-https -- website only supports http
       url: 'http://gtfs.dynamis.live/boprc/prod/boprc-nz.zip',
     },
+    licenseWaiverUrl:
+      'https://osm.wiki/Contributors#Bay_of_Plenty_Regional_Council',
   },
   {
     code: 'NZ-MWT',
@@ -293,6 +298,7 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://www.horizons.govt.nz/HRC/media/Data/files/tranzit/HRC_GTFS_Production.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/Contributors#Horizons_Regional_Council',
   },
   {
     code: 'NZ-TKI',
@@ -312,6 +318,7 @@ export const NZ: NetworkConfig[] = [
       },
       'Weir Bros': { name: 'Weir Bros', wikidata: 'Q16926647' },
     },
+    licenseWaiverUrl: 'https://osm.wiki/Contributors#Taranaki_Regional_Council',
   },
   {
     code: 'NZ-NSN',
@@ -321,6 +328,7 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://data.trilliumtransit.com/gtfs/nsn-nz/nsn-nz.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/File:NZ_Nelson_CC-4.0_Waiver.pdf',
   },
   {
     code: 'NZ-CHC',
@@ -330,9 +338,9 @@ export const NZ: NetworkConfig[] = [
       mode: 'manual',
       url: 'https://apis.metroinfo.co.nz/rti/gtfs/v1/gtfs.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/Contributors#Environment_Canterbury',
   },
   {
-    // TODO: follow up to the latest response
     code: 'NZ-NTH',
     networkName: 'Citylink Whangārei',
     networkWikidata: 'Q112189837',
@@ -340,9 +348,9 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://data.trilliumtransit.com/gtfs/nrc-nz/nrc-nz.zip',
     },
+    licenseWaiverUrl: undefined,
   },
   {
-    // TODO: follow up to the latest response
     code: 'NZ-HWK',
     networkName: 'goBay',
     networkWikidata: 'Q112189822',
@@ -350,6 +358,7 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://data.trilliumtransit.com/gtfs/hbrc-nz/hbrc-nz.zip',
     },
+    licenseWaiverUrl: undefined,
   },
   // Gisborne has bus services but no GTFS feed
   // Southland has bus services but no GTFS feed
@@ -364,5 +373,6 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://www.orc.govt.nz/transit/google_transit.zip',
     },
+    licenseWaiverUrl: 'https://osm.wiki/File:ORC-License-Email.pdf',
   },
 ];

@@ -49,6 +49,9 @@ export interface NetworkConfig {
   /** the value for the `network:wkidata=*` tag in this city */
   networkWikidata: string;
 
+  /** if undefined, the UI won't let you import this dataset */
+  licenseWaiverUrl: string | undefined;
+
   /**
    * the value for the `operator=*` and `operator:wkidata=*` tags on each route
    * @key gtfsAgencyName
