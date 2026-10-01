@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.10.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.9.0...cli-v3.10.0) (2026-10-01)
+
+
+### Features
+
+* use tag2link to linkify the primary key in reports ([52952f3](https://github.com/osm-nz/osm-conflation-engine/commit/52952f3ded9d9af740ce963ce338876a9148d215))
+
+
+### Bug Fixes
+
+* normaliseNames never being called ([7a7e05d](https://github.com/osm-nz/osm-conflation-engine/commit/7a7e05d3e2e6b66771d9e3f3f7dcca206ed028fa))
+* stop generating index.json ([20557c2](https://github.com/osm-nz/osm-conflation-engine/commit/20557c206fabf42b4f5eb6ed0aea5a2b55c4e8f7))
+
 ## [3.9.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.8.0...cli-v3.9.0) (2026-09-27)
 
 
