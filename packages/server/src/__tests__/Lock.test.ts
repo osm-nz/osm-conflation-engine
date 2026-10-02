@@ -10,7 +10,13 @@ import worker from '../index.js';
 
 vi.mock('osm-api', async () => ({
   ...(await vi.importActual('osm-api')),
-  getUser: vi.fn(async () => ({ display_name: 'exampleUser' })),
+  getUser: vi.fn(async () => ({
+    display_name: 'exampleUser',
+    roles: [],
+    account_created: new Date('2018-01-01'),
+    changesets: { count: 123 },
+    blocks: { received: { count: 0, active: 0 } },
+  })),
 }));
 
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;

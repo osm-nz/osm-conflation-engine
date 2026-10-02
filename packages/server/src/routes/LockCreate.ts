@@ -4,15 +4,14 @@ import {
   OpenAPIRoute,
 } from 'chanfana';
 import { z } from 'zod';
-import { configure, getUser } from 'osm-api';
 import { drizzle } from 'drizzle-orm/d1';
 import type { AppContext } from '../types.def.js';
-import { USER_AGENT } from '../constants.js';
 import {
   type LockedLayers,
   LockedLayersModel,
   LockedLayersSchema,
 } from '../db/LockedLayers.js';
+import { verifyOsmUser } from '../auth/osm.js';
 
 export class LockCreate extends OpenAPIRoute {
   override schema = {
@@ -49,14 +48,7 @@ export class LockCreate extends OpenAPIRoute {
 
   override async handle(ctx: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
-    configure({
-      authHeader: data.headers.Authorization,
-      userAgent: USER_AGENT,
-    });
-    // this will throw an error if the token is invalid
-    const user = await getUser('me').catch((ex) => {
-      throw new ForbiddenException(`${ex}`);
-    });
+    const user = await verifyOsmUser(data.headers.Authorization);
 
     const newRow: LockedLayers = {
       refTag: data.params.refTag,

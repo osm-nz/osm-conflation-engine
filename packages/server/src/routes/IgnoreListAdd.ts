@@ -5,15 +5,14 @@ import {
   contentJson,
 } from 'chanfana';
 import { z } from 'zod';
-import { configure, getUser } from 'osm-api';
 import { drizzle } from 'drizzle-orm/d1';
 import type { AppContext } from '../types.def.js';
-import { USER_AGENT } from '../constants.js';
 import {
   type IgnoreList,
   IgnoreListModel,
   IgnoreListSchema,
 } from '../db/index.js';
+import { verifyOsmUser } from '../auth/osm.js';
 
 export class IgnoreListAdd extends OpenAPIRoute {
   override schema = {
@@ -58,14 +57,7 @@ export class IgnoreListAdd extends OpenAPIRoute {
 
   override async handle(ctx: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
-    configure({
-      authHeader: data.headers.Authorization,
-      userAgent: USER_AGENT,
-    });
-    // this will throw an error if the token is invalid
-    const user = await getUser('me').catch((ex) => {
-      throw new ForbiddenException(`${ex}`);
-    });
+    const user = await verifyOsmUser(data.headers.Authorization);
 
     const newRow: IgnoreList = {
       refTag: data.params.refTag,

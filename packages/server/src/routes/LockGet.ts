@@ -5,11 +5,10 @@ import {
 } from 'chanfana';
 import { drizzle } from 'drizzle-orm/d1';
 import { z } from 'zod';
-import { configure, getUser } from 'osm-api';
 import { and, eq, sql } from 'drizzle-orm';
 import type { AppContext } from '../types.def.js';
-import { USER_AGENT } from '../constants.js';
 import { LockedLayersModel, LockedLayersSchema } from '../db/LockedLayers.js';
+import { verifyOsmUser } from '../auth/osm.js';
 
 export class LockGet extends OpenAPIRoute {
   override schema = {
@@ -51,14 +50,8 @@ export class LockGet extends OpenAPIRoute {
     let isLoggedIn = false;
 
     if (authHeader) {
-      configure({
-        authHeader,
-        userAgent: USER_AGENT,
-      });
       // this will throw an error if the token is invalid
-      await getUser('me').catch((ex) => {
-        throw new ForbiddenException(`${ex}`);
-      });
+      await verifyOsmUser(authHeader, 'DISABLE_STRICT_MODE');
       // we do nothing with the getUser() response, we just confirm that
       // the user has an account, implying that they've agreed to the
       // TOS, and therefore we don't need to worry about returning
