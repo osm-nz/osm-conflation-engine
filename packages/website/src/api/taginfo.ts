@@ -13,9 +13,10 @@ export interface TaginfoChronology {
 }
 
 export async function getTaginfoKeyChronology(key: string) {
-  const result = await fetch(
-    `${TAGINFO_BASE_URL}/api/4/key/chronology?key=${key}`,
-  );
+  const qs = key.includes('=')
+    ? `key=${key.replace('=', '&value=')}`
+    : `key=${key}`;
+  const result = await fetch(`${TAGINFO_BASE_URL}/api/4/key/chronology?${qs}`);
   if (!result.ok) {
     throw new Error(`HTTP Error ${result.status} ${result.statusText}`);
   }

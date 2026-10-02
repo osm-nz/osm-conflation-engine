@@ -40,7 +40,7 @@ export function useProject() {
     () => ({
       notFound: !!allProjects.length && !project,
       project,
-      metrics,
+      metrics: metrics || project?.metrics,
       indexFile,
       ignoreList,
       fetchIgnoreList,

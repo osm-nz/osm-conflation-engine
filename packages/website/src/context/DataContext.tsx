@@ -33,6 +33,23 @@ export interface HomePageItem {
   image: string | undefined;
 }
 
+function projectToHomePageItem(p: Project): HomePageItem {
+  return {
+    count: p.metrics.countsByPhase.init.sourceDataset,
+    region: p.metrics.config.metadata.region,
+    regionFlag: p.extra.regionFlagImage,
+    name: p.metrics.config.metadata.name,
+    description: p.metrics.config.metadata.description,
+    osmKey: p.metrics.config.merge.osm_key,
+    refTag: p.refTag,
+    timestamp: p.timestamp,
+    operator: p.operator,
+    metrics: p.metrics.countsByPhase.conflated,
+    wikiPageLink: p.metrics.config.metadata.wiki_page,
+    image: p.extra.image,
+  };
+}
+
 export interface IDataContext {
   allProjects: Project[];
   homePageItems: HomePageItem[];
@@ -53,20 +70,9 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
 
   const homePageItems = useMemo(() => {
     return [
-      ...(allProjects || []).map((p): HomePageItem => ({
-        count: p.metrics.countsByPhase.init.sourceDataset,
-        region: p.metrics.config.metadata.region,
-        regionFlag: p.extra.regionFlagImage,
-        name: p.metrics.config.metadata.name,
-        description: p.metrics.config.metadata.description,
-        osmKey: p.metrics.config.merge.osm_key,
-        refTag: p.refTag,
-        timestamp: p.timestamp,
-        operator: p.operator,
-        metrics: p.metrics.countsByPhase.conflated,
-        wikiPageLink: p.metrics.config.metadata.wiki_page,
-        image: p.extra.image,
-      })),
+      ...(allProjects || [])
+        .filter((p) => p.operator.startsWith('https://')) // only OIDC-verified rows
+        .map(projectToHomePageItem),
       ...(extraInfo?.metadata || [])
         .map((extra): HomePageItem | undefined => {
           const lastRow = extraInfo?.rows.at(-1)?.regions[extra.code];
@@ -93,26 +99,29 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         })
         .filter(isTruthy),
       ...GTFS_CONFIG.map((config): HomePageItem => {
+        const refTag = `::gtfs::${config.code}`;
+        const match = allProjects?.find((p) => p.refTag === refTag);
         return {
+          // fallback values:
+          regionFlag: '',
+          count: 0,
+          metrics: { delete: 1, edit: 0, perfect: 0, create: 0 },
+          image: '',
+          operator: '',
+          timestamp: new Date(0).toISOString(),
+
+          // use the stored data if it exists:
+          ...(match && projectToHomePageItem(match)),
+
+          // prefer our local trusted data for trivial things:
           region: config.region,
-          regionFlag: '', // TODO:
-          count: -1, // TODO:
           name: `Public Transport — ${config.networkName}`,
           description: `GTFS data in ${config.code}`,
-          operator: '', // TODO:
-          timestamp: new Date().toISOString(), // TODO:
           osmKey: `network:wikidata=${config.networkWikidata}`,
-          refTag: `::gtfs::${config.code}`,
+          refTag,
           wikiPageLink: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
-          metrics: {
-            delete: 1, // TODO:
-            edit: 0, // TODO:
-            perfect: 0, // TODO:
-            create: 0, // TODO:
-          },
-          image: '', // TODO:
         };
-      }),
+      }).toSorted((a, b) => b.timestamp.localeCompare(a.timestamp)),
     ];
   }, [allProjects, extraInfo]);
 

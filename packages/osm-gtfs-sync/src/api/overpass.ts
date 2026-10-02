@@ -13,11 +13,13 @@ export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
     bbox.maxLon + 0.01,
   ].join(',');
 
+  const finalQuery = query.replaceAll('{{bbox}}', bboxString);
+
   const cache = await get<OsmFeature[]>(cacheKey);
-  if (cache) return cache;
+  if (cache) return { osmData: cache, query: finalQuery };
 
   const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(
-    query.replaceAll('{{bbox}}', bboxString),
+    finalQuery,
   )}`;
   const osmData: OsmFeature[] = await fetch(url)
     .then((r) => r.json())
@@ -25,7 +27,7 @@ export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
 
   await set(cacheKey, osmData);
 
-  return osmData;
+  return { osmData, query: finalQuery };
 }
 
 export const clearOverpassCache = (cacheKey: string) => del(cacheKey);

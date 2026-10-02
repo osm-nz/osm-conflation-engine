@@ -115,7 +115,7 @@ export const HomePage: React.FC = () => {
   return (
     <Flex wrap="wrap" gap="md" align="stretch">
       {homePageItems.map((p) => (
-        <HomePageCard key={p.osmKey + p.name} {...p} />
+        <HomePageCard key={p.osmKey + p.name + p.description} {...p} />
       ))}
       <Card
         shadow="sm"

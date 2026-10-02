@@ -73,12 +73,17 @@ export const Navbar: React.FC = () => {
               <NavbarProjectInfo />
               <Divider orientation="vertical" />
               <NavItem to={`/project/${refTag}`}>{$('Navbar.import')}</NavItem>
-              {!refTag.startsWith('::') && (
+
+              {(!refTag.startsWith('::') || refTag.startsWith('::gtfs::')) && (
                 <>
                   <Divider orientation="vertical" />
                   <NavItem to={`/project/${refTag}/metrics`}>
                     {$('Navbar.metrics')}
                   </NavItem>
+                </>
+              )}
+              {!refTag.startsWith('::') && (
+                <>
                   <Divider orientation="vertical" />
                   <NavItem to={`/project/${refTag}/warnings`}>
                     {$('Navbar.warnings')}

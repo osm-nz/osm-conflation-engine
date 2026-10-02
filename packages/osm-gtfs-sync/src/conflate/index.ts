@@ -1,9 +1,19 @@
 import { CommsChannel } from 'gtfs-sqlite';
+import { LocationType } from 'gtfs-types';
+import type { ConflateResult } from '@osm-conflation-engine/cli';
 import { fetchFromOverpass } from '../api/overpass.js';
 import type { BBox, NetworkConfig } from '../types/config.def.js';
+import type { Count } from '../types/general.def.js';
+import { writeToRunHistory } from '../api/conflation.ts';
+import { MatchType } from '../types/shared.def.ts';
 import { conflateStops } from './conflateStops.js';
 import { conflateStations } from './conflateStations.js';
 import { conflateRoutes } from './conflateRoutes.js';
+
+/** exact copy of defaults.ts */
+export const RECENT_THRESHOLD = 90;
+const thresholdDate = new Date();
+thresholdDate.setDate(thresholdDate.getDate() - RECENT_THRESHOLD);
 
 export interface ConflationResult {
   isComplete: boolean;
@@ -53,7 +63,10 @@ export async function conflate(
   window.comms = comms;
 
   log('Fetching OSM data from overpass...');
-  const osmData = await fetchFromOverpass(config.bbox || bbox, config.code);
+  const { osmData, query } = await fetchFromOverpass(
+    config.bbox || bbox,
+    config.code,
+  );
   if (signal?.aborted) return;
 
   // @ts-expect-error -- TODO: temp for experimenting
@@ -72,5 +85,96 @@ export async function conflate(
   if (signal?.aborted) return;
 
   result.isComplete = true;
+  log('saving progress update...');
+  const layers = [result.stops, result.stations, result.routes];
+  const sum = (key: keyof Count) =>
+    layers.reduce((total, layer) => total + layer.count[key], 0);
+
+  const create = sum('add');
+  const edit = sum('edit');
+  const ignored = sum('skipped');
+  const total = sum('total');
+  const perfect = total - create - edit - ignored;
+
+  let lastEditedByImporter = 0;
+  let recentlyChanged = 0;
+  for (const feature of osmData) {
+    if (feature.user?.endsWith('_import')) lastEditedByImporter++;
+    if (+new Date(feature.timestamp) > +thresholdDate) recentlyChanged++;
+  }
+
+  // try to get a count of stops+stations+routes that is roughly similar
+  // to the OSM matching logic.
+  const cols = await comms.getColumns('stops');
+  const stopFilter = cols.has('location_type')
+    ? `WHERE s.location_type IS NULL OR s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}', '')`
+    : '';
+  const [{ count: gtfsCount }] = await comms.exec<{ count: number }>(`
+    SELECT
+      (SELECT COUNT(*) FROM stops s ${stopFilter}) +
+      (SELECT COUNT(DISTINCT route_short_name) FROM routes)
+      AS count
+  `);
+
+  // this is a mock config, just to satisfy the format required by the API
+  const metrics: ConflateResult = {
+    config: {
+      $schema:
+        'https://unpkg.com/@osm-conflation-engine/cli/dist/config.schema.json',
+      metadata: {
+        name: `Public Transport — ${config.networkName}`,
+        description: `GTFS data in ${config.code}`,
+        region: config.region,
+        wiki_page: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
+      },
+      merge: {
+        dataset_column: '',
+        osm_key: `network:wikidata=${config.networkWikidata}`,
+      },
+      osm_data: {
+        tags_to_keep: [],
+        source: {
+          type: 'overpass',
+          overpass_query_file: query,
+        },
+      },
+      source_data: {
+        type: 'file',
+        file: config.gtfsSource.url,
+      },
+    },
+    warnings: layers.flatMap((layer) => [...layer.warnings]),
+    countsByPhase: {
+      init: {
+        ignored,
+        osm: {
+          duplicateRefs: 0,
+          lastEditedByImporter,
+          noRef: 0,
+          recentlyChanged,
+          recentlyChecked: 0,
+          semi: 0,
+          withRef: total,
+        },
+        sourceDataset: gtfsCount,
+      },
+      conflated: {
+        create,
+        delete: 0,
+        edit,
+        perfect,
+      },
+      matched: {
+        [MatchType.OneToOne]: edit + perfect,
+        [MatchType.OneToMany]: 0,
+        [MatchType.ManyToOne]: 0,
+        [MatchType.ManyToMany]: 0,
+        [MatchType.Delete]: 0,
+        [MatchType.Guess]: create,
+      },
+    },
+  };
+  await writeToRunHistory(config.code, metrics);
+
   log('done!');
 }
