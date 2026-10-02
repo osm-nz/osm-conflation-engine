@@ -243,9 +243,8 @@ export async function conflateStations(
   }
 
   const count: Count = {
-    add: missing.features.filter((f) => f.properties?.__action === 'edit')
-      .length,
-    edit: edit.features.filter((f) => f.properties?.__action === 'edit').length,
+    add: missing.features.length,
+    edit: edit.features.length,
     skipped: 0,
     total: Object.keys(stopsByStation).length,
   };
