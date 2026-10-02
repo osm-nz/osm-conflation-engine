@@ -20,6 +20,8 @@ import {
   getFlagFromWikidata,
   getImageFromOsmWikibase,
 } from '../api/wikibase.js';
+import { verifyOsmUser } from '../auth/osm.js';
+import { getStaticFilesUrl } from '../util/oidc.js';
 
 export class RunHistoryPut extends OpenAPIRoute {
   override schema = {
@@ -43,7 +45,7 @@ export class RunHistoryPut extends OpenAPIRoute {
           .string()
           .startsWith('Bearer ')
           .describe(
-            'An OIDC JWT Token issused by the CI/CD provider (such as GitHub Actions)',
+            'An OSM OAuth 2.0 token, or an OIDC JWT Token issused by the CI/CD provider (such as GitHub Actions)',
           ),
       }),
     },
@@ -67,9 +69,18 @@ export class RunHistoryPut extends OpenAPIRoute {
   override async handle(ctx: AppContext) {
     const data = await this.getValidatedData<typeof this.schema>();
 
-    const jwt = await verifyOIDC(
-      data.headers.Authorization.replace('Bearer ', ''),
-    );
+    const authToken = data.headers.Authorization.replace('Bearer ', '');
+
+    let operator: string;
+    if (authToken.includes('.')) {
+      // likely to be a JWT
+      const jwt = await verifyOIDC(authToken);
+      operator = createOIDCAuthor(jwt);
+    } else {
+      // all other non-JWT-like tokens are forwarded to OSM.org to verify
+      const user = await verifyOsmUser(data.headers.Authorization);
+      operator = user.display_name;
+    }
 
     const region = data.body.config.metadata.region;
 
@@ -83,7 +94,7 @@ export class RunHistoryPut extends OpenAPIRoute {
 
     const newRow: RunHistory = {
       refTag: data.params.refTag,
-      operator: createOIDCAuthor(jwt),
+      operator,
       timestamp: new Date().toISOString(),
       metrics: {
         ...data.body,
@@ -96,6 +107,22 @@ export class RunHistoryPut extends OpenAPIRoute {
     };
 
     const db = drizzle(ctx.env.d1_db);
+
+    const [existingRow] = await db
+      .select()
+      .from(RunHistoryModel)
+      .where(eq(RunHistoryModel.refTag, data.params.refTag));
+
+    if (
+      existingRow &&
+      !!getStaticFilesUrl(existingRow.operator) !==
+        !!getStaticFilesUrl(operator)
+    ) {
+      throw new ForbiddenException(
+        'Not allowed to switch between OIDC auth and user auth.',
+      );
+    }
+
     const [result] = await db.batch([
       // create/update the new row:
       db

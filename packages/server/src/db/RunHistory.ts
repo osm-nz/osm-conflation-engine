@@ -31,7 +31,9 @@ export const RunHistorySchema = z.object({
     .describe('The OSM tag used for the primary key (typically ref:*)'),
   operator: z
     .string()
-    .describe("it's an attested link to the git workflow that triggered it"),
+    .describe(
+      "it's an attested link to the git workflow that triggered it, or an OSM username",
+    ),
   timestamp: z.string().describe('Timestamp when the run completed (ISO Date)'),
   metrics: MetricsSchema.describe('the metrics outputed by the conflation run'),
   extra: RunHistoryExtraSchema.describe(
