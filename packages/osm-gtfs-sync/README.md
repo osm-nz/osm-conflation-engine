@@ -1,8 +1,5 @@
 # OSM-GTFS Sync
 
-![Test](https://github.com/k-yle/osm-gtfs-sync/actions/workflows/ci.yml/badge.svg)
-![Lines of code](https://img.shields.io/tokei/lines/github/k-yle/osm-gtfs-sync?color=green)
-
 A simple modern alternative to [CUTR-at-USF/gtfs-osm-sync](https://github.com/CUTR-at-USF/gtfs-osm-sync), with a few benefits:
 
 - doesn't add a spam of tags. The existing `ref`/`network`/`operator` tags from OSM are used, no need to add tags like `gtfs:stop_id`

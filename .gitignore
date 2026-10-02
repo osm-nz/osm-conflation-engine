@@ -6,6 +6,7 @@ dist
 *.tsbuildinfo
 *.pbf
 *.tgz
+*.auto-generated.*
 
 # cloudflare
 .wrangler/

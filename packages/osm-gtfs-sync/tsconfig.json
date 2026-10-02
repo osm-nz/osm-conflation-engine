@@ -8,5 +8,5 @@
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false
   },
-  "include": ["src", "scripts", "package.json"]
+  "include": ["src", "scripts", "package.json", "taginfo.template.json"]
 }

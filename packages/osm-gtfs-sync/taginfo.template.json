@@ -1,14 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/taginfo/taginfo-projects/master/taginfo-project-schema.json",
   "data_format": 1,
-  "data_url": "https://raw.githubusercontent.com/k-yle/osm-gtfs-sync/main/taginfo.json",
+  "data_url": "https://osm-nz.github.io/osm-conflation-engine/taginfo-gtfs.auto-generated.json",
   "data_updated": "20250505T000000Z",
   "project": {
     "name": "OSM↔GTFS Sync",
     "description": "Tags used by the automatic conflation/sync service for GTFS data",
-    "project_url": "https://github.com/k-yle/osm-gtfs-sync",
-    "doc_url": "https://osm.wiki",
-    "icon_url": "https://kyle.kiwi/osm-gtfs-sync/logo.png",
+    "project_url": "https://github.com/osm-nz/osm-conflation-engine/tree/main/packages/osm-gtfs-sync#readme",
+    "doc_url": "https://osm-nz.github.io/osm-conflation-engine",
+    "icon_url": "https://osm-nz.github.io/img/logo.png",
     "contact_name": "Kyle Hensel",
     "contact_email": "message @kylenz on OpenStreetMap"
   },
@@ -32,17 +32,16 @@
     { "key": "colour", "object_types": ["relation"] },
     { "key": "to", "object_types": ["relation"] },
     { "key": "from", "object_types": ["relation"] },
+    { "key": "to:ref", "object_types": ["relation"] },
+    { "key": "from:ref", "object_types": ["relation"] },
     { "key": "via", "object_types": ["relation"] },
 
-    { "key": "gtfs:stop_id:*", "object_types": ["node"] },
-    { "key": "gtfs:stop_code:*", "object_types": ["node"] },
-    { "key": "gtfs:route_id:*", "object_types": ["relation"] },
-    { "key": "gtfs:route_short_name:*", "object_types": ["relation"] },
     { "key": "gtfs:trip_headsign", "object_types": ["relation"] },
 
     {
       "key": "school_bus",
       "value": "designated",
+      "description": "Indicates that a bus stop or bus route is used by school busses",
       "object_types": ["node", "relation"]
     },
     {

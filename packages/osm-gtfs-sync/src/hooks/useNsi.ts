@@ -1,31 +1,14 @@
 import md5 from 'md5';
+import type { NsiWikidataJSON, WikidataLogos } from 'name-suggestion-index';
 import { useAsync } from './useAsync.js';
-
-export interface NsiLogos {
-  facebook?: string;
-  twitter?: string;
-  wikidata?: string;
-}
-
-export interface Nsi {
-  wikidata: {
-    [qId: string]: {
-      description: string;
-      identities: { [socialMediaPlatform: string]: string };
-      label: string;
-      logos?: NsiLogos;
-      officialWebsites: string[];
-    };
-  };
-}
 
 const nsiPromise = fetch(
   'https://cdn.jsdelivr.net/npm/name-suggestion-index@6/dist/wikidata.json',
-).then((r) => r.json() as Promise<Nsi>);
+).then((r) => r.json() as Promise<NsiWikidataJSON>);
 
 export const useNsi = () => useAsync(() => nsiPromise, []);
 
-export function getLogo(logos: NsiLogos) {
+export function getLogo(logos: WikidataLogos) {
   return (
     logos.facebook ||
     logos.wikidata
