@@ -1,7 +1,7 @@
 import { CommsChannel } from 'gtfs-sqlite';
 import { LocationType } from 'gtfs-types';
 import type { ConflateResult } from '@osm-conflation-engine/cli';
-import { fetchFromOverpass } from '../api/overpass.js';
+import { type OsmSource, fetchOsmData } from '../api/osm.js';
 import type { BBox, NetworkConfig } from '../types/config.def.js';
 import type { Count } from '../types/general.def.js';
 import { writeToRunHistory } from '../api/conflation.ts';
@@ -28,6 +28,7 @@ export async function conflate(
   config: NetworkConfig,
   onProgress?: (result: ConflationResult) => void,
   signal?: AbortSignal,
+  osmSource: OsmSource = 'overpass',
 ) {
   const result: ConflationResult = {
     isComplete: false,
@@ -62,8 +63,9 @@ export async function conflate(
   // @ts-expect-error -- TODO: temp for experimenting
   window.comms = comms;
 
-  log('Fetching OSM data from overpass...');
-  const { osmData, query } = await fetchFromOverpass(
+  log(`Fetching OSM data from ${osmSource}...`);
+  const { osmData, query } = await fetchOsmData(
+    osmSource,
     config.bbox || bbox,
     config.code,
   );
@@ -133,10 +135,10 @@ export async function conflate(
       },
       osm_data: {
         tags_to_keep: [],
-        source: {
-          type: 'overpass',
-          overpass_query_file: query,
-        },
+        source:
+          osmSource === 'postpass'
+            ? { type: 'postpass', postpass_query_file: query }
+            : { type: 'overpass', overpass_query_file: query },
       },
       source_data: {
         type: 'file',

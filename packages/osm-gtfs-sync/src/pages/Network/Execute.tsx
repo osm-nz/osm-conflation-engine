@@ -3,7 +3,7 @@ import { MapContainer, Rectangle, TileLayer } from 'react-leaflet';
 import { CommsChannel, deleteDatabase } from 'gtfs-sqlite';
 import { type ConflationResult, conflate } from '../../conflate/index.js';
 import type { NetworkConfig } from '../../types/config.def.js';
-import { clearOverpassCache } from '../../api/overpass.js';
+import { OSM_SOURCES, type OsmSource, clearOsmCache } from '../../api/osm.js';
 import { bboxToCentroid } from '../../helpers/geo.js';
 import { ProgressBar } from '../../components/ProgressBar.js';
 import { downloadBlob } from '../../helpers/js.js';
@@ -20,10 +20,20 @@ export const Execute = memo<{
   const [error, setError] = useState<Error>();
   const inflightRef = useRef<Promise<void>>(undefined);
 
+  const [osmSource, setOsmSource] = useState(() => localStorage.gtfsOsmSource);
+  useEffect(() => {
+    localStorage.gtfsOsmSource = osmSource;
+  }, [osmSource]);
+
   const [key, setKey] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    inflightRef.current ||= conflate(network, setResult, controller.signal)
+    inflightRef.current ||= conflate(
+      network,
+      setResult,
+      controller.signal,
+      osmSource,
+    )
       .then(() => {
         inflightRef.current = undefined;
       })
@@ -33,7 +43,7 @@ export const Execute = memo<{
       controller.abort();
       inflightRef.current = undefined;
     };
-  }, [key, network]);
+  }, [key, network, osmSource]);
 
   if (error) {
     console.error(error);
@@ -115,13 +125,27 @@ export const Execute = memo<{
       <button
         type="button"
         onClick={() => {
-          clearOverpassCache(network.code);
+          clearOsmCache(osmSource, network.code);
           setKey((c) => c + 1);
         }}
         disabled={!!inflightRef.current}
       >
         Re-fetch from OSM
       </button>
+      <label>
+        {' '}
+        via{' '}
+        <select
+          value={osmSource}
+          onChange={(event) => setOsmSource(event.target.value as OsmSource)}
+        >
+          {OSM_SOURCES.map((source) => (
+            <option key={source} value={source}>
+              {source}
+            </option>
+          ))}
+        </select>{' '}
+      </label>
       <button
         type="button"
         onClick={async () => {
