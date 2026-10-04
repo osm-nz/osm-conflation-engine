@@ -1,5 +1,4 @@
 import type { OsmFeature } from 'osm-api';
-import { del, get, set } from 'idb-keyval';
 import type { BBox } from '../types/config.def.js';
 import query from './query.sql?raw';
 
@@ -7,7 +6,7 @@ interface PostpassResponse {
   result: { element: OsmFeature }[];
 }
 
-export async function fetchFromPostpass(bbox: BBox, cacheKey: string) {
+export async function fetchFromPostpass(bbox: BBox) {
   // pad the bbox by a few hundred metres so that the cornermost nodes
   // are not cut-off.
   const bboxString = [
@@ -18,9 +17,6 @@ export async function fetchFromPostpass(bbox: BBox, cacheKey: string) {
   ].join(',');
 
   const finalQuery = query.replaceAll('{{bbox}}', bboxString);
-
-  const cache = await get<OsmFeature[]>(cacheKey);
-  if (cache) return { osmData: cache, query: finalQuery };
 
   const response = await fetch(
     'https://postpass.geofabrik.de/api/interpreter',
@@ -40,9 +36,5 @@ export async function fetchFromPostpass(bbox: BBox, cacheKey: string) {
   const json: PostpassResponse = await response.json();
   const osmData = json.result.map((row) => row.element);
 
-  await set(cacheKey, osmData);
-
   return { osmData, query: finalQuery };
 }
-
-export const clearPostpassCache = (cacheKey: string) => del(cacheKey);

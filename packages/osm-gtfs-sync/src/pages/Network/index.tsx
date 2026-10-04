@@ -1,41 +1,142 @@
-import { useCallback, useState } from 'react';
+import { use, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getAllDatabaseNames } from 'gtfs-sqlite';
 import { useAsync } from '../../hooks/useAsync.js';
 import { CONFIG } from '../../config/_index.ts';
+import { type ConflationResult, conflate } from '../../conflate/index.js';
+import { type OsmSource, clearOsmCache } from '../../api/osm.js';
+import { HostContext } from '../../context/HostContext.js';
+import type { IHostContext } from '../../types/host.def.js';
+import { ErrorMessage } from '../../components/ErrorMessage.js';
+import { FullPageSpinner } from '../../components/FullPageSpinner.js';
 import { ImportNetwork } from './ImportNetwork.js';
-import { Execute } from './Execute.js';
-import { NetworkNavbar } from './NetworkNavbar.js';
+import { DownloadFromOsm } from './DownloadFromOsm.js';
+import { Conflating } from './Conflating.js';
+import { Review } from './Review.js';
+import { Step, Steps } from './Steps.js';
+import classes from './Steps.module.css';
 
-const GtfsApp: React.FC<{ code: string }> = ({ code }) => {
+const Network: React.FC<{ code: string }> = ({ code }) => {
+  const { $ } = use(HostContext);
   const [key, setKey] = useState(0);
   const reloadDBList = useCallback(() => setKey((c) => c + 1), []);
 
-  const [databaseNames, error] = useAsync(getAllDatabaseNames, [key]);
+  const [databaseNames, dbError] = useAsync(getAllDatabaseNames, [key]);
 
   const network = CONFIG.find((n) => n.code === code);
+  const isImported = !!network && !!databaseNames?.includes(network.code);
 
-  if (error) return <>DB error</>;
+  /** undefined until the user picks a step, or we know if the DB exists */
+  const [chosenStep, setChosenStep] = useState<Step>();
+  const [storeResults, setStoreResults] = useState(true);
+  const [result, setResult] = useState<ConflationResult>();
+  const [error, setError] = useState<unknown>();
+  const abortRef = useRef<AbortController>(undefined);
 
-  if (!network) return <>Could not find network “{code}”</>;
+  useEffect(() => () => abortRef.current?.abort(), []);
 
-  if (!databaseNames) return <>Loading...</>;
-
-  const isImported = databaseNames.includes(network.code);
-
-  if (!isImported) {
+  if (dbError) {
     return (
-      <>
-        <NetworkNavbar network={network} />
-        <ImportNetwork network={network} onComplete={reloadDBList} />
-      </>
+      <ErrorMessage
+        title={$('gtfs.Network.db_error')}
+        error={dbError}
+        onRetry={reloadDBList}
+      />
     );
   }
 
+  if (!network) {
+    return <ErrorMessage title={$('gtfs.Network.not_found', { code })} />;
+  }
+
+  if (!databaseNames) return <FullPageSpinner />;
+
+  const step = chosenStep ?? (isImported ? Step.Download : Step.Import);
+  const isReviewAvailable = isImported && step !== Step.Conflate && !!result;
+
+  function setStep(newStep: Step) {
+    if (step === Step.Conflate) {
+      // leaving the loading state cancels the conflation
+      abortRef.current?.abort();
+      setResult(undefined);
+      setError(undefined);
+    }
+    setChosenStep(newStep);
+  }
+
+  async function startConflation(source: OsmSource | undefined) {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const { signal } = controller;
+
+    setResult(undefined);
+    setError(undefined);
+    setChosenStep(Step.Conflate);
+
+    try {
+      if (source) await clearOsmCache(network!.code);
+      await conflate(
+        network!,
+        (progress) => signal.aborted || setResult(progress),
+        signal,
+        source || 'overpass',
+        storeResults && !!source, // don't reupload results if using cache
+      );
+      if (!signal.aborted) setChosenStep(Step.Review);
+    } catch (ex) {
+      console.error(ex);
+      if (!signal.aborted) setError(ex);
+    }
+  }
+
   return (
-    <>
-      <NetworkNavbar network={network} />
-      <Execute network={network} reloadDBList={reloadDBList} />
-    </>
+    <div className={classes.page}>
+      <Steps
+        step={step}
+        setStep={setStep}
+        isImported={isImported}
+        isReviewAvailable={isReviewAvailable}
+      />
+      {step === Step.Import && (
+        <ImportNetwork
+          network={network}
+          onComplete={() => {
+            setResult(undefined);
+            setChosenStep(Step.Download);
+            reloadDBList();
+          }}
+        />
+      )}
+      {step === Step.Download && (
+        <DownloadFromOsm
+          network={network}
+          storeResults={storeResults}
+          setStoreResults={setStoreResults}
+          onStart={startConflation}
+        />
+      )}
+      {step === Step.Conflate && (
+        <Conflating message={result?.message} error={error} />
+      )}
+      {step === Step.Review && result && (
+        <Review network={network} result={result} />
+      )}
+    </div>
+  );
+};
+
+const GtfsApp: React.FC<{ code: string } & IHostContext> = ({
+  code,
+  $,
+  $$,
+  username,
+}) => {
+  const host = useMemo(() => ({ $, $$, username }), [$, $$, username]);
+
+  return (
+    <HostContext value={host}>
+      <Network code={code} />
+    </HostContext>
   );
 };
 

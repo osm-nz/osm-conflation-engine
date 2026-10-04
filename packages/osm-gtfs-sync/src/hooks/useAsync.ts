@@ -10,7 +10,10 @@ export function useAsync<T>(
 
   useEffect(() => {
     Promise.resolve()
-      .then(() => setIsLoading(true))
+      .then(() => {
+        setIsLoading(true);
+        setError(undefined);
+      })
       .then(getData)
       .then(setData)
       .catch(setError)

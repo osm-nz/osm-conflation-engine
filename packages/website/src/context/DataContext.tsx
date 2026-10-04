@@ -119,7 +119,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
           description: `GTFS data in ${config.code}`,
           osmKey: `network:wikidata=${config.networkWikidata}`,
           refTag,
-          wikiPageLink: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
+          wikiPageLink: config.licenseWaiverUrl,
         };
       }).toSorted((a, b) => b.timestamp.localeCompare(a.timestamp)),
     ];

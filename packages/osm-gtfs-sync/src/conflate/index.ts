@@ -29,6 +29,7 @@ export async function conflate(
   onProgress?: (result: ConflationResult) => void,
   signal?: AbortSignal,
   osmSource: OsmSource = 'overpass',
+  storeResults = true,
 ) {
   const result: ConflationResult = {
     isComplete: false,
@@ -64,7 +65,7 @@ export async function conflate(
   window.comms = comms;
 
   log(`Fetching OSM data from ${osmSource}...`);
-  const { osmData, query } = await fetchOsmData(
+  const { osmData, query, source } = await fetchOsmData(
     osmSource,
     config.bbox || bbox,
     config.code,
@@ -87,6 +88,11 @@ export async function conflate(
   if (signal?.aborted) return;
 
   result.isComplete = true;
+  if (!storeResults) {
+    log('done!');
+    return;
+  }
+
   log('saving progress update...');
   const layers = [result.stops, result.stations, result.routes];
   const sum = (key: keyof Count) =>
@@ -136,7 +142,7 @@ export async function conflate(
       osm_data: {
         tags_to_keep: [],
         source:
-          osmSource === 'postpass'
+          source === 'postpass'
             ? { type: 'postpass', postpass_query_file: query }
             : { type: 'overpass', overpass_query_file: query },
       },

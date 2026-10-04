@@ -8,6 +8,8 @@ allowBuilds:
   workerd: true
 
 catalog:
+  '@mantine/core': ^9.0.1
+  '@mantine/hooks': ^9.0.1
   '@types/geojson': ^7946.0.16
   '@types/node': ^26.0.1
   '@types/react': ^19.2.18

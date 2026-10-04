@@ -1,9 +1,8 @@
 import type { OsmFeature } from 'osm-api';
-import { del, get, set } from 'idb-keyval';
 import type { BBox } from '../types/config.def.js';
 import query from './query.overpassql?raw';
 
-export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
+export async function fetchFromOverpass(bbox: BBox) {
   // pad the bbox by a few hundred metres so that the cornermost nodes
   // are not cut-off.
   const bboxString = [
@@ -15,9 +14,6 @@ export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
 
   const finalQuery = query.replaceAll('{{bbox}}', bboxString);
 
-  const cache = await get<OsmFeature[]>(cacheKey);
-  if (cache) return { osmData: cache, query: finalQuery };
-
   const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(
     finalQuery,
   )}`;
@@ -25,9 +21,5 @@ export async function fetchFromOverpass(bbox: BBox, cacheKey: string) {
     .then((r) => r.json())
     .then((resp) => resp.elements);
 
-  await set(cacheKey, osmData);
-
   return { osmData, query: finalQuery };
 }
-
-export const clearOverpassCache = (cacheKey: string) => del(cacheKey);

@@ -6,6 +6,12 @@ settings:
 
 catalogs:
   default:
+    '@mantine/core':
+      specifier: ^9.0.1
+      version: 9.5.2
+    '@mantine/hooks':
+      specifier: ^9.0.1
+      version: 9.5.2
     '@types/geojson':
       specifier: ^7946.0.16
       version: 7946.0.16
@@ -192,6 +198,12 @@ importers:
         specifier: 'catalog:'
         version: 8.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
+      '@mantine/core':
+        specifier: 'catalog:'
+        version: 9.5.2(@mantine/hooks@9.5.2(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@mantine/hooks':
+        specifier: 'catalog:'
+        version: 9.5.2(react@19.2.8)
       '@osm-conflation-engine/cli':
         specifier: 'workspace:'
         version: link:../cli
@@ -293,10 +305,10 @@ importers:
   packages/website:
     dependencies:
       '@mantine/core':
-        specifier: ^9.0.1
+        specifier: 'catalog:'
         version: 9.5.2(@mantine/hooks@9.5.2(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@mantine/hooks':
-        specifier: ^9.0.1
+        specifier: 'catalog:'
         version: 9.5.2(react@19.2.8)
       '@nivo/line':
         specifier: ^0.99.0

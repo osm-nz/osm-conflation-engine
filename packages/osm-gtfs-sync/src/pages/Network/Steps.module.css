@@ -1,0 +1,32 @@
+/* eslint-disable css/no-invalid-properties -- mantine variables */
+.page {
+  --subnav-height: 64px;
+  padding-top: var(--subnav-height);
+}
+
+.subnav {
+  position: fixed;
+  z-index: 2;
+  top: var(--app-shell-header-offset);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+  height: var(--subnav-height);
+  padding: 0 var(--mantine-spacing-md);
+  background: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.stepper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* only step numbers on small screens */
+@media (max-width: 75em) {
+  .stepBody {
+    display: none;
+  }
+}

@@ -12,7 +12,7 @@ const LazyGtfsApp = lazy(() => import('@osm-conflation-engine/osm-gtfs-sync'));
 /** temporary solution until we migrate all the old websites into the new system */
 export const IframePage: React.FC<{ refTag: string }> = ({ refTag }) => {
   const { user, login } = use(AuthContext);
-  const { $ } = use(LocaleContext);
+  const { $, $$ } = use(LocaleContext);
   const [, type, id] = refTag!.split('::');
 
   if (type === 'missing_streets') {
@@ -35,7 +35,9 @@ export const IframePage: React.FC<{ refTag: string }> = ({ refTag }) => {
         </Center>
       );
     }
-    return <LazyGtfsApp code={id!} />;
+    return (
+      <LazyGtfsApp code={id!} username={user.display_name} $={$} $$={$$} />
+    );
   }
 
   return <PageNotFound />;

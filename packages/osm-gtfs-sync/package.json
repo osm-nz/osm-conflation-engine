@@ -20,10 +20,14 @@
     "react-leaflet": "^5.0.0"
   },
   "peerDependencies": {
+    "@mantine/core": "catalog:",
+    "@mantine/hooks": "catalog:",
     "react": "catalog:",
     "react-router": "catalog:"
   },
   "devDependencies": {
+    "@mantine/core": "catalog:",
+    "@mantine/hooks": "catalog:",
     "@osm-conflation-engine/cli": "workspace:",
     "@osm-conflation-engine/server": "workspace:",
     "@types/geojson": "catalog:",
