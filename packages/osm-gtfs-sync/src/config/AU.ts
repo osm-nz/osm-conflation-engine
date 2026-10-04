@@ -19,35 +19,6 @@ export const AU: NetworkConfig[] = [
     },
   },
   {
-    code: 'AU-ACT-Bus',
-    region: 'AU-ACT',
-    networkName: 'Transport Canberra',
-    networkWikidata: 'Q4650892',
-    gtfsSource: {
-      mode: 'automatic',
-      url: 'https://www.transport.act.gov.au/googletransit/google_transit_with_schools.zip',
-    },
-    licenseWaiverUrl: undefined,
-  },
-  {
-    code: 'AU-ACT-LightRail',
-    region: 'AU-ACT',
-    networkName: 'Canberra Metro',
-    networkWikidata: 'Q16927042',
-    gtfsSource: {
-      mode: 'automatic',
-      url: 'https://www.transport.act.gov.au/googletransit/google_transit_lr.zip',
-    },
-    licenseWaiverUrl: undefined,
-    operatorMap: {
-      'Canberra Metro Operations': {
-        name: 'Canberra Metro Operations',
-        wikidata: 'Q133816132',
-      },
-    },
-    ignoreRoutes: ['X1', 'X2'],
-  },
-  {
     code: 'AU-QLD-Translink-SEQ',
     region: 'AU-QLD',
     networkName: 'Translink',

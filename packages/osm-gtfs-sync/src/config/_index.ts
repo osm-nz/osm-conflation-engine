@@ -4,7 +4,6 @@ import { CA } from './CA.js';
 import { CZ } from './CZ.js';
 import { DE } from './DE.js';
 import { NZ } from './NZ.js';
-import { US } from './US.js';
 
 export const CONFIG: NetworkConfig[] = [
   //
@@ -13,5 +12,4 @@ export const CONFIG: NetworkConfig[] = [
   ...CZ,
   ...DE,
   ...NZ,
-  ...US,
 ];

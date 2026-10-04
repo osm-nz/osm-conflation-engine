@@ -349,28 +349,8 @@ export const NZ: NetworkConfig[] = [
     },
     licenseWaiverUrl: 'https://osm.wiki/Contributors#Environment_Canterbury',
   },
-  {
-    code: 'NZ-NTH',
-    region: 'NZ-NTL',
-    networkName: 'Citylink Whangārei',
-    networkWikidata: 'Q112189837',
-    gtfsSource: {
-      mode: 'automatic',
-      url: 'https://data.trilliumtransit.com/gtfs/nrc-nz/nrc-nz.zip',
-    },
-    licenseWaiverUrl: undefined,
-  },
-  {
-    code: 'NZ-HWK',
-    region: 'NZ-HKB',
-    networkName: 'goBay',
-    networkWikidata: 'Q112189822',
-    gtfsSource: {
-      mode: 'automatic',
-      url: 'https://data.trilliumtransit.com/gtfs/hbrc-nz/hbrc-nz.zip',
-    },
-    licenseWaiverUrl: undefined,
-  },
+  // Citylink Whangārei has unclear license status
+  // goBay has unclear license status
   // Gisborne has bus services but no GTFS feed
   // Southland has bus services but no GTFS feed
   // Marlborough has bus services but no GTFS feed
