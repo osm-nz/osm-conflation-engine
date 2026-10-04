@@ -1,0 +1,5 @@
+*.sql linguist-detectable
+*.overpassql linguist-detectable
+
+# to distinguish config files from real source codes
+packages/osm-gtfs-sync/src/config/*.ts linguist-language=Haxe
