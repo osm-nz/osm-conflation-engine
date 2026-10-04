@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
+import { Link } from 'react-router';
 import { Anchor, Radio, SimpleGrid, Stack, Text } from '@mantine/core';
 import {
+  IconArrowLeft,
+  IconBuilding,
   IconBuildingStore,
   IconBusFilled,
   IconDots,
@@ -8,6 +11,8 @@ import {
   IconRoad,
 } from '@tabler/icons-react';
 import { SourceCodeLink } from '../components/SourceCodeLink.js';
+import { OsmTag } from '../components/OsmTag.js';
+import { LocaleContext } from '../context/LocaleContext.js';
 import classes from './CreateNewProjectPage.module.css';
 
 const PROJECT_TYPES = [
@@ -38,7 +43,7 @@ const PROJECT_TYPES = [
         or edit the configuration file for the corresponding country, which is
         located in{' '}
         <Anchor
-          href="https://github.com/osm-nz/osm-conflation-engine/tree/test/packages/osm-gtfs-sync/src/config"
+          href="https://github.com/osm-nz/osm-conflation-engine/tree/main/packages/osm-gtfs-sync/src/config"
           target="_blank"
           rel="noopener"
           fw={600}
@@ -79,7 +84,25 @@ const PROJECT_TYPES = [
           repo="missing-streets"
           size="sm"
         />{' '}
-        for details.
+        for details. Eventually, road geometry conflation will be properly
+        integrated into this tool.
+      </>
+    ),
+  },
+  {
+    value: 'buildings',
+    label: 'Buildings',
+    Icon: IconBuilding,
+    blurb: (
+      <>
+        Importing <OsmTag tag="building" /> requires conflation based on
+        overlapping geometry, rather than conflation based on tags or IDs.
+        Therefore, this tool should probably not be used for building imports.
+        It would be better to use an existing system like{' '}
+        <Anchor href="https://mapwith.ai/rapid" target="_blank" rel="noopener">
+          RapiD
+        </Anchor>
+        .
       </>
     ),
   },
@@ -94,11 +117,23 @@ const PROJECT_TYPES = [
 type ProjectType = (typeof PROJECT_TYPES)[number]['value'];
 
 export const CreateNewProjectPage: React.FC = () => {
+  const { $ } = use(LocaleContext);
   const [type, setType] = useState<ProjectType>('openaddresses');
   const active = PROJECT_TYPES.find((t) => t.value === type);
 
   return (
     <>
+      <Anchor
+        component={Link}
+        to="/"
+        size="sm"
+        mt="md"
+        display="inline-flex"
+        style={{ alignItems: 'center', gap: 4 }}
+      >
+        <IconArrowLeft size={16} />
+        {$('Steps.back')}
+      </Anchor>
       <Radio.Group
         value={type}
         onChange={(value) => setType(value as ProjectType)}
