@@ -53,6 +53,18 @@ export function getDefaultLocale(): Locale {
   return DEFAULT_LOCALE;
 }
 
+export const WORLDWIDE = '001';
+
+const SUPPORTS_FLAG_EMOJI = !navigator.userAgent.includes('Windows');
+
+export function getFlagEmoji(region: string) {
+  if (region === WORLDWIDE) return '🌏';
+  if (!SUPPORTS_FLAG_EMOJI || !/^[A-Z]{2}$/.test(region)) return undefined;
+  return String.fromCodePoint(
+    ...[...region].map((letter) => 0x1_f1_a5 + letter.codePointAt(0)!),
+  );
+}
+
 export type I$ = (
   key: TranslationKey,
   params?: Record<string, unknown>,

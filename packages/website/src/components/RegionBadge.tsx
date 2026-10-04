@@ -1,6 +1,6 @@
 import { use } from 'react';
 import { Badge, type BadgeProps } from '@mantine/core';
-import { LocaleContext } from '../context/LocaleContext.js';
+import { LocaleContext, WORLDWIDE } from '../context/LocaleContext.js';
 
 export const RegionBadge: React.FC<
   { region: string; regionFlag: string | undefined } & BadgeProps
@@ -17,7 +17,7 @@ export const RegionBadge: React.FC<
       }
       {...props}
     >
-      {region === '001' ? `🌏 ${$('RegionBadge.global')}` : region}
+      {region === WORLDWIDE ? `🌏 ${$('RegionBadge.global')}` : region}
     </Badge>
   );
 };

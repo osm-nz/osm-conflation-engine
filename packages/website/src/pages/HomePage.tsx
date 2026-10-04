@@ -19,6 +19,7 @@ import { OverallProgress } from '../components/OverallProgress.js';
 import { RegionBadge } from '../components/RegionBadge.js';
 import { OidcBadge } from '../components/OidcBadge.js';
 import { OsmTag } from '../components/OsmTag.js';
+import { useHomePageFilters } from './useHomePageFilters.js';
 import classes from './HomePage.module.css';
 
 const HomePageCard: React.FC<HomePageItem> = ({
@@ -112,26 +113,31 @@ const HomePageCard: React.FC<HomePageItem> = ({
 export const HomePage: React.FC = () => {
   const { $ } = use(LocaleContext);
   const { homePageItems } = use(DataContext);
+  const [visibleItems, filterChildren] = useHomePageFilters(homePageItems);
+
   return (
-    <Flex wrap="wrap" gap="md" align="stretch">
-      {homePageItems.map((p) => (
-        <HomePageCard key={p.osmKey + p.name + p.description} {...p} />
-      ))}
-      <Card
-        shadow="sm"
-        padding="md"
-        withBorder
-        w={300}
-        maw="100%"
-        component={Link}
-        to="/new"
-        className={`${classes.card} ${classes.createNewCard}`}
-      >
-        <Stack align="center" justify="center" gap="xs" h="100%">
-          <IconPlus size={48} stroke={1.5} />
-          <Text fw={500}>{$('HomePage.create_project')}</Text>
-        </Stack>
-      </Card>
-    </Flex>
+    <Stack gap="md">
+      {filterChildren}
+      <Flex wrap="wrap" gap="md" align="stretch">
+        {visibleItems.map((p) => (
+          <HomePageCard key={p.osmKey + p.name + p.description} {...p} />
+        ))}
+        <Card
+          shadow="sm"
+          padding="md"
+          withBorder
+          w={300}
+          maw="100%"
+          component={Link}
+          to="/new"
+          className={`${classes.card} ${classes.createNewCard}`}
+        >
+          <Stack align="center" justify="center" gap="xs" h="100%">
+            <IconPlus size={48} stroke={1.5} />
+            <Text fw={500}>{$('HomePage.create_project')}</Text>
+          </Stack>
+        </Card>
+      </Flex>
+    </Stack>
   );
 };
