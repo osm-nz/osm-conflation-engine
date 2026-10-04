@@ -5,6 +5,7 @@ import type { Column, Filters } from '../../components/MegaTable/index.js';
 import type { I$ } from '../../context/LocaleContext.js';
 import { OidcBadge } from '../../components/OidcBadge.js';
 import { OsmTag } from '../../components/OsmTag.js';
+import { OsmUsername } from '../../components/OsmUsername.js';
 import { ReviewBadge } from './ReviewBadge.js';
 
 export enum ReviewDecision {
@@ -52,14 +53,7 @@ export const getColumns = (
       width: '13%',
       render: (row) => (
         <Group gap={4} wrap="nowrap">
-          <Anchor
-            href={`https://osm.org/user/${row.username}`}
-            target="_blank"
-            rel="noopener"
-            size="sm"
-          >
-            {row.username}
-          </Anchor>
+          <OsmUsername user={row.username} size="sm" />
           <OidcBadge
             operator={row.operator}
             timestamp={row.timestamp}

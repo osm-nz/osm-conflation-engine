@@ -10,6 +10,7 @@ import { OsmTag } from './OsmTag.js';
 import { OverallProgress } from './OverallProgress.js';
 import { RegionBadge } from './RegionBadge.js';
 import { SourceCodeLink } from './SourceCodeLink.js';
+import { OsmUsername } from './OsmUsername.js';
 
 export const NavbarProjectInfo: React.FC = () => {
   const { refTag } = useParams<'refTag'>();
@@ -87,17 +88,20 @@ export const NavbarProjectInfo: React.FC = () => {
                 </Table.Td>
               </Table.Tr>
             )}
-            {operator && (
-              <Table.Tr>
-                <Table.Th>{$('NavbarProjectInfo.contact')}</Table.Th>
-                <Table.Td>
+            <Table.Tr>
+              <Table.Th>{$('NavbarProjectInfo.contact')}</Table.Th>
+              <Table.Td>
+                {operator ? (
                   <SourceCodeLink
                     provider={operator.provider}
                     org={operator.triggerer}
                   />
-                </Table.Td>
-              </Table.Tr>
-            )}
+                ) : (
+                  <OsmUsername user={project.operator} />
+                )}
+              </Table.Td>
+            </Table.Tr>
+
             <Table.Tr>
               <Table.Th>{$('NavbarProjectInfo.total_rows')}</Table.Th>
               <Table.Td>{project.count.toLocaleString(locale)}</Table.Td>
