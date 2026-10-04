@@ -322,9 +322,9 @@ export async function conflateRoutes(
       }
 
       const routeMaster = candiateOsmRouteMasters[0];
-      const childOsmRoutes = routeMaster.members
-        .map((m) => osmRawById[m.type[0] + m.ref])
-        .filter((m) => m.type === 'relation');
+      let childOsmRoutes = routeMaster.members.map(
+        (m) => osmRawById[m.type[0] + m.ref],
+      );
 
       if (childOsmRoutes.some((m) => !m)) {
         warnings.add(
@@ -332,6 +332,7 @@ export async function conflateRoutes(
         );
         continue;
       }
+      childOsmRoutes = childOsmRoutes.filter(Boolean);
 
       // match each GTFS trip to an OSM route. this is non-trivial
       // and a lot of guesswork.
@@ -339,6 +340,7 @@ export async function conflateRoutes(
         if (!journey.keep) continue;
 
         const bestMatch = childOsmRoutes
+          .filter((m) => m.type === 'relation')
           .map((relation) => ({
             relation,
             score: getRankingForJourney(
