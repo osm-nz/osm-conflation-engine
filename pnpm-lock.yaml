@@ -168,11 +168,11 @@ importers:
   packages/osm-gtfs-sync:
     dependencies:
       gtfs-sqlite:
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.1.1
+        version: 0.1.1
       gtfs-types:
-        specifier: ^5.1.0
-        version: 5.1.0
+        specifier: ^5.1.1
+        version: 5.1.1
       idb-keyval:
         specifier: ^6.2.1
         version: 6.3.0
@@ -2983,12 +2983,12 @@ packages:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
 
-  gtfs-sqlite@0.1.0:
-    resolution: {integrity: sha512-uUfymCNqVMHh3+iFZtsLPZu1/cA8Qj/8IwNfYy7AzhMNUPL2ikrbiw6aqJBVAqNGVOIYurne+HfYiUt3BSRtxA==}
+  gtfs-sqlite@0.1.1:
+    resolution: {integrity: sha512-Op99ifSQX0tym5bfq/S+D3y8LCXbwEvAx01MtClzYmZAKXdvHVPVt8bcrbn9NgTCDAklt7ybo3kRXQKw5ukGsw==}
     engines: {node: '>=18'}
 
-  gtfs-types@5.1.0:
-    resolution: {integrity: sha512-c2fRJD7oFV15JAe535chELyRSbL8Q1l3SLV6oZcj46q3ycCeXOh6lniNiu1KoamaSRWEtlfUvwHu4MuZd9Lqpg==}
+  gtfs-types@5.1.1:
+    resolution: {integrity: sha512-ewE6d7Y+JaTgYOKnDEwNiosSLvkij0MHnbdPwDaSI5IDOQNMMD/iVshXuu+M7RmUhnTQLuTv7MZ+6mhc0T/TUw==}
 
   h3-js@4.4.0:
     resolution: {integrity: sha512-DvJh07MhGgY2KcC4OeZc8SSyA+ZXpdvoh6uCzGpoKvWtZxJB+g6VXXC1+eWYkaMIsLz7J/ErhOalHCpcs1KYog==}
@@ -7032,14 +7032,14 @@ snapshots:
 
   gopd@1.2.0: {}
 
-  gtfs-sqlite@0.1.0:
+  gtfs-sqlite@0.1.1:
     dependencies:
       '@sqlite.org/sqlite-wasm': 3.49.1-build4
-      gtfs-types: 5.1.0
+      gtfs-types: 5.1.1
       papaparse: 5.7.0
       unzipit: 1.4.3
 
-  gtfs-types@5.1.0: {}
+  gtfs-types@5.1.1: {}
 
   h3-js@4.4.0: {}
 
