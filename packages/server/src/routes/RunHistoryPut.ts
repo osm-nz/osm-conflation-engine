@@ -86,11 +86,19 @@ export class RunHistoryPut extends OpenAPIRoute {
 
     const image = data.query.skipDerivedData
       ? undefined
-      : await getImageFromOsmWikibase(data.body.config.merge.osm_key);
+      : await getImageFromOsmWikibase(data.body.config.merge.osm_key).catch(
+          (ex) => {
+            console.error(ex);
+            return undefined;
+          },
+        );
 
     const regionFlagImage = data.query.skipDerivedData
       ? undefined
-      : await getFlagFromWikidata(region);
+      : await getFlagFromWikidata(region).catch((ex) => {
+          console.error(ex);
+          return undefined;
+        });
 
     const newRow: RunHistory = {
       refTag: data.params.refTag,
