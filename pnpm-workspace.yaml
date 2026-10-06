@@ -27,9 +27,12 @@ catalog:
   vitest: ^4.1.9
 
 minimumReleaseAgeExclude:
-  - react-mf2@1.0.1
-  - gtfs-sqlite@0.1.1
-  - gtfs-types@5.1.1
+  - name-suggestion-index
+  - tag2link
+  - osm-api
+  - react-mf2
+  - gtfs-sqlite
+  - gtfs-types
 
 patchedDependencies:
   osm-api@4.0.0: patches/osm-api@4.0.0.patch

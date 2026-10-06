@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://www.schemastore.org/dependabot-2.0.json
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    cooldown:
+      exclude:
+        - name-suggestion-index
+        - tag2link
+        - osm-api
+        - react-mf2
+        - gtfs-sqlite
+        - gtfs-types
+    allow:
+      - dependency-name: name-suggestion-index
+      - dependency-name: tag2link
+      - dependency-name: osm-api
+      - dependency-name: react-mf2
+      - dependency-name: gtfs-sqlite
+      - dependency-name: gtfs-types
