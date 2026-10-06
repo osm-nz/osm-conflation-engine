@@ -1,9 +1,12 @@
 import { use, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Text } from '@mantine/core';
 import type maplibregl from 'maplibre-gl';
 import type { ExpressionSpecification } from 'maplibre-gl';
 import type { Feature, GeoJsonGeometryTypes } from 'geojson';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import { calcBBox, getCentroid } from '../../../util/geo.js';
+import { TagDiff } from '../../../components/TagDiff.js';
 import {
   EMPTY_GEOJSON,
   IS_CENTROID,
@@ -42,11 +45,12 @@ function getLowZoomMarker(feature: Feature): Feature | undefined {
 
     case 'LineString':
     case 'MultiLineString': {
-      // for lines, it's actually the first point, not the centroid
-      const [first] =
+      // for lines, it's actually the last point, not the centroid
+      const coordinates =
         geometry.type === 'LineString'
           ? geometry.coordinates
           : geometry.coordinates.flat();
+      const first = coordinates.at(-1);
       if (!first) return undefined;
       return {
         type: 'Feature',
@@ -96,9 +100,13 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
   selected,
   onToggle,
 }) => {
-  const { $ } = use(LocaleContext);
+  const { $, $$ } = use(LocaleContext);
   const containerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map>();
+
+  const [popupPortal] = useState(() => document.createElement('div'));
+  const [hoveredId, setHoveredId] = useState<string>();
+  const hovered = hoveredId && rows.find((row) => row.id === hoveredId);
 
   /** the features currently rendered, so that we only re-fit when they change */
   const renderedIdsRef = useRef<string>(undefined);
@@ -149,14 +157,24 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
         id: CENTROID_LAYER,
         type: 'circle',
         source: SOURCE,
-        maxzoom: CENTROID_MAX_ZOOM,
-        filter: IS_CENTROID,
+        filter: [
+          'all',
+          IS_CENTROID,
+          [
+            'any',
+            ['<', ['zoom'], CENTROID_MAX_ZOOM],
+            ['==', ['get', 'action'], 'move'],
+          ],
+        ],
         paint: CIRCLE_PAINT,
       });
       setMap(newMap);
     });
 
-    const { clearHover } = addHoverPopup(newMap, SOURCE, LAYERS, 'id');
+    const { clearHover } = addHoverPopup(newMap, SOURCE, LAYERS, 'id', {
+      content: popupPortal,
+      onHover: setHoveredId,
+    });
 
     newMap.on('click', LAYERS, (event) => {
       const feature = event.features?.[0];
@@ -167,7 +185,7 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
       clearHover();
       newMap.remove();
     };
-  }, [onToggle]);
+  }, [onToggle, popupPortal]);
 
   useEffect(() => {
     if (!map) return;
@@ -180,8 +198,8 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
           geometry: row.original.geometry,
           properties: {
             id: row.id,
+            action: row.action,
             colour: ACTION_COLOURS[row.action].hex,
-            label: [row.label, row.dataset].filter(Boolean).join(' — '),
           },
         };
         const marker = getLowZoomMarker(feature);
@@ -203,6 +221,24 @@ export const FeatureMap: React.FC<FeatureMapProps> = ({
   return (
     <>
       <div ref={containerRef} className={classes.map} />
+
+      {hovered &&
+        createPortal(
+          <>
+            <TagDiff
+              tags={hovered.tags}
+              oldTags={hovered.original.properties.__oldTags}
+            />
+            <Text size="xs" c="dimmed" mt={4}>
+              {hovered.action === 'move'
+                ? $$('FeatureMap.hint_move')
+                : selected.has(hovered.id)
+                  ? $('FeatureMap.hint_deselect')
+                  : $('FeatureMap.hint_select')}
+            </Text>
+          </>,
+          popupPortal,
+        )}
 
       <div className={classes.legend}>
         <strong>{$('FeatureMap.legend_title')}</strong>

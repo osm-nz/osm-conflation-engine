@@ -61,12 +61,19 @@ export function addHoverPopup(
   source: string,
   layers: string[],
   idProperty: string,
+  custom?: {
+    content: HTMLElement;
+    /** must be stable! */
+    onHover(id: string | undefined): void;
+  },
 ) {
   const popup = new maplibregl.Popup({
     closeButton: false,
     closeOnClick: false,
     offset: 8,
+    maxWidth: custom ? '320px' : undefined,
   });
+  if (custom) popup.setDOMContent(custom.content);
 
   let current: string | undefined;
   const setHovered = (id: string | undefined) => {
@@ -75,6 +82,7 @@ export function addHoverPopup(
       map.setFeatureState({ source, id: current }, { hover: false });
     }
     current = id;
+    custom?.onHover(id);
     if (current) {
       map.setFeatureState({ source, id: current }, { hover: true });
     }
@@ -92,7 +100,8 @@ export function addHoverPopup(
 
     map.getCanvas().style.cursor = 'pointer';
     setHovered(feature.properties[idProperty]);
-    popup.setLngLat(event.lngLat).setText(feature.properties.label).addTo(map);
+    if (!custom) popup.setText(feature.properties.label);
+    popup.setLngLat(event.lngLat).addTo(map);
   });
   map.on('mouseleave', layers, clearHover);
 
