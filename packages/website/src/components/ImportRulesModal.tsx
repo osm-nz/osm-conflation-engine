@@ -1,11 +1,19 @@
-import { use } from 'react';
+import { use, useState } from 'react';
 import { Anchor, Button, Group, Modal, Text } from '@mantine/core';
 import { LocaleContext } from '../context/LocaleContext.js';
 
-export const ImportRulesModal: React.FC<{
-  onClose(): void;
-}> = ({ onClose }) => {
+const key = 'ackImportRulesModal';
+
+export const ImportRulesModal: React.FC = () => {
   const { $, $$ } = use(LocaleContext);
+  const [acked, setAcked] = useState(key in localStorage);
+
+  function onClose() {
+    setAcked(true);
+    localStorage[key] = '';
+  }
+
+  if (acked) return null;
 
   return (
     <Modal opened onClose={onClose} title={$('ImportRules.title')} centered>

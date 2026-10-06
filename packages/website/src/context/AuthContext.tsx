@@ -41,7 +41,6 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<OsmOwnUser>();
-  const [isJustLoggedIn, setIsJustLoggedIn] = useState(false);
 
   useEffect(() => {
     if (loggedIn) {
@@ -69,9 +68,9 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
       });
       setIsLoading(true);
       setLoggedIn(true);
-      setIsJustLoggedIn(true);
       setError(undefined);
     } catch (ex) {
+      console.error(ex);
       setError(ex as Error);
     }
   }, []);
@@ -117,9 +116,7 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         loaderProps={{ size: 'lg' }}
       />
       {loginSuggestionModal}
-      {isJustLoggedIn && !!user && !user.display_name.endsWith('_import') && (
-        <ImportRulesModal onClose={() => setIsJustLoggedIn(false)} />
-      )}
+      {!!user && !user.display_name.endsWith('_import') && <ImportRulesModal />}
       {children}
     </AuthContext>
   );

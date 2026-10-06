@@ -1,5 +1,5 @@
 import { promises as fs } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import type { DateString, Schema, Tag } from 'taginfo-projects';
 // import nsi from 'name-suggestion-index/dist/wikidata/wikidata.json' with { type: 'json' };
 import type { NsiWikidataJSON } from 'name-suggestion-index';
@@ -65,7 +65,9 @@ file.data_updated = new Date()
   .toISOString()
   .replaceAll(/([-:]|\.\d+)/g, '') as DateString;
 
-await fs.writeFile(
-  join(import.meta.dirname, `../../website/public/${basename(file.data_url!)}`),
-  JSON.stringify(file, null, 2),
+const outputFile = join(
+  import.meta.dirname,
+  `../../website/public/${basename(file.data_url!)}`,
 );
+await fs.mkdir(dirname(outputFile), { recursive: true });
+await fs.writeFile(outputFile, JSON.stringify(file, null, 2));
