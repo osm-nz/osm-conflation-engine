@@ -12,6 +12,7 @@ import {
 import { useCallback } from 'react';
 import {
   type OsmOwnUser,
+  authReady,
   getUser,
   isLoggedIn,
   logout,
@@ -43,6 +44,10 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<OsmOwnUser>();
 
   useEffect(() => {
+    authReady.then(() => setLoggedIn(isLoggedIn()));
+  }, []);
+
+  useEffect(() => {
     if (loggedIn) {
       getUser('me')
         .then(setUser)
@@ -59,16 +64,16 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
           window.location.hostname === '127.0.0.1'
             ? 'oPbyNuXQIEh8ZI3zbjVWVmVyIaNB2guU6uLP2gQ3sfs'
             : 'ZkRBVnOoBeMgwSajgG7E2bhgP5bR61knGYxsh9KKaHc',
-        mode: 'popup',
+        mode: 'redirect',
         redirectUrl:
           window.location.hostname === '127.0.0.1'
-            ? 'http://127.0.0.1:4884/osm-conflation-engine/land.html'
-            : 'https://osm-nz.github.io/land.html',
+            ? 'http://127.0.0.1:4884/osm-conflation-engine'
+            : 'https://osm-nz.github.io/osm-conflation-engine',
         scopes: ['read_prefs', 'write_api'],
       });
       setIsLoading(true);
-      setLoggedIn(true);
       setError(undefined);
+      // at this point the page will unmount
     } catch (ex) {
       console.error(ex);
       setError(ex as Error);
