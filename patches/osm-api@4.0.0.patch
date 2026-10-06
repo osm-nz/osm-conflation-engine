@@ -1,0 +1,12 @@
+diff --git a/dist/src/types/osmPatch.d.ts b/dist/src/types/osmPatch.d.ts
+index de18ff2a1d39719d957f7528165025c7f8a248b8..d126c876055dd8337914043a7bf28e702dac8041 100644
+--- a/dist/src/types/osmPatch.d.ts
++++ b/dist/src/types/osmPatch.d.ts
+@@ -12,6 +12,7 @@ export type OsmPatchFeature = Feature<Geometry, Tags & {
+         ref: number;
+         role: string;
+     }[];
++    __oldTags?: Tags;
+ }>;
+ /**
+  * An OsmPatch file is a GeoJson file with a few extra properties.

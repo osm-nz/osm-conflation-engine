@@ -328,6 +328,17 @@ export async function conflate(
         });
       }
 
+      for (const feature of features) {
+        const osmFeature = osmDataById[<OsmId>feature.id];
+        if (!feature.properties.__action || !osmFeature) continue;
+
+        feature.properties.__oldTags = {};
+        for (const key in feature.properties) {
+          if (key.startsWith('__')) continue;
+          feature.properties.__oldTags[key] = osmFeature.tags[key] || '';
+        }
+      }
+
       let groups = splitUntilSmallEnough(
         ctx,
         group,
