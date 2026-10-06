@@ -1,4 +1,4 @@
-import { use, useMemo } from 'react';
+import { use, useEffect, useMemo } from 'react';
 import {
   Button,
   Checkbox,
@@ -27,6 +27,7 @@ export function MegaTable<Row, ColumnKey extends string>({
   minWidth = 900,
   toolbar,
   selection,
+  onFilteredRowsChange,
   ...options
 }: MegaTableProps<Row, ColumnKey>) {
   const { $, locale } = use(LocaleContext);
@@ -42,6 +43,10 @@ export function MegaTable<Row, ColumnKey extends string>({
   );
 
   const table = useMegaTable(options);
+
+  useEffect(() => {
+    onFilteredRowsChange?.(table.filteredRows);
+  }, [table.filteredRows, onFilteredRowsChange]);
 
   const toggleRow = (rowId: string) => {
     if (!selection) return;

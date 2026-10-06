@@ -152,7 +152,10 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
     });
 
     // bail if nothing has changed
-    const ids = rows.map((row) => row.title).join('␞');
+    const ids = rows
+      .map((row) => row.title)
+      .toSorted()
+      .join('␞');
     if (ids === renderedIdsRef.current) return;
     renderedIdsRef.current = ids;
 

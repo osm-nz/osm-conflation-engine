@@ -49,4 +49,6 @@ export interface MegaTableProps<Row, ColumnKey extends string> {
   toolbar?: React.ReactNode;
   /** if undefined, the table has no checkboxes */
   selection?: Selection;
+  /** must be stable! */
+  onFilteredRowsChange?(rows: Row[]): void;
 }

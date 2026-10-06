@@ -1,4 +1,4 @@
-import { use, useMemo } from 'react';
+import { use, useMemo, useState } from 'react';
 import { Button, Text } from '@mantine/core';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import { MegaTable } from '../../../components/MegaTable/index.js';
@@ -38,6 +38,7 @@ export const SelectDatasetsStep: React.FC<SelectDatasetsStepProps> = ({
     () => getDatasetColumns($, locale, refTag),
     [$, locale, refTag],
   );
+  const [filteredRows, setFilteredRows] = useState(rows);
 
   return (
     <div className={classes.split}>
@@ -49,6 +50,7 @@ export const SelectDatasetsStep: React.FC<SelectDatasetsStepProps> = ({
           defaultSort={DEFAULT_DATASET_SORT}
           minWidth={760}
           selection={{ selected, onChange: onChangeSelected }}
+          onFilteredRowsChange={setFilteredRows}
           toolbar={
             <>
               {!!selected.size && (
@@ -85,7 +87,7 @@ export const SelectDatasetsStep: React.FC<SelectDatasetsStepProps> = ({
       </div>
       <div className={classes.mapPane}>
         <DatasetMap
-          rows={rows}
+          rows={filteredRows}
           selected={selected}
           onToggle={onToggle}
           onHide={onHide}
