@@ -179,7 +179,7 @@ export interface Callbacks<G extends Geometry, P extends GeoJsonProperties> {
     features: OsmPatchFeature[];
     osmData: Record<OsmId, OsmFeature>;
     sourceData: SourceData<G, P>;
-  }): MaybePromise<OsmPatchFeature[] | undefined>;
+  }): MaybePromise<void>;
 
   /**
    * optional, called after the conflation stage for every group. You can
