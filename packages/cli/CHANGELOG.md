@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.11.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.10.0...cli-v3.11.0) (2026-10-06)
+
+
+### Features
+
+* **cli:** generate __oldTags ([aa7c505](https://github.com/osm-nz/osm-conflation-engine/commit/aa7c505cbc75e2a812c071135ab5a63f52038974))
+
+
+### Bug Fixes
+
+* **cli:** wrong typedefs ([185d8c3](https://github.com/osm-nz/osm-conflation-engine/commit/185d8c3da9ea1e8ac8221862c197a382f26a4a3e))
+
 ## [3.10.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.9.0...cli-v3.10.0) (2026-10-01)
 
 
