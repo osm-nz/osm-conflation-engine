@@ -337,6 +337,9 @@ export async function conflate(
           if (key.startsWith('__')) continue;
           feature.properties.__oldTags[key] = osmFeature.tags[key] || '';
         }
+        if (feature.properties.__action === 'delete') {
+          feature.properties.__oldTags = osmFeature.tags;
+        }
       }
 
       let groups = splitUntilSmallEnough(
