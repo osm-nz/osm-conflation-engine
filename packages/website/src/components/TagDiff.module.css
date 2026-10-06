@@ -1,0 +1,24 @@
+/* eslint-disable css/no-invalid-properties -- mantine variables */
+
+.tagDiff {
+  margin-top: 4px;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-xs);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.line {
+  padding: 0 4px;
+}
+
+.added {
+  color: var(--mantine-color-green-light-color);
+  background: var(--mantine-color-green-light);
+}
+
+.removed {
+  color: var(--mantine-color-red-light-color);
+  background: var(--mantine-color-red-light);
+}

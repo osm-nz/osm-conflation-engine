@@ -5,7 +5,7 @@ import type { Column, Sort } from '../../../components/MegaTable/index.js';
 import type { I$ } from '../../../context/LocaleContext.js';
 import { utilDisplayName } from '../../../util/utilDisplayName.js';
 import { osmLink } from '../../../util/osm.js';
-import { OsmTag } from '../../../components/OsmTag.js';
+import { TagDiff } from '../../../components/TagDiff.js';
 
 export const ACTIONS: Action[] = ['create', 'edit', 'move', 'delete'];
 
@@ -62,65 +62,44 @@ export function toFeatureRows(
   });
 }
 
-type ColumnKey = 'label' | 'action' | 'dataset' | 'tags';
+type ColumnKey = 'feature' | 'dataset';
 
 export const getFeatureColumns = ($: I$): Column<FeatureRow, ColumnKey>[] => {
   return [
     {
-      key: 'label',
+      key: 'feature',
       label: $('ProjectPage.col.feature'),
-      width: '25%',
-      render: (row) => {
-        const children = row.label || row.original.id;
-        return (
-          <Text size="sm" style={{ wordBreak: 'break-word' }}>
-            {row.action === 'create' ? (
-              children
-            ) : (
-              <Anchor
-                href={osmLink(row.original.id as OsmId)}
-                target="_blank"
-                rel="noopener"
-              >
-                {children}
-              </Anchor>
-            )}
-          </Text>
-        );
-      },
-      getSortValue: (row) => row.label,
-      filter: { type: 'text' },
-    },
-    {
-      key: 'tags',
-      label: $('ProjectPage.col.tags'),
-      width: '35%',
+      width: '70%',
       render: (row) => (
-        <Group gap={4}>
-          {Object.entries(row.tags).map(([key, value]) => (
-            <OsmTag key={key} fz="xs" tag={`${key}=${value}`} />
-          ))}
-        </Group>
-      ),
-      getSortValue: (row) => `${Object.keys(row.tags).length}`,
-      getFilterValue: (row) =>
-        Object.entries(row.tags)
-          .map(([key, value]) => `${key}=${value}`)
-          .join('␞'),
-      filter: { type: 'text' },
-    },
-    {
-      key: 'action',
-      label: $('ProjectPage.col.action'),
-      width: '10%',
-      render: (row) => (
-        <Badge
-          variant="light"
-          size="sm"
-          color={ACTION_COLOURS[row.action].name}
-        >
-          {ACTION_LABELS($)[row.action]}
-        </Badge>
+        <>
+          <Group gap={6} wrap="nowrap">
+            <Badge
+              variant="light"
+              size="sm"
+              color={ACTION_COLOURS[row.action].name}
+              style={{ flexShrink: 0 }}
+            >
+              {ACTION_LABELS($)[row.action]}
+            </Badge>
+            <Text size="sm" style={{ wordBreak: 'break-word' }}>
+              {row.action === 'create' ? (
+                row.original.id
+              ) : (
+                <Anchor
+                  href={osmLink(row.original.id as OsmId)}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {row.original.id}
+                </Anchor>
+              )}
+            </Text>
+          </Group>
+          <TagDiff
+            tags={row.tags}
+            oldTags={row.original.properties.__oldTags}
+          />
+        </>
       ),
       getSortValue: (row) => row.action,
       filter: {
@@ -131,7 +110,7 @@ export const getFeatureColumns = ($: I$): Column<FeatureRow, ColumnKey>[] => {
     {
       key: 'dataset',
       label: $('ProjectPage.col.dataset'),
-      width: '25%',
+      width: '30%',
       render: (row) => (
         <Text size="sm" style={{ wordBreak: 'break-word' }}>
           {row.dataset}
