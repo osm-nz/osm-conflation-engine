@@ -98,8 +98,9 @@ export function mergeTinyDatasets(
       );
       if (other.instructions) {
         sector.instructions ||= '';
-        sector.instructions += `\n\n${other.instructions}`;
-        sector.instructions.trim();
+        if (!sector.instructions.includes(other.instructions)) {
+          sector.instructions += `\n\n${other.instructions}`.trim();
+        }
       }
       sector.features.push(...other.features);
 
