@@ -1,13 +1,14 @@
-import { use, useCallback, useMemo, useState } from 'react';
+import { use, useCallback, useEffect, useMemo, useState } from 'react';
 import { Text } from '@mantine/core';
 import { useParams } from 'react-router';
-import type { OsmPatch } from 'osm-api';
+import { type OsmPatch, authReady } from 'osm-api';
 import { useProject } from '../../hooks/useProject.js';
 import { FullPageLoading } from '../../components/FullPageLoading.js';
 import { AuthGateway } from '../../components/AuthGateway.js';
 import { PageNotFound } from '../../components/PageNotFound.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
 import { toggle } from '../../util/object.js';
+import { type Lock, getLocks } from '../../api/conflation.js';
 import type { DatasetRow } from './SelectDatasetsStep/datasetColumns.js';
 import {
   getFeatureId,
@@ -37,18 +38,37 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
     ReadonlySet<string>
   >(() => new Set());
 
+  const [locks, setLocks] = useState<Record<string, Lock>>({});
+  const [showLockedDatasets, setShowLockedDatasets] = useState(false);
+
+  useEffect(() => {
+    authReady
+      .then(() => getLocks(refTag))
+      .then((list) => {
+        setLocks(
+          Object.fromEntries(list.map((lock) => [lock.datasetId, lock])),
+        );
+      })
+      .catch(console.error);
+  }, [refTag]);
+
   const allDatasets = useMemo(
     () =>
       (indexFile?.features || []).map((feature): DatasetRow => ({
         ...feature.properties,
         original: feature,
+        lock: locks[feature.properties.id],
       })),
-    [indexFile],
+    [indexFile, locks],
   );
-  const visibleDatasets = useMemo(
-    () => allDatasets.filter((row) => !hiddenDatasetTitles.has(row.title)),
-    [allDatasets, hiddenDatasetTitles],
-  );
+  const visibleDatasets = useMemo(() => {
+    return allDatasets.filter(
+      (row) =>
+        !hiddenDatasetTitles.has(row.title) &&
+        (showLockedDatasets || !row.lock),
+    );
+  }, [allDatasets, hiddenDatasetTitles, showLockedDatasets]);
+
   const selectedDatasets = useMemo(
     () => allDatasets.filter((row) => selectedDatasetTitles.has(row.title)),
     [allDatasets, selectedDatasetTitles],
@@ -112,6 +132,12 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
     return result;
   }, [selectedDatasets, osmPatchFiles.data, deselectedFeatureIds]);
 
+  const selectedDatasetIds = useMemo(() => {
+    return selectedDatasets
+      .filter((row) => row.title in selectedOsmPatchFiles)
+      .map((row) => row.id);
+  }, [selectedDatasets, selectedOsmPatchFiles]);
+
   //
   // other
   //
@@ -163,8 +189,11 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
             refTag={refTag}
             selected={selectedDatasetTitles}
             onChangeSelected={setSelectedDatasetTitles}
-            hiddenCount={hiddenDatasetTitles.size}
-            onShowHidden={() => setHiddenDatasetTitles(new Set())}
+            hiddenCount={allDatasets.length - visibleDatasets.length}
+            onShowHidden={() => {
+              setHiddenDatasetTitles(new Set());
+              setShowLockedDatasets(true);
+            }}
             onToggle={toggleDataset}
             onHide={hideDataset}
           />,
@@ -178,7 +207,11 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
             errors={osmPatchFiles.errors}
           />,
           <AuthGateway key={0}>
-            <ImportStep osmPatchFiles={selectedOsmPatchFiles} />
+            <ImportStep
+              refTag={refTag}
+              osmPatchFiles={selectedOsmPatchFiles}
+              datasetIds={selectedDatasetIds}
+            />
           </AuthGateway>,
         ][step]}
     </div>

@@ -23,6 +23,7 @@ import iDIcon from '../../../assets/iD.svg';
 import josmIcon from '../../../assets/JOSM.png';
 import rapidIcon from '../../../assets/RapiD.svg';
 import { isTruthy } from '../../../util/object.js';
+import { lockDataset } from '../../../api/conflation.js';
 import {
   downloadMergedOsmPatch,
   downloadSeparateOsmPatches,
@@ -57,8 +58,10 @@ interface Option {
 }
 
 export const ImportStep: React.FC<{
+  refTag: string;
   osmPatchFiles: Record<string, OsmPatch>;
-}> = ({ osmPatchFiles }) => {
+  datasetIds: string[];
+}> = ({ refTag, osmPatchFiles, datasetIds }) => {
   const { $, $$ } = use(LocaleContext);
   const { user } = use(AuthContext);
   const [isLoading, setIsLoading] = useState<string>();
@@ -213,6 +216,9 @@ export const ImportStep: React.FC<{
                 setIsLoading(key);
                 setError(undefined);
                 try {
+                  for (const datasetId of datasetIds) {
+                    await lockDataset(refTag, datasetId);
+                  }
                   await onClick();
                 } catch (ex) {
                   console.error(ex);

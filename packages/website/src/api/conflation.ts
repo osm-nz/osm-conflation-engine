@@ -4,6 +4,7 @@ import type {
   IgnoreListGet,
   IgnoreListMarkAsReviewed,
   LockCreate,
+  LockGet,
   RunHistoryGetAll,
   TempFileUpload,
 } from '@osm-conflation-engine/server';
@@ -70,6 +71,10 @@ export function markIgnoreListAsReviewed(
   );
 }
 
+export function getLocks(refTag: string) {
+  return wrappedFetch<GetChanfanaResponse<LockGet>>(`/api/lock/${refTag}`);
+}
+
 export function lockDataset(refTag: string, datasetId: string) {
   return wrappedFetch<GetChanfanaResponse<LockCreate>>(
     `/api/lock/${refTag}/${datasetId}`,
@@ -86,4 +91,5 @@ export function uploadTempFile(osmChange: OsmChange) {
 }
 
 export type Project = Awaited<ReturnType<typeof getAllProjects>>[number];
+export type Lock = Awaited<ReturnType<typeof getLocks>>[number];
 export type IgnoredRow = Awaited<ReturnType<typeof getIgnoreList>>[number];

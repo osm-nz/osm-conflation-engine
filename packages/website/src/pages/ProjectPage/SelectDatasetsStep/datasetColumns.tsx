@@ -5,10 +5,13 @@ import type { Column, Sort } from '../../../components/MegaTable/index.js';
 import type { I$ } from '../../../context/LocaleContext.js';
 import type { Locale } from '../../../translations/index.js';
 import { getColourHash } from '../../../util/colour.js';
+import type { Lock } from '../../../api/conflation.js';
 import { DownloadOsmPatchFileButton } from './DownloadButton.js';
+import { LockWarning } from './LockWarning.js';
 
 export interface DatasetRow extends IndexFileProperties {
   original: Feature<Polygon, IndexFileProperties>;
+  lock: Lock | undefined;
 }
 
 type DatasetColumnKey = 'title' | 'category' | 'count' | 'totalCount';
@@ -29,11 +32,16 @@ export const getDatasetColumns = (
     render: (row) => (
       <>
         <Group gap={4} wrap="nowrap">
-          <Text size="sm" style={{ wordBreak: 'break-word' }}>
+          <Text
+            size="sm"
+            td={row.lock && 'line-through'}
+            style={{ wordBreak: 'break-word' }}
+          >
             {getDisplayName(row)}
           </Text>
           <DownloadOsmPatchFileButton refTag={refTag} datasetId={row.id} />
         </Group>
+        {row.lock && <LockWarning lock={row.lock} />}
         {row.instructions && (
           <Text size="xs" c="dimmed" lineClamp={2}>
             {row.instructions}
