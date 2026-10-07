@@ -23,6 +23,7 @@ import { NavbarProjectInfo } from './NavbarProjectInfo.js';
 import { NavbarProjectSelector } from './NavbarProjectSelector.js';
 
 const GITHUB_URL = 'https://github.com/osm-nz/osm-conflation-engine';
+export const APP_ICON_URL = 'https://osm-nz.github.io/img/logo.png';
 
 /** a navbar link which is highlighted when the current route matches */
 const NavItem: React.FC<React.PropsWithChildren<{ to: string }>> = ({
@@ -55,12 +56,7 @@ export const Navbar: React.FC = () => {
       <Group gap="sm" wrap="nowrap">
         <Anchor component={Link} to="/" c="inherit" underline="never">
           <Group gap="sm" wrap="nowrap">
-            <Image
-              src="https://osm-nz.github.io/img/logo.png"
-              h={28}
-              w={28}
-              alt=""
-            />
+            <Image src={APP_ICON_URL} h={28} w={28} alt="" />
             <Text fw={700} size="lg" visibleFrom="xs">
               OSM Conflation Engine
             </Text>

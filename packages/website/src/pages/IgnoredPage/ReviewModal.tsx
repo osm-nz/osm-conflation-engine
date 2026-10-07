@@ -16,6 +16,7 @@ import { useParams } from 'react-router';
 import { markIgnoreListAsReviewed } from '../../api/conflation.js';
 import { AuthContext } from '../../context/AuthContext.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
+import { OsmUsername } from '../../components/OsmUsername.js';
 import { ReviewDecision } from './columns.js';
 
 interface Decision {
@@ -152,22 +153,21 @@ export const ReviewModal: React.FC<{
 
         {!!user && (
           <Text component="div" size="xs" c="dimmed">
-            {$$(
-              'ReviewModal.username_notice',
-              { username: user.display_name },
-              {
-                avatar: () => (
-                  <Avatar
-                    src={user.img?.href}
-                    name={user.display_name}
-                    size={18}
-                    radius="xl"
-                    display="inline-flex"
-                    style={{ verticalAlign: 'text-bottom' }}
-                  />
-                ),
-              },
-            )}
+            {$$('ReviewModal.username_notice', undefined, {
+              user: () => (
+                <OsmUsername user={user.display_name} fw={700} inherit />
+              ),
+              avatar: () => (
+                <Avatar
+                  src={user.img?.href}
+                  name={user.display_name}
+                  size={18}
+                  radius="xl"
+                  display="inline-flex"
+                  style={{ verticalAlign: 'text-bottom' }}
+                />
+              ),
+            })}
           </Text>
         )}
 

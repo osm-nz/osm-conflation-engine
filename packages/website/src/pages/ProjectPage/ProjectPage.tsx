@@ -1,13 +1,17 @@
 import { use, useCallback, useMemo, useState } from 'react';
 import { Text } from '@mantine/core';
 import { useParams } from 'react-router';
+import type { OsmPatch } from 'osm-api';
 import { useProject } from '../../hooks/useProject.js';
 import { FullPageLoading } from '../../components/FullPageLoading.js';
 import { PageNotFound } from '../../components/PageNotFound.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
 import { toggle } from '../../util/object.js';
 import type { DatasetRow } from './SelectDatasetsStep/datasetColumns.js';
-import { toFeatureRows } from './SelectFeaturesStep/featureColumns.js';
+import {
+  getFeatureId,
+  toFeatureRows,
+} from './SelectFeaturesStep/featureColumns.js';
 import { Steps } from './Steps.js';
 import { SelectDatasetsStep } from './SelectDatasetsStep/SelectDatasetsStep.js';
 import { SelectFeaturesStep } from './SelectFeaturesStep/SelectFeaturesStep.js';
@@ -89,6 +93,25 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
   );
 
   //
+  // step 3:
+  //
+  const selectedOsmPatchFiles = useMemo(() => {
+    const result: Record<string, OsmPatch> = {};
+    for (const { title } of selectedDatasets) {
+      const osmPatch = osmPatchFiles.data[title];
+      if (!osmPatch) continue;
+
+      const features = osmPatch.features.filter(
+        (_, index) => !deselectedFeatureIds.has(getFeatureId(title, index)),
+      );
+      if (features.length) {
+        result[title] = { ...osmPatch, features };
+      }
+    }
+    return result;
+  }, [selectedDatasets, osmPatchFiles.data, deselectedFeatureIds]);
+
+  //
   // other
   //
 
@@ -156,6 +179,7 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
           <ImportStep
             key={0}
             //
+            osmPatchFiles={selectedOsmPatchFiles}
           />,
         ][step]}
     </div>

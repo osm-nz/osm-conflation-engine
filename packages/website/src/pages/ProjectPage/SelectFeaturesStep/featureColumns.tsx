@@ -38,6 +38,9 @@ export interface FeatureRow {
   original: OsmPatchFeature;
 }
 
+export const getFeatureId = (dataset: string, index: number) =>
+  `${dataset}␞${index}`;
+
 export function toFeatureRows(
   dataset: string,
   features: OsmPatchFeature[],
@@ -52,7 +55,7 @@ export function toFeatureRows(
     }
 
     return {
-      id: `${dataset}␞${index}`,
+      id: getFeatureId(dataset, index),
       dataset,
       action: feature.properties.__action || 'create',
       label: utilDisplayName(tags),
