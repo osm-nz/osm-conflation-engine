@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.11.0...cli-v3.11.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* **cli:** include __oldTags for deletions ([981da6c](https://github.com/osm-nz/osm-conflation-engine/commit/981da6c1d54c6f799d7d87520f79cf88340169a6))
+
 ## [3.11.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.10.0...cli-v3.11.0) (2026-10-06)
 
 
