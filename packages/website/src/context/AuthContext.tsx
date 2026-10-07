@@ -20,7 +20,7 @@ import {
 } from 'osm-api';
 import { Button, LoadingOverlay } from '@mantine/core';
 import { FullPageError } from '../components/FullPageError.js';
-import { ImportRulesModal } from '../components/ImportRulesModal.js';
+import { ImportRulesModal, ackKey } from '../components/ImportRulesModal.js';
 import {
   type LoginSuggestionOptions,
   useLoginSuggestion,
@@ -85,6 +85,7 @@ export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     setLoggedIn(false);
     setUser(undefined);
     setError(undefined);
+    localStorage.removeItem(ackKey);
   }, []);
 
   const [maybeSuggestLoggingIn, loginSuggestionModal] = useLoginSuggestion({
