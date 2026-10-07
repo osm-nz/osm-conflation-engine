@@ -1,7 +1,7 @@
 import type { OsmFeature, OsmPatch, OsmPatchFeature } from 'osm-api';
 import {
   Alight,
-  type GTFSBool,
+  GTFSBool,
   type Stop,
   type StopId,
   type TripId,
@@ -62,8 +62,23 @@ export const flagsToString = (
 export interface JourneyStop {
   stopId: StopId;
   flags: Flags;
-  time: string | undefined;
 }
+
+type RawPatternStop = [
+  //
+  stopId: StopId,
+  pickupType: Alight,
+  dropOffType: Alight,
+];
+
+type RawPatternTrip = [
+  tripId: TripId,
+  headsign: string | null,
+  wheelchair: GTFSBool | null,
+  bicycle: GTFSBool | null,
+  startTime: string | null,
+  endTime: string | null,
+];
 
 /**
  * A _Journey_ is not a concept that exists in GTFS. We use this
@@ -213,61 +228,74 @@ export async function conflateStops(
     (row) => row.route_short_name,
   );
 
-  const _rawStopTimes = await comms.exec<
-    Merged<
-      | 'stop_id'
-      | 'stop_sequence'
-      | 'pickup_type'
-      | 'drop_off_type'
-      | 'trip_id'
-      | 'trip_headsign'
-      | 'route_short_name'
-      | 'route_type'
-      | 'wheelchair_accessible'
-      | 'bikes_allowed'
-      | 'route_color'
-      | 'arrival_time'
-      | 'departure_time'
-    >
+  const _rawPatterns = await comms.exec<
+    Merged<'route_short_name' | 'route_type' | 'route_color'> & {
+      stops: Stringified<RawPatternStop[]>;
+      trips: Stringified<RawPatternTrip[]>;
+    }
   >(`
-    SELECT DISTINCT
-      st.stop_id,
-      st.stop_sequence,
-      st.trip_id,
-      st.arrival_time,
-      st.departure_time,
-      ${cols.st.has('pickup_type') ? 'st.pickup_type,' : ''}
-      ${cols.st.has('drop_off_type') ? 'st.drop_off_type,' : ''}
-      ${cols.t.has('trip_headsign') ? 't.trip_headsign,' : ''}
-      ${cols.t.has('wheelchair_accessible') ? 't.wheelchair_accessible,' : ''}
-      ${cols.t.has('bikes_allowed') ? 't.bikes_allowed,' : ''}
+    WITH trip_patterns AS (
+      SELECT
+        st.trip_id,
+        json_group_array(
+          json_array(
+            ${/** this is building {@link RawPatternStop} */ ''}
+            st.stop_id,
+            ${cols.st.has('pickup_type') ? `coalesce(CAST(nullif(st.pickup_type, '') AS INTEGER), ${Alight.AVAILABLE})` : Alight.AVAILABLE},
+            ${cols.st.has('drop_off_type') ? `coalesce(CAST(nullif(st.drop_off_type, '') AS INTEGER), ${Alight.AVAILABLE})` : Alight.AVAILABLE}
+          ) ORDER BY st.stop_sequence
+        ) AS stops,
+        json_group_array(
+          coalesce(
+            nullif(st.arrival_time, ''),
+            nullif(st.departure_time, '')
+          )
+          ORDER BY st.stop_sequence
+        ) AS times
+      FROM stop_times st
+      GROUP BY st.trip_id
+    )
+    SELECT
       ${cols.r.has('route_color') ? 'r.route_color,' : ''}
       r.route_short_name,
-      r.route_type
-    FROM stop_times st
-    INNER JOIN trips t ON st.trip_id = t.trip_id
+      r.route_type,
+      p.stops,
+      json_group_array(
+        json_array(
+          ${/** this is building {@link RawPatternTrip} */ ''}
+          t.trip_id,
+          ${cols.t.has('trip_headsign') ? 't.trip_headsign' : 'NULL'},
+          ${cols.t.has('wheelchair_accessible') ? 't.wheelchair_accessible' : 'NULL'},
+          ${cols.t.has('bikes_allowed') ? 't.bikes_allowed' : 'NULL'},
+          p.times ->> '$[0]',
+          p.times ->> '$[#-1]'
+        )
+      ) AS trips
+    FROM trip_patterns p
+    INNER JOIN trips t ON p.trip_id = t.trip_id
     INNER JOIN routes r ON t.route_id = r.route_id
+    GROUP BY r.route_short_name, p.stops
   `);
 
-  const minMaxStopSequences = Object.groupBy(
-    await comms.exec<{ trip_id: TripId; min: number; max: number }>(`
-      SELECT trip_id, MIN(stop_sequence) as min, MAX(stop_sequence) as max
-      FROM stop_times GROUP BY trip_id;
-    `),
-    (row) => row.trip_id,
-  );
-
   const gtfsRouteData: FinalGTFSOutput = {};
-  const tempSequences: {
-    [tripId: string]: {
-      headsign: string;
-      wheelchair: GTFSBool;
-      bicycle: GTFSBool;
-      sequence: JourneyStop[];
+
+  /**
+   * some trip_ids have the same stopping pattern, so
+   * we group them all together by a "patternKey" which is just
+   * the stop_ids concatenating in the correct order. We ignore
+   * flags for this comparison, since we can can bitwise-merge
+   * the flags later.
+   */
+  const patternsByRsn: {
+    [rsn: string]: {
+      [patternKey: string]: {
+        stopIds: JourneyStop[];
+        journey: Omit<Journey, 'stopIds' | 'keep'>;
+      };
     };
   } = {};
 
-  for (const row of _rawStopTimes) {
+  for (const row of _rawPatterns) {
     gtfsRouteData[row.route_short_name] ||= {
       rsn: row.route_short_name,
       rln: operatorsByRsn[row.route_short_name]![0].route_long_name, // just take the first RLN
@@ -286,129 +314,102 @@ export async function conflateStops(
       ignore: !!config.ignoreRoutes?.includes(row.route_short_name),
     };
 
-    const { min, max } = minMaxStopSequences[row.trip_id]![0];
+    const rawStops = JSON.parse(row.stops);
+    const sequence = rawStops.map(
+      ([rawStopId, pickupType, dropOffType], index): JourneyStop => {
+        const isOnDemand =
+          dropOffType === Alight.MUST_CONTACT_DRIVER ||
+          dropOffType === Alight.MUST_CONTACT_AGENCY ||
+          pickupType === Alight.MUST_CONTACT_DRIVER ||
+          pickupType === Alight.MUST_CONTACT_AGENCY;
 
-    const isOnDemand =
-      +row.drop_off_type === Alight.MUST_CONTACT_DRIVER ||
-      +row.drop_off_type === Alight.MUST_CONTACT_AGENCY ||
-      +row.pickup_type === Alight.MUST_CONTACT_DRIVER ||
-      +row.pickup_type === Alight.MUST_CONTACT_AGENCY;
+        const isDropOff =
+          dropOffType !== Alight.NOT_AVAILABLE &&
+          // the first stop cannot be dropoff
+          index !== 0;
 
-    const isDropOff =
-      (!row.drop_off_type || +row.drop_off_type !== Alight.NOT_AVAILABLE) &&
-      row.stop_sequence !== min; // the first stop cannot be dropoff
+        const isPickUp =
+          pickupType !== Alight.NOT_AVAILABLE &&
+          // the last stop cannot be pickup
+          index !== rawStops.length - 1;
 
-    const isPickUp =
-      (!row.pickup_type || +row.pickup_type !== Alight.NOT_AVAILABLE) &&
-      row.stop_sequence !== max; // the last stop cannot be pickup
+        let flags = Flags.None;
+        if (isDropOff) flags |= Flags.DropOff;
+        if (isPickUp) flags |= Flags.PickUp;
+        if (isOnDemand) flags |= Flags.OnDemand;
 
-    gtfsRouteData[row.route_short_name].tripIds.add(row.trip_id);
+        let stopId = rawStopId;
 
-    let flags = Flags.None;
-    if (isDropOff) flags |= Flags.DropOff;
-    if (isPickUp) flags |= Flags.PickUp;
-    if (isOnDemand) flags |= Flags.OnDemand;
+        const stop = allStopsById[rawStopId]?.[0];
+        const overrideId =
+          stop && config.ignoreStops?.[getStopCode(stop, config)];
+        if (overrideId) {
+          const override = allStopsByCode[overrideId]?.[0];
+          if (override) {
+            stopId = override.stop_id;
+          } else {
+            warnings.add(
+              `Stop ${rawStopId} is overriden to be ${overrideId}, but there is no such stop`,
+            );
+          }
+        }
 
-    tempSequences[row.trip_id] ||= {
-      headsign: row.trip_headsign,
-      wheelchair: row.wheelchair_accessible ?? 0,
-      bicycle: row.bikes_allowed ?? 0,
-      sequence: [],
+        return { stopId, flags };
+      },
+    );
+
+    const patternKey = sequence.map((stop) => stop.stopId).join('␞');
+
+    patternsByRsn[row.route_short_name] ||= {};
+    patternsByRsn[row.route_short_name][patternKey] ||= {
+      stopIds: sequence.map((stop) => ({ ...stop, flags: Flags.None })),
+      journey: {
+        tripIds: [],
+        headsigns: new Set(),
+        wheelchair: new Set(),
+        bicycle: new Set(),
+        duration: [],
+      },
     };
+    const { stopIds, journey } =
+      patternsByRsn[row.route_short_name][patternKey];
 
-    let stopId = row.stop_id;
-
-    const stop = allStopsById[row.stop_id]?.[0];
-    const overrideId = stop && config.ignoreStops?.[getStopCode(stop, config)];
-    if (overrideId) {
-      const override = allStopsByCode[overrideId]?.[0];
-      if (override) {
-        stopId = override.stop_id;
-      } else {
-        warnings.add(
-          `Stop ${row.stop_id} is overriden to be ${overrideId}, but there is no such stop`,
-        );
-      }
+    // merge the flags together for each stop
+    for (let i = 0; i < sequence.length; i++) {
+      stopIds[i].flags |= sequence[i].flags;
     }
 
-    tempSequences[row.trip_id].sequence[row.stop_sequence] = {
-      stopId,
-      flags,
-      time: row.arrival_time || row.departure_time,
-    };
-  }
+    const rawTrips = JSON.parse(row.trips);
+    for (const rawTrip of rawTrips) {
+      const [tripId, headsign, wheelchair, bicycle, startTime, endTime] =
+        rawTrip;
+      gtfsRouteData[row.route_short_name].tripIds.add(tripId);
 
-  // the spec allows this to be a spare array, so filter out any empty slots.
-  for (const tripId in tempSequences) {
-    tempSequences[tripId].sequence =
-      tempSequences[tripId].sequence.filter(Boolean);
-  }
+      journey.tripIds.push(tripId);
+      if (headsign) journey.headsigns.add(headsign);
+      journey.wheelchair.add(wheelchair || GTFSBool.NOT_SPECIFIED);
+      journey.bicycle.add(bicycle || GTFSBool.NOT_SPECIFIED);
 
-  const durationByTripId: { [tripId: TripId]: number } = {};
-  for (const tripId in tempSequences) {
-    const start = tempSequences[tripId].sequence[0].time;
-    const end = tempSequences[tripId].sequence.at(-1)!.time;
-    if (start && end) {
-      durationByTripId[tripId] =
-        hhmmss.toSeconds(end) - hhmmss.toSeconds(start);
+      if (startTime && endTime) {
+        const duration =
+          hhmmss.toSeconds(endTime) - hhmmss.toSeconds(startTime);
+        if (duration) journey.duration.push(duration);
+      }
     }
   }
 
   for (const rsn in gtfsRouteData) {
-    /**
-     * some trip_ids have the same stopping pattern, so
-     * we group them all together by a "patternKey" which is just
-     * the stop_ids concatenating in the correct order. We ignore
-     * flags for this comparison, since we can can bitwise-merge
-     * the flags later.
-     */
-    const tripsByPattern: { [patternKey: string]: string[] } = {};
-    for (const tripId of gtfsRouteData[rsn].tripIds) {
-      const key = tempSequences[tripId].sequence
-        .map((stop) => stop.stopId)
-        .join('🦖');
-
-      tripsByPattern[key] ||= [];
-      tripsByPattern[key].push(tripId);
-    }
-
-    gtfsRouteData[rsn].journeys = Object.values(tripsByPattern).map(
-      (tripIds): Journey => {
-        // convert to an object, which will preserve the order
-        const stopIds = Object.fromEntries(
-          tempSequences[tripIds[0]].sequence.map((stop) => [stop.stopId, stop]),
-        );
-
-        // merge the flags together for each stop
-        for (const tripId of tripIds) {
-          for (const stop of tempSequences[tripId].sequence) {
-            stopIds[stop.stopId].flags |= stop.flags;
-          }
-        }
-
-        const stopsArray = Object.values(stopIds);
-
+    gtfsRouteData[rsn].journeys = Object.values(patternsByRsn[rsn]).map(
+      ({ stopIds, journey }): Journey => {
         // less than TRIP_PERCENT_THRESHOLD% of trips stop here, so it must be a special
         // stop e.g. the night-bus version of the 82
         const keep =
-          (tripIds.length / gtfsRouteData[rsn].tripIds.size) * 100 >=
+          (journey.tripIds.length / gtfsRouteData[rsn].tripIds.size) * 100 >=
             TRIP_PERCENT_THRESHOLD || !!config.includeAllStops;
 
         return {
-          tripIds,
-          headsigns: new Set(
-            tripIds.map((tripId) => tempSequences[tripId].headsign),
-          ),
-          wheelchair: new Set(
-            tripIds.map((tripId) => tempSequences[tripId].wheelchair),
-          ),
-          bicycle: new Set(
-            tripIds.map((tripId) => tempSequences[tripId].bicycle),
-          ),
-          stopIds: stopsArray,
-          duration: tripIds
-            .map((tripId) => durationByTripId[tripId])
-            .filter(Boolean),
+          ...journey,
+          stopIds,
           keep,
         };
       },
