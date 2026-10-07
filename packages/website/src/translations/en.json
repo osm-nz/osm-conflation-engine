@@ -64,7 +64,7 @@
   "ImportStep.download_osmPatch": "Download as osmPatch",
   "ImportStep.heading": ".input {$featureCount :integer}\n.match $featureCount\none {{How do you want to upload this {$featureCount} change to OpenStreetMap?}}\n*   {{How do you want to upload these {$featureCount} changes to OpenStreetMap?}}",
   "ImportStep.instructions": "Instructions",
-  "ImportStep.lock_notice": ".input {$count :integer}\n.match $count\none {{Once you choose an option, this {$count} dataset will be “locked”, to prevent other imports from uploading the same content. Your OSM username {#avatar/} {#user/} will be temporarily stored and visible to other importers.}}\n*   {{Once you choose an option, these {$count} datasets will be “locked”, to prevent other imports from uploading the same content. Your OSM username {#avatar/} {#user/} will be temporarily stored and visible to other importers.}}",
+  "ImportStep.lock_notice": ".input {$count :integer}\n.match $count\none {{Once you choose an option, this {$count} dataset will be “locked”, to prevent other importers from uploading the same content. Your OSM username {#avatar/} {#user/} will be temporarily stored and visible to other importers.}}\n*   {{Once you choose an option, these {$count} datasets will be “locked”, to prevent other importers from uploading the same content. Your OSM username {#avatar/} {#user/} will be temporarily stored and visible to other importers.}}",
   "ImportStep.subtitle.all_at_once": "Applies all changes at once",
   "ImportStep.subtitle.merged": "1 single merged file",
   "ImportStep.subtitle.one_by_one": "Review each change one-by-one",

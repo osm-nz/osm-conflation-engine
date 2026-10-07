@@ -64,7 +64,7 @@
   "ImportStep.download_osmPatch": "Als osmPatch herunterladen",
   "ImportStep.heading": ".input {$featureCount :integer}\n.match $featureCount\none {{Wie möchtest du diese {$featureCount} Änderung zu OpenStreetMap hochladen?}}\n*   {{Wie möchtest du diese {$featureCount} Änderungen zu OpenStreetMap hochladen?}}",
   "ImportStep.instructions": "Anweisungen",
-  "ImportStep.lock_notice": ".input {$count :integer}\n.match $count\none {{Sobald du eine Option wählst, wird dieser {$count} Datensatz „gesperrt“, damit andere Importe nicht dieselben Inhalte hochladen. Dein OSM-Benutzername {#avatar/} {#user/} wird vorübergehend gespeichert und ist für andere Importierende sichtbar.}}\n*   {{Sobald du eine Option wählst, werden diese {$count} Datensätze „gesperrt“, damit andere Importe nicht dieselben Inhalte hochladen. Dein OSM-Benutzername {#avatar/} {#user/} wird vorübergehend gespeichert und ist für andere Importierende sichtbar.}}",
+  "ImportStep.lock_notice": ".input {$count :integer}\n.match $count\none {{Sobald du eine Option wählst, wird dieser {$count} Datensatz „gesperrt“, damit andere Importierende nicht dieselben Inhalte hochladen. Dein OSM-Benutzername {#avatar/} {#user/} wird vorübergehend gespeichert und ist für andere Importierende sichtbar.}}\n*   {{Sobald du eine Option wählst, werden diese {$count} Datensätze „gesperrt“, damit andere Importierende nicht dieselben Inhalte hochladen. Dein OSM-Benutzername {#avatar/} {#user/} wird vorübergehend gespeichert und ist für andere Importierende sichtbar.}}",
   "ImportStep.subtitle.all_at_once": "Wendet alle Änderungen auf einmal an",
   "ImportStep.subtitle.merged": "1 zusammengeführte Datei",
   "ImportStep.subtitle.one_by_one": "Jede Änderung einzeln überprüfen",
