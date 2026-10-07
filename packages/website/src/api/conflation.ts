@@ -5,8 +5,9 @@ import type {
   IgnoreListMarkAsReviewed,
   LockCreate,
   RunHistoryGetAll,
+  TempFileUpload,
 } from '@osm-conflation-engine/server';
-import { getAuthToken } from 'osm-api';
+import { type OsmChange, getAuthToken } from 'osm-api';
 
 export const API_BASE_URL = 'https://osm-conflation-engine.kyle.kiwi';
 
@@ -74,6 +75,14 @@ export function lockDataset(refTag: string, datasetId: string) {
     `/api/lock/${refTag}/${datasetId}`,
     { method: 'PUT' },
   );
+}
+
+export function uploadTempFile(osmChange: OsmChange) {
+  return wrappedFetch<GetChanfanaResponse<TempFileUpload>>('/api/temp_file', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(osmChange),
+  });
 }
 
 export type Project = Awaited<ReturnType<typeof getAllProjects>>[number];

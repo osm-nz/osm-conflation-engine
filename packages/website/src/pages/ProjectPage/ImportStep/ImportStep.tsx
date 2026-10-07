@@ -31,6 +31,7 @@ import {
   downloadMergedOsmChange,
   downloadSeparateOsmChangeFiles,
 } from './downloadOsmChange.js';
+import { loadIntoJOSM } from './loadIntoJOSM.js';
 
 const ICON_SIZE = 28;
 
@@ -100,8 +101,7 @@ export const ImportStep: React.FC<{
       icon: ICONS.JOSM,
       title: $('ImportStep.upload_via', { editor: 'JOSM' }),
       subtitle: allAtOnce,
-      disabled: true,
-      onClick: console.info,
+      onClick: () => loadIntoJOSM(osmPatchFiles),
     },
     {
       key: 'iD',

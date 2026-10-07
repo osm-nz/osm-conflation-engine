@@ -268,6 +268,9 @@ export async function createOsmChangeFromPatchFile(
   for (const f of osmPatch.features) {
     const got = fetched[f.id!]!;
     const { __action, __members: relationMembers, ...tags } = f.properties;
+    for (const key in tags) {
+      if (key.startsWith('__')) delete tags[key];
+    }
     switch (__action) {
       case 'edit': {
         const edited = updateTags(got, tags);
