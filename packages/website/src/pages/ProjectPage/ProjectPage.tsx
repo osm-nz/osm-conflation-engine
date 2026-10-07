@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import type { OsmPatch } from 'osm-api';
 import { useProject } from '../../hooks/useProject.js';
 import { FullPageLoading } from '../../components/FullPageLoading.js';
+import { AuthGateway } from '../../components/AuthGateway.js';
 import { PageNotFound } from '../../components/PageNotFound.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
 import { toggle } from '../../util/object.js';
@@ -176,11 +177,9 @@ const ProjectPageInner: React.FC<{ refTag: string }> = ({ refTag }) => {
             pending={osmPatchFiles.pending}
             errors={osmPatchFiles.errors}
           />,
-          <ImportStep
-            key={0}
-            //
-            osmPatchFiles={selectedOsmPatchFiles}
-          />,
+          <AuthGateway key={0}>
+            <ImportStep osmPatchFiles={selectedOsmPatchFiles} />
+          </AuthGateway>,
         ][step]}
     </div>
   );
