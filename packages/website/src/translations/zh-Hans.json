@@ -38,6 +38,7 @@
   "FilterPill.all": "全部",
   "HomePage.create_project": "创建导入项目",
   "HomePage.filter.region": "地区",
+  "HomePage.filter.size": "大小",
   "HomePage.filter.type": "类型",
   "HomePage.last_updated": "{$description} — 最后更新{#when/}。",
   "HomePage.row_count": "{$count :number} 行",

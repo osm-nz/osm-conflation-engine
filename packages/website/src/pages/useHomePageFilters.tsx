@@ -24,7 +24,7 @@ function getProjectType(refTag: string): ProjectType {
 
 const getCountry = (region: string) => region.split('-', 1)[0]!;
 
-type SortKey = 'type' | 'region';
+type SortKey = 'type' | 'region' | 'size';
 
 export function useHomePageFilters(original: HomePageItem[]) {
   const { $, locale } = use(LocaleContext);
@@ -84,10 +84,22 @@ export function useHomePageFilters(original: HomePageItem[]) {
     );
     if (!sort) return filtered;
 
-    const getSortKeys = (item: HomePageItem) =>
-      sort.key === 'type'
-        ? [PROJECT_TYPES($)[getProjectType(item.refTag)]]
-        : [intl.getCountryName(getCountry(item.region)), item.region];
+    const getSortKeys = (item: HomePageItem) => {
+      switch (sort.key) {
+        case 'type': {
+          return [PROJECT_TYPES($)[getProjectType(item.refTag)]];
+        }
+        case 'region': {
+          return [intl.getCountryName(getCountry(item.region)), item.region];
+        }
+        case 'size': {
+          return [item.count.toString().padStart(15, '0')];
+        }
+        default: {
+          throw new Error(sort.key satisfies never);
+        }
+      }
+    };
 
     return filtered
       .map((item) => ({ item, keys: getSortKeys(item) }))
@@ -189,6 +201,13 @@ export function useHomePageFilters(original: HomePageItem[]) {
           ),
         )}
       </FilterPill>
+      <FilterPill
+        label={$('HomePage.filter.size')}
+        valueLabel={undefined}
+        onClear={undefined} // no filtering, only sorting
+        sort={sort?.key === 'size' ? sort.direction : undefined}
+        onToggleSort={() => toggleSort('size')}
+      />
     </Group>
   );
 

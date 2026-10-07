@@ -21,7 +21,8 @@ export const FilterPill: React.FC<
   PropsWithChildren<{
     label: string;
     valueLabel: string | undefined;
-    onClear(): void;
+    /** if undefined, then there is no filtering */
+    onClear: (() => void) | undefined;
     sort: SortDirection | undefined;
     onToggleSort(): void;
   }>
@@ -34,22 +35,24 @@ export const FilterPill: React.FC<
       <Button.GroupSection variant="default" size="xs" radius="xl" fw={600}>
         {label}
       </Button.GroupSection>
-      <Menu shadow="md" position="bottom-start">
-        <Menu.Target>
-          <Button
-            variant="default"
-            size="xs"
-            radius="xl"
-            fw="normal"
-            c={valueLabel ? undefined : 'dimmed'}
-            rightSection={<IconChevronDown size={14} stroke={1.5} />}
-          >
-            {valueLabel || $('FilterPill.all')}
-          </Button>
-        </Menu.Target>
-        <Menu.Dropdown>{children}</Menu.Dropdown>
-      </Menu>
-      {valueLabel && (
+      {onClear && (
+        <Menu shadow="md" position="bottom-start">
+          <Menu.Target>
+            <Button
+              variant="default"
+              size="xs"
+              radius="xl"
+              fw="normal"
+              c={valueLabel ? undefined : 'dimmed'}
+              rightSection={<IconChevronDown size={14} stroke={1.5} />}
+            >
+              {valueLabel || $('FilterPill.all')}
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>{children}</Menu.Dropdown>
+        </Menu>
+      )}
+      {valueLabel && onClear && (
         <Button
           variant="default"
           size="xs"

@@ -38,6 +38,7 @@
   "FilterPill.all": "All",
   "HomePage.create_project": "Create Import Project",
   "HomePage.filter.region": "Region",
+  "HomePage.filter.size": "Size",
   "HomePage.filter.type": "Type",
   "HomePage.last_updated": "{$description} — Last Updated {#when/}.",
   "HomePage.row_count": ".input {$count :number}\n.match $count\none {{{$count} row}}\n*   {{{$count} rows}}",
