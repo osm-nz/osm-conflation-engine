@@ -2,11 +2,12 @@
 
 A server is not strictly required for the core part of this tool.
 
-It has 3 purposes, which are auxillary features:
+It has 4 purposes, which are auxillary features:
 
 1. The server stores a list of features which were 'ignored' by the importer, or deleted by OSM users. These tool will not suggest importing these features. This must be stored externally to OSM.
 2. The server stores temporarily stores a list of datasets which have been locked by another importer. This prevents two importers from uploading the same thing at the same same time.
 3. If your project is using the '[changeset-watcher](../changeset-watcher)' feature, then the server stores the date when the script last ran. This ensures that the tool doesn't waste time by scanning the same changesets multiple times.
+4. Websites can't load osmChange files directly into JOSM, they need to store the osmChange file on an external server, and then tell JOSM to download from the server. Therefore, there is also an API to temporary store an OsmChange file, which auto-deletes after 10 minutes by the Cloudflare bucket.
 
 # notes
 

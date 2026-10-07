@@ -15,5 +15,11 @@
       "database_id": "cb5276a5-7daa-472b-b99a-ab6fcdc5ac03",
       "migrations_dir": "migrations"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "r2_temp_files",
+      "bucket_name": "osm-conflation-engine-temp-files"
+    }
   ]
 }

@@ -14,6 +14,8 @@ import { RunHistoryGet } from './routes/RunHistoryGet.js';
 import { RunHistoryGetAll } from './routes/RunHistoryGetAll.js';
 import { RunHistoryPut } from './routes/RunHistoryPut.js';
 import { StaticProxy } from './routes/StaticProxy.js';
+import { TempFileGet } from './routes/TempFileGet.js';
+import { TempFileUpload, tempFileBodyLimit } from './routes/TempFileUpload.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -36,6 +38,10 @@ openapi.get('/api/run_history/:refTag', RunHistoryGet);
 openapi.put('/api/run_history/:refTag', RunHistoryPut);
 
 openapi.get('/api/static/:refTag/:file{.+}', StaticProxy);
+
+openapi.use('/api/temp_file', tempFileBodyLimit);
+openapi.post('/api/temp_file', TempFileUpload);
+openapi.get('/api/temp_file/:fileName', TempFileGet);
 
 openapi.get(
   '/api/changeset_watch/check_date/:refTag',
@@ -63,4 +69,6 @@ export type {
   ChangesetWatchGetCheckDate,
   ChangesetWatchSetCheckDate,
   StaticProxy,
+  TempFileUpload,
+  TempFileGet,
 };
