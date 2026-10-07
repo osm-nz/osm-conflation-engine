@@ -27,6 +27,10 @@ import {
   downloadMergedOsmPatch,
   downloadSeparateOsmPatches,
 } from './downloadOsmPatch.js';
+import {
+  downloadMergedOsmChange,
+  downloadSeparateOsmChangeFiles,
+} from './downloadOsmChange.js';
 
 const ICON_SIZE = 28;
 
@@ -128,8 +132,7 @@ export const ImportStep: React.FC<{
       icon: ICONS.osmChange,
       title: $('ImportStep.download_osmChange'),
       subtitle: merged,
-      disabled: true,
-      onClick: console.info,
+      onClick: () => downloadMergedOsmChange(osmPatchFiles),
     },
     {
       key: 'osmChange-separate',
@@ -137,8 +140,7 @@ export const ImportStep: React.FC<{
       title: $('ImportStep.download_osmChange'),
       subtitle: separate,
       hidden: count === 1,
-      disabled: true,
-      onClick: console.info,
+      onClick: () => downloadSeparateOsmChangeFiles(osmPatchFiles),
     },
   ];
 

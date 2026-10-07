@@ -1,24 +1,11 @@
-import type { OsmPatch, Tags } from 'osm-api';
+import type { OsmPatch } from 'osm-api';
 import { downloadFile } from '../../../util/download.js';
 import { isTruthy } from '../../../util/object.js';
+import { mergeTags } from '../../../util/osm.js';
 
-function join(values: (string | undefined)[]) {
+export function join(values: (string | undefined)[]) {
   const unique = [...new Set(values.filter(Boolean))];
   return unique.length ? unique.join('\n\n') : undefined;
-}
-
-export function mergeTags(...tagsList: Tags[]): Tags {
-  const merged: Tags = {};
-  for (const tags of tagsList) {
-    for (const key in tags) {
-      if (!merged[key]) {
-        merged[key] = tags[key]!;
-      } else if (merged[key] !== tags[key]) {
-        merged[key] += `;${tags[key]}`;
-      }
-    }
-  }
-  return merged;
 }
 
 export function mergeOsmPatchFiles(osmPatchFiles: OsmPatch[]): OsmPatch {
