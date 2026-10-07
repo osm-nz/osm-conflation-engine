@@ -18,10 +18,6 @@
     { "key": "route", "object_types": ["relation"] },
     { "key": "route_master", "object_types": ["relation"] },
 
-    { "key": "network", "object_types": ["node", "relation"] },
-    { "key": "network:wikidata", "object_types": ["node", "relation"] },
-    { "key": "operator", "object_types": ["relation"] },
-    { "key": "operator:wikidata", "object_types": ["relation"] },
     { "key": "ref", "object_types": ["node", "relation"] },
     { "key": "local_ref", "object_types": ["node", "relation"] },
     { "key": "name", "object_types": ["node", "relation"] },

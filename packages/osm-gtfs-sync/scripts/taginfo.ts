@@ -59,6 +59,16 @@ for (const region of CONFIG) {
       value: region.networkWikidata,
     });
   }
+
+  for (const agency in region.operatorMap) {
+    const { name, wikidata } = region.operatorMap[agency];
+    const description = `Used for the agency ‘${agency}’ within the network ‘${region.networkName}’ in ${countryName}.`;
+
+    file.tags.push(
+      { ...basic, description, key: 'operator', value: name },
+      { ...basic, description, key: 'operator:wikidata', value: wikidata },
+    );
+  }
 }
 
 file.data_updated = new Date()
