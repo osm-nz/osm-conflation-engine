@@ -2,7 +2,7 @@ import { GTFSBool, VehicleType } from 'gtfs-types';
 import { getOkayCount } from '../../../components/ProgressBar.js';
 import type { ConflationResult } from '../../../conflate/index.js';
 import type { FinalGTFSOutput } from '../../../conflate/conflateStops.js';
-import { createBlob } from '../../../helpers/js.js';
+import type { OnSelect } from '../Review.tsx';
 import { Warnings } from './Warnings.js';
 
 export const RenderDuration: React.FC<{
@@ -24,30 +24,26 @@ export const RenderDuration: React.FC<{
 export const RenderRoutes: React.FC<{
   data: NonNullable<ConflationResult['routes']>;
   gtfsRouteData: FinalGTFSOutput;
-}> = ({ data, gtfsRouteData }) => {
+  onSelect: OnSelect;
+}> = ({ data, gtfsRouteData, onSelect }) => {
   return (
     <>
-      <a
-        href={createBlob(data.osmPatch.add)}
-        download="routes-add.osmPatch.geo.json"
-      >
+      <button onClick={() => onSelect({ 'Routes add': data.osmPatch.add })}>
         {data.osmPatch.add.features.length.toLocaleString()} missing
-      </a>
+      </button>
       ,{' '}
-      <a
-        href={createBlob(data.osmPatch.edit)}
-        download="routes-wrong.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Routes missing': data.osmPatch.edit })}
       >
         {data.osmPatch.edit.features.length.toLocaleString()} wrong
-      </a>
+      </button>
       , {getOkayCount(data.count).toLocaleString()} are okay. And{' '}
-      <a
-        href={createBlob(data.osmPatch.routeMaster)}
-        download="route-master.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Route Masters': data.osmPatch.routeMaster })}
       >
         {data.osmPatch.routeMaster.features.length.toLocaleString()} issues with
         route_master relations
-      </a>
+      </button>
       .
       <Warnings warnings={data.warnings} />
       <ul>

@@ -1,11 +1,7 @@
 import type { OsmPatch } from 'osm-api';
 import { safeFileName } from './downloadOsmPatch.js';
 
-export const LEGACY_WIZARD_URL =
-  window.location.hostname === '127.0.0.1'
-    ? 'http://127.0.0.1:3000/#/upload'
-    : '/#/upload';
-
+export const LEGACY_WIZARD_URL = 'https://osm-nz.github.io/#/upload';
 export const iD_URL = 'https://kyle.kiwi/iD';
 
 function waitForPostMessage(msg: string, source: Window, origin: string) {

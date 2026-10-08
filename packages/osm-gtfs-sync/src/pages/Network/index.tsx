@@ -1,5 +1,6 @@
 import { use, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getAllDatabaseNames } from 'gtfs-sqlite';
+import type { OsmPatch } from 'osm-api';
 import { useAsync } from '../../hooks/useAsync.js';
 import { CONFIG } from '../../config/_index.ts';
 import { type ConflationResult, conflate } from '../../conflate/index.js';
@@ -15,7 +16,15 @@ import { Review } from './Review.js';
 import { Step, Steps } from './Steps.js';
 import classes from './Steps.module.css';
 
-const Network: React.FC<{ code: string }> = ({ code }) => {
+export type PatchFiles = Record<string, OsmPatch>;
+export type ImportStep = React.FC<{ osmPatchFiles: PatchFiles }>;
+
+type Props = {
+  code: string;
+  ImportStep: ImportStep;
+};
+
+const Network: React.FC<Props> = ({ code, ImportStep }) => {
   const { $ } = use(HostContext);
   const [key, setKey] = useState(0);
   const reloadDBList = useCallback(() => setKey((c) => c + 1), []);
@@ -29,10 +38,16 @@ const Network: React.FC<{ code: string }> = ({ code }) => {
   const [chosenStep, setChosenStep] = useState<Step>();
   const [storeResults, setStoreResults] = useState(true);
   const [result, setResult] = useState<ConflationResult>();
+  const [patchFiles, setPatchFiles] = useState<PatchFiles>();
   const [error, setError] = useState<unknown>();
   const abortRef = useRef<AbortController>(undefined);
 
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  const onSelectPatchFiles = useCallback((newPatchFiles: PatchFiles) => {
+    setPatchFiles(newPatchFiles);
+    setChosenStep(Step.Upload);
+  }, []);
 
   if (dbError) {
     return (
@@ -52,12 +67,14 @@ const Network: React.FC<{ code: string }> = ({ code }) => {
 
   const step = chosenStep ?? (isImported ? Step.Download : Step.Import);
   const isReviewAvailable = isImported && step !== Step.Conflate && !!result;
+  const isUploadAvailable = isReviewAvailable && !!patchFiles;
 
   function setStep(newStep: Step) {
     if (step === Step.Conflate) {
       // leaving the loading state cancels the conflation
       abortRef.current?.abort();
       setResult(undefined);
+      setPatchFiles(undefined);
       setError(undefined);
     }
     setChosenStep(newStep);
@@ -70,6 +87,7 @@ const Network: React.FC<{ code: string }> = ({ code }) => {
     const { signal } = controller;
 
     setResult(undefined);
+    setPatchFiles(undefined);
     setError(undefined);
     setChosenStep(Step.Conflate);
 
@@ -96,12 +114,14 @@ const Network: React.FC<{ code: string }> = ({ code }) => {
         setStep={setStep}
         isImported={isImported}
         isReviewAvailable={isReviewAvailable}
+        isUploadAvailable={isUploadAvailable}
       />
       {step === Step.Import && (
         <ImportNetwork
           network={network}
           onComplete={() => {
             setResult(undefined);
+            setPatchFiles(undefined);
             setChosenStep(Step.Download);
             reloadDBList();
           }}
@@ -119,23 +139,30 @@ const Network: React.FC<{ code: string }> = ({ code }) => {
         <Conflating message={result?.message} error={error} />
       )}
       {step === Step.Review && result && (
-        <Review network={network} result={result} />
+        <Review
+          network={network}
+          result={result}
+          onSelect={onSelectPatchFiles}
+        />
+      )}
+      {step === Step.Upload && patchFiles && (
+        <ImportStep osmPatchFiles={patchFiles} />
       )}
     </div>
   );
 };
 
-const GtfsApp: React.FC<{ code: string } & IHostContext> = ({
-  code,
+const GtfsApp: React.FC<Props & IHostContext> = ({
   $,
   $$,
   username,
+  ...props
 }) => {
   const host = useMemo(() => ({ $, $$, username }), [$, $$, username]);
 
   return (
     <HostContext value={host}>
-      <Network code={code} />
+      <Network {...props} />
     </HostContext>
   );
 };

@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext.js';
 import { LocaleContext } from '../../context/LocaleContext.js';
 import fullPageClasses from '../../components/FullPage.module.css';
 import classes from './IframePage.module.css';
+import { ImportStep } from './ImportStep/ImportStep.js';
 
 const LazyGtfsApp = lazy(() => import('@osm-conflation-engine/osm-gtfs-sync'));
 
@@ -13,7 +14,13 @@ const GtfsPage: React.FC<{ code: string }> = ({ code }) => {
   const { $, $$ } = use(LocaleContext);
 
   return (
-    <LazyGtfsApp code={code} username={user!.display_name} $={$} $$={$$} />
+    <LazyGtfsApp
+      code={code}
+      username={user!.display_name}
+      $={$}
+      $$={$$}
+      ImportStep={ImportStep}
+    />
   );
 };
 

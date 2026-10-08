@@ -1,26 +1,25 @@
 import { getOkayCount } from '../../../components/ProgressBar.js';
 import type { ConflationResult } from '../../../conflate/index.js';
-import { createBlob } from '../../../helpers/js.js';
+import type { OnSelect } from '../Review.tsx';
 import { Warnings } from './Warnings.js';
 
 export const RenderStations: React.FC<{
   data: NonNullable<ConflationResult['stations']>;
-}> = ({ data }) => {
+  onSelect: OnSelect;
+}> = ({ data, onSelect }) => {
   return (
     <>
-      <a
-        href={createBlob(data.osmPatch.create)}
-        download="stations-missing.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Stations Missing': data.osmPatch.create })}
       >
         {data.osmPatch.create.features.length.toLocaleString()} missing
-      </a>
+      </button>
       ,{' '}
-      <a
-        href={createBlob(data.osmPatch.update)}
-        download="stations-wrong.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Stations Wrong': data.osmPatch.update })}
       >
         {data.osmPatch.update.features.length.toLocaleString()} wrong
-      </a>
+      </button>
       , {getOkayCount(data.count).toLocaleString()} are okay.
       <Warnings warnings={data.warnings} />
     </>

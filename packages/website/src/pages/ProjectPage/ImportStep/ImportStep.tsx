@@ -63,9 +63,9 @@ interface Option {
 }
 
 export const ImportStep: React.FC<{
-  refTag: string;
+  refTag?: string;
   osmPatchFiles: Record<string, OsmPatch>;
-  datasetIds: string[];
+  datasetIds?: string[];
 }> = ({ refTag, osmPatchFiles, datasetIds }) => {
   const { $, $$ } = use(LocaleContext);
   const { user } = use(AuthContext);
@@ -226,8 +226,10 @@ export const ImportStep: React.FC<{
                 setError(undefined);
                 try {
                   await onClick();
-                  for (const datasetId of datasetIds) {
-                    await lockDataset(refTag, datasetId);
+                  if (refTag && datasetIds) {
+                    for (const datasetId of datasetIds) {
+                      await lockDataset(refTag, datasetId);
+                    }
                   }
                 } catch (ex) {
                   console.error(ex);

@@ -16,6 +16,7 @@ export interface StepsProps {
   setStep(step: Step): void;
   isImported: boolean;
   isReviewAvailable: boolean;
+  isUploadAvailable: boolean;
 }
 
 export const Steps: React.FC<StepsProps> = ({
@@ -23,6 +24,7 @@ export const Steps: React.FC<StepsProps> = ({
   setStep,
   isImported,
   isReviewAvailable,
+  isUploadAvailable,
 }) => {
   const { $ } = use(HostContext);
 
@@ -32,7 +34,7 @@ export const Steps: React.FC<StepsProps> = ({
     [Step.Import]: isImported ? Step.Download : undefined,
     [Step.Download]: isReviewAvailable ? Step.Review : undefined,
     [Step.Conflate]: undefined,
-    [Step.Review]: undefined,
+    [Step.Review]: isUploadAvailable ? Step.Upload : undefined,
     [Step.Upload]: undefined,
   }[step];
 
@@ -68,7 +70,10 @@ export const Steps: React.FC<StepsProps> = ({
           label={$('gtfs.Steps.review')}
           allowStepSelect={isReviewAvailable}
         />
-        <Stepper.Step label={$('gtfs.Steps.upload')} allowStepSelect={false} />
+        <Stepper.Step
+          label={$('gtfs.Steps.upload')}
+          allowStepSelect={isUploadAvailable}
+        />
       </Stepper>
 
       <Group gap="xs" wrap="nowrap">

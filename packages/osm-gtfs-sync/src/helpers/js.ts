@@ -1,20 +1,3 @@
-import type { OsmPatch } from 'osm-api';
-
-const cache = new Map<OsmPatch, string>();
-
-/** caches the data by object reference */
-export function createBlob(osmPatch: OsmPatch) {
-  const cached = cache.get(osmPatch);
-  if (cached) return cached;
-
-  const blob = new Blob([JSON.stringify(osmPatch, null, 2)], {
-    type: 'application/json',
-  });
-  const blobUrl = URL.createObjectURL(blob);
-  cache.set(osmPatch, blobUrl);
-  return blobUrl;
-}
-
 export function downloadBlob(fileName: string, blobUrl: string) {
   const a = document.createElement('a');
   a.style.display = 'none';

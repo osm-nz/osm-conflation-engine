@@ -9,12 +9,16 @@ import { downloadBlob } from '../../helpers/js.js';
 import { RenderStops } from './Results/RenderStops.js';
 import { RenderStations } from './Results/RenderStations.js';
 import { RenderRoutes } from './Results/RenderRoutes.js';
+import type { PatchFiles } from './index.tsx';
 import 'leaflet/dist/leaflet.css';
+
+export type OnSelect = (newPatchFiles: PatchFiles) => void;
 
 export const Review = memo<{
   network: NetworkConfig;
   result: ConflationResult;
-}>(({ network, result }) => {
+  onSelect: OnSelect;
+}>(({ network, result, onSelect }) => {
   const eitherBbox = network.bbox || result.bbox;
   const centroid = eitherBbox && bboxToCentroid(eitherBbox);
 
@@ -51,10 +55,14 @@ export const Review = memo<{
         </tbody>
       </table>
       <h1>Stops</h1>
-      {result.stops ? <RenderStops data={result.stops} /> : 'Not started yet.'}
+      {result.stops ? (
+        <RenderStops data={result.stops} onSelect={onSelect} />
+      ) : (
+        'Not started yet.'
+      )}
       <h1>Stations</h1>
       {result.stations ? (
-        <RenderStations data={result.stations} />
+        <RenderStations data={result.stations} onSelect={onSelect} />
       ) : (
         'Not started yet.'
       )}
@@ -63,6 +71,7 @@ export const Review = memo<{
         <RenderRoutes
           data={result.routes}
           gtfsRouteData={result.stops.gtfsRouteData}
+          onSelect={onSelect}
         />
       ) : (
         'Not started yet.'

@@ -1,33 +1,29 @@
 import { getOkayCount } from '../../../components/ProgressBar.js';
 import type { ConflationResult } from '../../../conflate/index.js';
-import { createBlob } from '../../../helpers/js.js';
+import type { OnSelect } from '../Review.tsx';
 import { Warnings } from './Warnings.js';
 
 export const RenderStops: React.FC<{
   data: NonNullable<ConflationResult['stops']>;
-}> = ({ data }) => {
+  onSelect: OnSelect;
+}> = ({ data, onSelect }) => {
   return (
     <>
-      <a
-        href={createBlob(data.osmPatchMissing)}
-        download="stops-missing.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Stops Missing': data.osmPatchMissing })}
       >
         {data.osmPatchMissing.features.length.toLocaleString()} missing
-      </a>
+      </button>
       ,{' '}
-      <a
-        href={createBlob(data.osmPatchWrong)}
-        download="stops-wrong.osmPatch.geo.json"
-      >
+      <button onClick={() => onSelect({ 'Stops Wrong': data.osmPatchWrong })}>
         {data.osmPatchWrong.features.length.toLocaleString()} wrong
-      </a>
+      </button>
       , {getOkayCount(data.count).toLocaleString()} are okay. And{' '}
-      <a
-        href={createBlob(data.osmPatchDisused)}
-        download="stops-disused.osmPatch.geo.json"
+      <button
+        onClick={() => onSelect({ 'Disused Stops': data.osmPatchDisused })}
       >
         {data.osmPatchDisused.features.length.toLocaleString()} disused
-      </a>{' '}
+      </button>{' '}
       but this does not matter.
       <Warnings warnings={data.warnings} />
     </>
