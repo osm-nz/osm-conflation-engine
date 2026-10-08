@@ -13,7 +13,7 @@ interface DiffLine {
 
 export function getTagDiff(tags: Tags, oldTags: Tags | undefined): DiffLine[] {
   const lines: DiffLine[] = [];
-  for (const key in tags) {
+  for (const key in { ...tags, ...oldTags }) {
     const oldValue = oldTags?.[key] || '';
     const newValue = tags[key] === '🗑️' ? '' : tags[key] || '';
     if (oldValue === newValue) continue;
