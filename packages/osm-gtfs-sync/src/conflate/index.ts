@@ -134,6 +134,7 @@ export async function conflate(
         description: `GTFS data in ${config.code}`,
         region: config.region,
         wiki_page: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
+        license_waiver_url: config.licenseWaiverUrl,
       },
       merge: {
         dataset_column: '',

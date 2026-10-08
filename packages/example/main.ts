@@ -41,6 +41,7 @@ const config: Config = {
     description: 'this is just an example',
     region: 'AU-WA',
     wiki_page: 'https://osm.wiki/Example',
+    license_waiver_url: '',
   },
 };
 

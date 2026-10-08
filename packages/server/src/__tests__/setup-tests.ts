@@ -65,6 +65,7 @@ export const MOCK_METRICS: ConflateResult = {
       name: 'Example',
       description: 'Exampleee',
       wiki_page: 'https://wiki.osm.org/Example',
+      license_waiver_url: '',
     },
     source_data: {
       type: 'file',

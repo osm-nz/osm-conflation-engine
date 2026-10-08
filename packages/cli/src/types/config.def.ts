@@ -12,6 +12,12 @@ export interface Config {
     description: string;
     wiki_page: string;
     region: string;
+    license_waiver_url: string;
+    /**
+     * The URL to your taginfo-project file, which should be registered with
+     * https://github.com/taginfo/taginfo-projects
+     */
+    taginfo_project_url?: string;
   };
 
   source_data: {

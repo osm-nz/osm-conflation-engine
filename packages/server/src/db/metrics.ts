@@ -10,6 +10,8 @@ export const ConfigSchema = z.object({
     description: z.string(),
     wiki_page: z.string(),
     region: z.string(),
+    license_waiver_url: z.string(),
+    taginfo_project_url: z.string().optional(),
   }),
 
   source_data: z.object({
