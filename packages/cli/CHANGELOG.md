@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.12.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.11.1...cli-v3.12.0) (2026-10-08)
+
+
+### Features
+
+* **cli:** add two new metadata properties ([d506c26](https://github.com/osm-nz/osm-conflation-engine/commit/d506c2603bfc59a76bfa7c7e75c143ce600521a9))
+
+
+### Bug Fixes
+
+* **cli:** deduplicate instructions ([95cc272](https://github.com/osm-nz/osm-conflation-engine/commit/95cc272f78e30d08d9077fc5b917e451b5efb41c))
+
 ## [3.11.1](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.11.0...cli-v3.11.1) (2026-10-07)
 
 
