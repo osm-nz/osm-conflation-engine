@@ -1,7 +1,6 @@
 import {
   createExecutionContext,
   waitOnExecutionContext,
-  // @ts-expect-error -- known issue https://github.com/cloudflare/cloudflare-docs/issues/30069
 } from 'cloudflare:test';
 import { env } from 'cloudflare:workers';
 import { afterEach, describe, expect, it, vi } from 'vitest';

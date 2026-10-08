@@ -1,9 +1,6 @@
 import { join } from 'node:path';
 import { defineConfig } from 'vitest/config';
-import {
-  cloudflareTest,
-  readD1Migrations,
-} from '@cloudflare/vitest-pool-workers';
+import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
 
 const migrationsPath = join(import.meta.dirname, 'migrations');
 const migrations = await readD1Migrations(migrationsPath);
