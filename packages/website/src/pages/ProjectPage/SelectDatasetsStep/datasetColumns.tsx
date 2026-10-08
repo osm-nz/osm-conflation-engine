@@ -35,9 +35,9 @@ export const getDatasetColumns = (
           <Text
             size="sm"
             td={row.lock && 'line-through'}
-            style={{ wordBreak: 'break-word' }}
+            style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}
           >
-            {getDisplayName(row)}
+            {getDisplayName(row).replaceAll(';', '\n')}
           </Text>
           <DownloadOsmPatchFileButton refTag={refTag} datasetId={row.id} />
         </Group>

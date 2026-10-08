@@ -23,7 +23,7 @@ export function mergeOsmPatchFiles(osmPatchFiles: OsmPatch[]): OsmPatch {
   return merged;
 }
 
-function safeFileName(title: string) {
+export function safeFileName(title: string) {
   return `${title.replaceAll(/[\\/:*?"<>|]/g, '_')}.osmPatch.geo.json`;
 }
 

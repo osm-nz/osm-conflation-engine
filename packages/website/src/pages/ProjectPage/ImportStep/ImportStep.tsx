@@ -33,6 +33,11 @@ import {
   downloadSeparateOsmChangeFiles,
 } from './downloadOsmChange.js';
 import { loadIntoJOSM } from './loadIntoJOSM.js';
+import {
+  LEGACY_WIZARD_URL,
+  iD_URL,
+  loadViaPostMessage,
+} from './loadViaPostMessage.js';
 
 const ICON_SIZE = 28;
 
@@ -100,6 +105,12 @@ export const ImportStep: React.FC<{
       onClick: console.info,
     },
     {
+      key: 'legacy_wizard',
+      icon: ICONS.direct,
+      title: $('ImportStep.upload_via', { editor: 'The Legacy Wizard' }),
+      onClick: () => loadViaPostMessage(osmPatchFiles, LEGACY_WIZARD_URL),
+    },
+    {
       key: 'JOSM',
       icon: ICONS.JOSM,
       title: $('ImportStep.upload_via', { editor: 'JOSM' }),
@@ -111,9 +122,7 @@ export const ImportStep: React.FC<{
       icon: ICONS.iD,
       title: $('ImportStep.upload_via', { editor: 'iD' }),
       subtitle: allAtOnce,
-      onClick: () => {
-        throw new Error('not supported yet');
-      },
+      onClick: () => loadViaPostMessage(osmPatchFiles, iD_URL),
     },
     {
       key: 'osmPatch',
@@ -216,10 +225,10 @@ export const ImportStep: React.FC<{
                 setIsLoading(key);
                 setError(undefined);
                 try {
+                  await onClick();
                   for (const datasetId of datasetIds) {
                     await lockDataset(refTag, datasetId);
                   }
-                  await onClick();
                 } catch (ex) {
                   console.error(ex);
                   setError(ex);
