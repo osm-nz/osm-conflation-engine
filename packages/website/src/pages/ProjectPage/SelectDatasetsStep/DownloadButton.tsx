@@ -5,7 +5,7 @@ import { AuthContext } from '../../../context/AuthContext.js';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import { getDataset } from '../../../api/static.js';
 import { lockDataset } from '../../../api/conflation.js';
-import { downloadFile } from '../../../util/download.js';
+import { downloadSeparateOsmPatches } from '../ImportStep/downloadOsmPatch.js';
 
 export const DownloadOsmPatchFileButton: React.FC<{
   refTag: string;
@@ -26,7 +26,7 @@ export const DownloadOsmPatchFileButton: React.FC<{
       if (isLoggedIn) {
         await lockDataset(refTag, datasetId);
       }
-      downloadFile(osmPatch, `${datasetId}.osmPatch.geo.json`);
+      await downloadSeparateOsmPatches({ [datasetId]: osmPatch });
     } catch (error) {
       console.error(error);
       // eslint-disable-next-line no-alert

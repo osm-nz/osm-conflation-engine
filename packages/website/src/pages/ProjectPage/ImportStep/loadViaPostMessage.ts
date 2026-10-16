@@ -1,5 +1,5 @@
 import type { OsmPatch } from 'osm-api';
-import { safeFileName } from './downloadOsmPatch.js';
+import { cleanOsmPatch, safeFileName } from './downloadOsmPatch.js';
 
 export const LEGACY_WIZARD_URL = 'https://osm-nz.github.io/#/upload';
 export const iD_URL = 'https://kyle.kiwi/iD';
@@ -41,7 +41,8 @@ export async function loadViaPostMessage(
   const files: File[] = [];
 
   for (const name in osmPatchFiles) {
-    const blob = new Blob([JSON.stringify(osmPatchFiles[name], null, 2)], {
+    const patchFile = cleanOsmPatch(osmPatchFiles[name]!);
+    const blob = new Blob([JSON.stringify(patchFile, null, 2)], {
       type: 'application/json',
     });
     const file = new File([blob], safeFileName(name), {

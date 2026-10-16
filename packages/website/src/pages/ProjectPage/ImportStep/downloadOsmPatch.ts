@@ -8,6 +8,15 @@ export function join(values: (string | undefined)[]) {
   return unique.length ? unique.join('\n\n') : undefined;
 }
 
+export function cleanOsmPatch(file: OsmPatch) {
+  const cloned = structuredClone(file);
+  for (const feature of cloned.features) {
+    // this is an internal concept within this monorepo
+    delete feature.properties.__oldTags;
+  }
+  return cloned;
+}
+
 export function mergeOsmPatchFiles(osmPatchFiles: OsmPatch[]): OsmPatch {
   const changesetTags = mergeTags(
     ...osmPatchFiles.map((f) => f.changesetTags).filter(isTruthy),
@@ -20,7 +29,7 @@ export function mergeOsmPatchFiles(osmPatchFiles: OsmPatch[]): OsmPatch {
     changesetTags,
     features: osmPatchFiles.flatMap((osmPatch) => osmPatch.features),
   };
-  return merged;
+  return cleanOsmPatch(merged);
 }
 
 export function safeFileName(title: string) {
@@ -40,7 +49,8 @@ export async function downloadSeparateOsmPatches(
   osmPatchFiles: Record<string, OsmPatch>,
 ) {
   for (const title in osmPatchFiles) {
-    downloadFile(osmPatchFiles[title], safeFileName(title));
+    const osmPatchFile = cleanOsmPatch(osmPatchFiles[title]!);
+    downloadFile(osmPatchFile, safeFileName(title));
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
 }
