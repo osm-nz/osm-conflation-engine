@@ -36,7 +36,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/taginfo-projects": "github:taginfo/taginfo-projects#6daafd2e30a86a8bfb9615855af2c2d73bd98279",
+    "@types/taginfo-projects": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "name-suggestion-index": "^8.0.20260918",
     "react": "catalog:",

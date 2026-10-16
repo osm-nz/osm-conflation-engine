@@ -43,6 +43,7 @@
     "@types/geojson": "catalog:",
     "@types/node": "catalog:",
     "@types/pbf2json": "^6.6.4",
+    "@types/taginfo-projects": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "ts-json-schema-generator": "^2.9.0",
     "tsdown": "catalog:",

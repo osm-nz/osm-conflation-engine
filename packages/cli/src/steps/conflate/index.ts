@@ -27,6 +27,7 @@ import { createIndexAndSaveToDisk } from './createIndexAndSaveToDisk.js';
 import { mergeTinyDatasets } from './mergeTinyDatasets.js';
 import { generateDataForWebsite } from './stats/generateDataForWebsite.js';
 import { writeToRunHistory } from './stats/writeToRunHistory.js';
+import { checkTaginfoFile } from './stats/checkTaginfoFile.js';
 
 const MSG = 'invalid value returned by your callback function';
 
@@ -356,6 +357,7 @@ export async function conflate(
     mergeTinyDatasets(handlerReturn[category]);
   }
 
+  await checkTaginfoFile(ctx, handlerReturn);
   const metrics = await generateDataForWebsite(
     ctx,
     sourceData,

@@ -61,5 +61,5 @@ export function validateOsmTagsInConfig(ctx: Ctx) {
     return tags;
   }
 
-  return { pickTags };
+  return { pickTags, requiredKeys };
 }
