@@ -13,7 +13,7 @@ export async function downloadMergedOsmChange(
   const title = Object.keys(osmPatchFiles).join(';');
   const merged = mergeOsmPatchFiles(Object.values(osmPatchFiles));
   const { osmChange } = await createOsmChangeFromPatchFile(merged);
-  const xml = createOsmChangeXml(-1, osmChange, merged.changesetTags);
+  const xml = createOsmChangeXml(0, osmChange, merged.changesetTags);
 
   downloadFile(xml, safeFileName(title), 'application/xml');
 }
@@ -24,7 +24,7 @@ export async function downloadSeparateOsmChangeFiles(
   for (const title in osmPatchFiles) {
     const osmPatch = osmPatchFiles[title]!;
     const { osmChange } = await createOsmChangeFromPatchFile(osmPatch);
-    const xml = createOsmChangeXml(-1, osmChange, osmPatch.changesetTags);
+    const xml = createOsmChangeXml(0, osmChange, osmPatch.changesetTags);
 
     downloadFile(xml, safeFileName(title), 'application/xml');
     await new Promise((resolve) => setTimeout(resolve, 300));

@@ -42,7 +42,7 @@ export class TempFileGet extends OpenAPIRoute {
     }
 
     const osmChange = await file.json<OsmChange>();
-    const xml = createOsmChangeXml(-1, osmChange);
+    const xml = createOsmChangeXml(0, osmChange);
     return new Response(xml, {
       headers: {
         'Content-Type': 'application/xml',

@@ -87,7 +87,7 @@ describe('temp file', () => {
     const xml = await xmlResponse.text();
     expect(xml).toStrictEqual(`<osmChange version="0.6" generator="osm-api-js">
   <create>
-    <node id="-1" version="0" changeset="-1" lat="-36" lon="174">
+    <node id="-1" version="0" changeset="0" lat="-36" lon="174">
       <tag k="amenity" v="theatre"/>
     </node>
   </create>
