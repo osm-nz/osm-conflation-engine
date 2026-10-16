@@ -1,0 +1,36 @@
+{
+  "config": null,
+  "warnings": [
+    "(!) Planet PBF url is not from https://osm-internal.download.geofabrik.de, so metadata may not be available.",
+    "(!) No OSM credentials, so the planet extract will not include metadata"
+  ],
+  "countsByPhase": {
+    "init": {
+      "sourceDataset": 3,
+      "ignored": 1,
+      "osm": {
+        "withRef": 2,
+        "noRef": 0,
+        "semi": 0,
+        "duplicateRefs": 0,
+        "lastEditedByImporter": 2,
+        "recentlyChanged": 0,
+        "recentlyChecked": 0
+      }
+    },
+    "matched": {
+      "1": 2,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 1
+    },
+    "conflated": {
+      "create": 1,
+      "edit": 0,
+      "delete": 0,
+      "perfect": 2
+    }
+  }
+}

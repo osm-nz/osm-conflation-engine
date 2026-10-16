@@ -2,13 +2,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "test": "vitest"
   },
   "dependencies": {
     "@osm-conflation-engine/cli": "workspace:"
   },
   "devDependencies": {
     "@types/geojson": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
   }
 }

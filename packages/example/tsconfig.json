@@ -2,7 +2,7 @@
   "extends": "eslint-config-kyle/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "types": ["node"]
+    "types": ["node", "vitest"]
   },
-  "include": ["main.ts"]
+  "include": ["main.ts", "__tests__"]
 }

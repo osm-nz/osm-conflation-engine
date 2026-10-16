@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.903,
+          -36.9
+        ]
+      },
+      "properties": {
+        "addr:housenumber": "3",
+        "addr:street": "Example Street",
+        "ref:au:address_id": "70003"
+      }
+    }
+  ],
+  "bbox": {
+    "minLat": -36.9,
+    "minLng": 174.903,
+    "maxLat": -36.9,
+    "maxLng": 174.903
+  },
+  "sectorIds": [
+    "83bb50fffffffff"
+  ],
+  "changesetTags": {
+    "created_by": "osm-conflation-engine",
+    "import": "yes",
+    "source": "https://osm.wiki/Example"
+  }
+}

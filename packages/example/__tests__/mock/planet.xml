@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  this is the planet file used in unit tests.
+-->
+<osm version="0.6" generator="LINZ Address Import mock data">
+  <bounds minlat="-48.026701" minlon="165.019045" maxlat="-32.932388" maxlon="184.227542" />
+
+  <!-- n1: perfect -->
+  <node id="1" version="1" changeset="1" lat="-36.9" lon="174.901" user="" uid="0" visible="true" timestamp="2012-05-19T11:22:33Z">
+    <tag k="addr:housenumber" v="1" />
+    <tag k="addr:street" v="Example Street" />
+    <tag k="addr:hamlet" v="Oakleigh" />
+    <tag k="ref:au:address_id" v="70001" />
+  </node>
+
+  <!-- n2: latitude off a little -->
+  <node id="2" version="1" changeset="1" lat="-36.902" lon="174.902" user="" uid="0" visible="true" timestamp="2012-05-19T11:22:33Z">
+    <tag k="addr:housenumber" v="2" />
+    <tag k="addr:street" v="Example Street" />
+    <tag k="addr:hamlet" v="Oakleigh" />
+    <tag k="ref:au:address_id" v="70002" />
+  </node>
+
+  <!-- n3: missing from OSM -->
+</osm>

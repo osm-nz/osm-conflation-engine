@@ -16,25 +16,34 @@ interface Properties {
   district: string;
 }
 
-const config: Config = {
+export const config: Config = {
   $schema:
     'https://unpkg.com/@osm-conflation-engine/cli/dist/config.schema.json',
   source_data: {
     type: 'file',
-    file: join(import.meta.dirname, 'example_dataset.jsonl'),
+    file: join(import.meta.dirname, '__tests__/mock/source-dataset.jsonl'),
   },
   osm_data: {
     source: {
       type: 'pbf',
-      pbf_url:
-        'https://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf',
+      // in a real example, this would be a URL like https://download.geofabrik.de/australia-oceania/new-zealand-latest.osm.pbf
+      pbf_url: join(import.meta.dirname, '__tests__/mock/planet.pbf'),
       pbf_filter: ['addr:housenumber+addr:street,ref:au:address_id'],
     },
-    tags_to_keep: ['check_date', '/^addr/'],
+    tags_to_keep: ['check_date', '/^addr/', 'ref:au:address_id'],
   },
   merge: {
     osm_key: 'ref:au:address_id',
     dataset_column: 'id',
+  },
+  output: {
+    folder: join(import.meta.dirname, '__tests__/snapshot'),
+  },
+  e2e_tests: {
+    ignore_list_file_path: join(
+      import.meta.dirname,
+      '__tests__/mock/ignore-list.json',
+    ),
   },
   metadata: {
     name: 'Example Import Project',
@@ -45,76 +54,86 @@ const config: Config = {
   },
 };
 
-await run<Point, Properties>(config, {
-  getLocalKeyForOsm(feature) {
-    return `${feature.tags['addr:housenumber']} ${feature.tags['addr:street']}`;
-  },
-  getLocalKeyForSource(item) {
-    return item.properties.number + item.properties.street;
-  },
+export async function main() {
+  await run<Point, Properties>(
+    config,
+    {
+      getLocalKeyForOsm(feature) {
+        return `${feature.tags['addr:housenumber']} ${feature.tags['addr:street']}`.toLowerCase();
+      },
+      getLocalKeyForSource(item) {
+        return `${item.properties.number} ${item.properties.street}`.toLowerCase();
+      },
 
-  create({ source, osmCandidates }) {
-    // search through the candiates to see if one of them is
-    // the feature that we're looking for. If yes, we'll reuse
-    // that feature instead of creating a new one
-    let existingFeature: OsmId | undefined;
-    for (const candidate of osmCandidates) {
-      if (
-        candidate.tags['addr:street']?.toLowerCase() ===
-        source.properties.street
-      ) {
-        existingFeature = candidate.id;
-      }
-    }
+      create({ source, osmCandidates }) {
+        // search through the candiates to see if one of them is
+        // the feature that we're looking for. If yes, we'll reuse
+        // that feature instead of creating a new one
+        let existingFeature: OsmId | undefined;
+        for (const candidate of osmCandidates) {
+          if (
+            candidate.tags['addr:street']?.toLowerCase() ===
+            source.properties.street.toLowerCase()
+          ) {
+            existingFeature = candidate.id;
+          }
+        }
 
-    const tagDiff: TagDiff = {
-      'addr:housenumber': source.properties.number,
-      'addr:street': source.properties.street,
-    };
+        const tagDiff: TagDiff = {
+          'addr:housenumber': source.properties.number,
+          'addr:street': source.properties.street,
+          'ref:au:address_id': source.properties.id,
+        };
 
-    return {
-      selection: existingFeature,
-      group: `Address Update - ${source.properties.city}`, // optional, to provide more meaningful groups
-      diff: { tags: tagDiff },
-    };
-  },
+        return {
+          selection: existingFeature,
+          group: `Address Update - ${source.properties.city}`, // optional, to provide more meaningful groups
+          diff: { tags: tagDiff },
+        };
+      },
 
-  mergeOneToOne({ source, osm }) {
-    const tagDiff: TagDiff = {};
+      mergeOneToOne({ source, osm }) {
+        const tagDiff: TagDiff = {};
 
-    // check that both tags are correct:
-    if (source.properties.street !== osm.tags['addr:street']) {
-      tagDiff['addr:street'] = source.properties.street;
-    }
+        // check that both tags are correct:
+        if (source.properties.street !== osm.tags['addr:street']) {
+          tagDiff['addr:street'] = source.properties.street;
+        }
 
-    if (source.properties.number !== osm.tags['addr:housenumber']) {
-      tagDiff['addr:housenumber'] = source.properties.number;
-    }
+        if (source.properties.number !== osm.tags['addr:housenumber']) {
+          tagDiff['addr:housenumber'] = source.properties.number;
+        }
 
-    return {
-      group: `Adress Update - ${source.properties.city}`,
-      diff: { tags: tagDiff },
-    };
-  },
+        return {
+          group: `Adress Update - ${source.properties.city}`,
+          diff: { tags: tagDiff },
+        };
+      },
 
-  deleteFeature({ osm }) {
-    // check if there are any non-address tags on this node.
-    // - if yes, we should not delete the node, just remove the address tags
-    // - if no, we can fully delete the node
+      deleteFeature({ osm }) {
+        // check if there are any non-address tags on this node.
+        // - if yes, we should not delete the node, just remove the address tags
+        // - if no, we can fully delete the node
 
-    const allTagsAreAddressTags = Object.keys(osm.tags).every(
-      (key) => key.startsWith('addr:') || key === config.merge.osm_key,
-    );
-    if (allTagsAreAddressTags) {
-      return { diff: { tags: { __action: 'delete' } } };
-    }
+        const allTagsAreAddressTags = Object.keys(osm.tags).every(
+          (key) => key.startsWith('addr:') || key === config.merge.osm_key,
+        );
+        if (allTagsAreAddressTags) {
+          return { diff: { tags: { __action: 'delete' } } };
+        }
 
-    // else, remove tags instead of deleting
-    const tagDiff: TagDiff = {
-      __action: 'edit',
-      'addr:housenumber': '🗑️',
-      'addr:street': '🗑️',
-    };
-    return { diff: { tags: tagDiff } };
-  },
-});
+        // else, remove tags instead of deleting
+        const tagDiff: TagDiff = {
+          __action: 'edit',
+          'addr:housenumber': '🗑️',
+          'addr:street': '🗑️',
+          'ref:au:address_id': '🗑️',
+        };
+        return { diff: { tags: tagDiff } };
+      },
+    },
+    { use_cache: false },
+  );
+}
+
+if (import.meta.main) await main();
