@@ -24,6 +24,7 @@ import { hhmmss } from '../helpers/js.js';
 import {
   NON_MEANINGFUL_TAGS,
   conflateStopTags,
+  getAllPossibleNetworks,
 } from './tags/conflateStopTags.js';
 
 export enum Flags {
@@ -130,8 +131,12 @@ function getRanking(config: NetworkConfig, existing: OsmFeature) {
   // explicit ref for this feed, can't get any better
   if (refKey.startsWith('gtfs:')) return 4;
 
-  if (networkQId?.includes(config.networkWikidata)) return 3;
-  if (network?.includes(config.networkName)) return 2;
+  const expectedNetworks = new Set(getAllPossibleNetworks(config.networkName));
+  const expectedNetworkWikidatas = new Set(
+    getAllPossibleNetworks(config.networkWikidata),
+  );
+  if (networkQId?.some((qId) => expectedNetworkWikidatas.has(qId))) return 3;
+  if (network?.some((name) => expectedNetworks.has(name))) return 2;
 
   // penalise if there is a network[:wikidata] with the wrong value
   if (network || networkQId) return 0;

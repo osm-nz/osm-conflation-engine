@@ -26,7 +26,7 @@ export const DownloadFromOsm: React.FC<{
     <Stack>
       <Text>
         {$$('gtfs.DownloadFromOsm.instructions', {
-          networkName: network.networkName,
+          networkName: network.code,
         })}
       </Text>
       <SimpleGrid cols={{ base: 1, sm: 3 }}>

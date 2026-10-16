@@ -1,22 +1,45 @@
+import { VehicleType } from 'gtfs-types';
 import type { NetworkConfig } from '../types/config.def.js';
 
 export const AU: NetworkConfig[] = [
   {
     code: 'AU-NSW',
     region: 'AU-NSW',
-    networkName: 'TfNSW',
-    networkWikidata: 'Q7834923',
+    networkName: {
+      [VehicleType.GENERIC_BUS]: 'Transport Buses',
+      [VehicleType.SCHOOL_BUS]: 'Transport Buses',
+      [VehicleType.FERRY]: 'Sydney Ferries',
+      [VehicleType.TRAIN]: 'Sydney Trains',
+      [VehicleType.METRO_RAIL]: 'Sydney Metro',
+      [VehicleType.LIGHT_RAIL]: 'Sydney Light Rail',
+      [VehicleType.REGIONAL_RAIL]: 'NSW TrainLink',
+      [VehicleType.REGIONAL_COACH]: 'NSW TrainLink',
+      __default: 'TfNSW',
+    },
+    networkWikidata: {
+      [VehicleType.GENERIC_BUS]: 'Q5001345',
+      [VehicleType.SCHOOL_BUS]: 'Q5001345',
+      [VehicleType.FERRY]: 'Q3162795',
+      [VehicleType.TRAIN]: 'Q7660181',
+      [VehicleType.METRO_RAIL]: 'Q14774571',
+      [VehicleType.LIGHT_RAIL]: 'Q771666',
+      [VehicleType.REGIONAL_RAIL]: 'Q6955406',
+      [VehicleType.REGIONAL_COACH]: 'Q6955406',
+      __default: 'Q7834923',
+    },
+    overrideTransportModes: {
+      L1: VehicleType.LIGHT_RAIL,
+      L2: VehicleType.LIGHT_RAIL,
+      L3: VehicleType.LIGHT_RAIL,
+      LX: VehicleType.LIGHT_RAIL,
+      L4: VehicleType.LIGHT_RAIL,
+      NLR: VehicleType.LIGHT_RAIL,
+    },
     gtfsSource: {
       mode: 'manual',
       url: 'https://opendata.transport.nsw.gov.au/dataset/timetables-complete-gtfs',
     },
     licenseWaiverUrl: 'https://osm.wiki/Contributors#Transport_for_NSW',
-    bbox: {
-      minLat: -34.231159,
-      maxLat: -33.321949,
-      minLon: 150.474865,
-      maxLon: 151.567694,
-    },
   },
   {
     code: 'AU-QLD-Translink-SEQ',

@@ -24,6 +24,7 @@ import {
 } from './tags/conflateRouteTags.js';
 import { conflateRelationMembers } from './tags/conflateRelationMembers.js';
 import { Flags, type Journey, flagsToString } from './conflateStops.js';
+import { getAllPossibleNetworks } from './tags/conflateStopTags.ts';
 import type { ConflationResult } from './index.js';
 
 /** only edit the tags if at least 1 tag is meaningful */
@@ -37,10 +38,13 @@ function getRanking(config: NetworkConfig, relation: OsmRelation) {
   // explicit ref for this feed, can't get any better
   if (refTag.startsWith('gtfs:')) return 3;
 
+  const expectedNetworkWikidatas = new Set(
+    getAllPossibleNetworks(config.networkWikidata),
+  );
   if (
     relation.tags?.['network:wikidata']
       ?.split(';')
-      .includes(config.networkWikidata)
+      .some((v) => expectedNetworkWikidatas.has(v))
   ) {
     return 2;
   }

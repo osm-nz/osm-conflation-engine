@@ -7,6 +7,13 @@ export interface BBox {
   maxLon: number;
 }
 
+/**
+ * usually a GTFS feed is 1:1 with a `network=*` tag. if not,
+ * you can define the mapping here per mode of transport.
+ */
+export type Network =
+  string | ({ [P in VehicleType]?: string } & { __default: string });
+
 export interface NetworkConfig {
   /**
    * used when mutliple feeds use the same stop, but
@@ -48,9 +55,9 @@ export interface NetworkConfig {
   };
 
   /** the value for the `network=*` tag in this city */
-  networkName: string;
+  networkName: Network;
   /** the value for the `network:wkidata=*` tag in this city */
-  networkWikidata: string;
+  networkWikidata: Network;
 
   licenseWaiverUrl: string;
 

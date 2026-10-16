@@ -1,6 +1,6 @@
 import { type Stop, VehicleType, WheelchairBoardingType } from 'gtfs-types';
 import type { Tags } from 'osm-api';
-import type { NetworkConfig } from '../../types/config.def.js';
+import type { Network, NetworkConfig } from '../../types/config.def.js';
 import { getStopTagsForTransportMode } from '../../helpers/tagging.js';
 import { getOsmRef } from '../../helpers/data.js';
 import { deleteIgnoredTags } from './tagHelpers.js';
@@ -40,6 +40,21 @@ export const normalizeName = (name: string | undefined) =>
     .replaceAll(/\p{Diacritic}/gu, '')
     .replace(' ', '')
     .trim();
+
+export function getNetwork(
+  network: Network,
+  gtfsModeOfTransports: Iterable<VehicleType>,
+): string {
+  if (typeof network === 'string') return network;
+
+  const match = [...gtfsModeOfTransports]
+    .map((mode) => network[mode])
+    .find(Boolean);
+  return match || network.__default;
+}
+export function getAllPossibleNetworks(network: Network): string[] {
+  return typeof network === 'string' ? [network] : Object.values(network);
+}
 
 export function conflateStopTags(
   config: NetworkConfig,
@@ -89,18 +104,27 @@ export function conflateStopTags(
   }
 
   // 2. add NSI tags for network
-  if (!tags.network?.split(';').includes(config.networkName)) {
+  const expectedNetworkName = getNetwork(
+    config.networkName,
+    gtfsModeOfTransports,
+  );
+  const expectedNetworkWikidata = getNetwork(
+    config.networkWikidata,
+    gtfsModeOfTransports,
+  );
+
+  if (!tags.network?.split(';').includes(expectedNetworkName)) {
     tagChanges.network = tags.network
-      ? `${tags.network};${config.networkName}`
-      : config.networkName;
+      ? `${tags.network};${expectedNetworkName}`
+      : expectedNetworkName;
   }
   if (
-    config.networkWikidata &&
-    !tags['network:wikidata']?.split(';').includes(config.networkWikidata)
+    expectedNetworkWikidata &&
+    !tags['network:wikidata']?.split(';').includes(expectedNetworkWikidata)
   ) {
     tagChanges['network:wikidata'] = tags['network:wikidata']
-      ? `${tags['network:wikidata']};${config.networkWikidata}`
-      : config.networkWikidata;
+      ? `${tags['network:wikidata']};${expectedNetworkWikidata}`
+      : expectedNetworkWikidata;
   }
 
   // 3. delete spammy NSI tags
@@ -109,10 +133,10 @@ export function conflateStopTags(
   if (tags['brand:wikipedia']) tagChanges['brand:wikipedia'] = '🗑️';
 
   // 4. delete redundant operator tags that duplicate the network tag
-  if (tags.operator === config.networkName!) tagChanges.operator = '🗑️';
+  if (tags.operator === expectedNetworkName) tagChanges.operator = '🗑️';
   if (
-    config.networkWikidata &&
-    tags['operator:wikidata'] === config.networkWikidata
+    expectedNetworkWikidata &&
+    tags['operator:wikidata'] === expectedNetworkWikidata
   ) {
     tagChanges['operator:wikidata'] = '🗑️';
   }

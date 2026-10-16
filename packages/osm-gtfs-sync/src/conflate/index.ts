@@ -9,6 +9,7 @@ import { MatchType } from '../types/shared.def.ts';
 import { conflateStops } from './conflateStops.js';
 import { conflateStations } from './conflateStations.js';
 import { conflateRoutes } from './conflateRoutes.js';
+import { getAllPossibleNetworks } from './tags/conflateStopTags.ts';
 
 /** exact copy of defaults.ts */
 export const RECENT_THRESHOLD = 90;
@@ -124,21 +125,27 @@ export async function conflate(
       AS count
   `);
 
+  const networkQIds = getAllPossibleNetworks(config.networkWikidata).join(';');
+  const projectName =
+    typeof config.networkName === 'string'
+      ? config.networkName
+      : config.networkName.__default;
+
   // this is a mock config, just to satisfy the format required by the API
   const metrics: ConflateResult = {
     config: {
       $schema:
         'https://unpkg.com/@osm-conflation-engine/cli/dist/config.schema.json',
       metadata: {
-        name: `Public Transport — ${config.networkName}`,
+        name: `Public Transport — ${projectName}`,
         description: `GTFS data in ${config.code}`,
         region: config.region,
-        wiki_page: `https://www.wikidata.org/wiki/${config.networkWikidata}#P8253`,
+        wiki_page: `https://www.wikidata.org/wiki/${networkQIds}#P8253`,
         license_waiver_url: config.licenseWaiverUrl,
       },
       merge: {
         dataset_column: '',
-        osm_key: `network:wikidata=${config.networkWikidata}`,
+        osm_key: `network:wikidata=${networkQIds}`,
       },
       osm_data: {
         tags_to_keep: [],

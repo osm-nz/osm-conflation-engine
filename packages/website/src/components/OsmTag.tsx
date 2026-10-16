@@ -43,7 +43,15 @@ export const OsmTag: React.FC<
               {v}
             </Code>
           );
-          return [!!i && ';', child];
+          return [
+            !!i && (
+              // eslint-disable-next-line @eslint-react/no-array-index-key
+              <Code key={i + 0.5} c="inherit">
+                ;
+              </Code>
+            ),
+            child,
+          ];
         })
       ) : (
         <Code c="inherit">*</Code>

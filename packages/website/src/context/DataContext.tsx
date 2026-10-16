@@ -101,6 +101,17 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
       ...GTFS_CONFIG.map((config): HomePageItem => {
         const refTag = `::gtfs::${config.code}`;
         const match = allProjects?.find((p) => p.refTag === refTag);
+
+        const networkQIds =
+          typeof config.networkWikidata === 'string'
+            ? config.networkWikidata
+            : Object.values(config.networkWikidata).join(';');
+
+        const projectName =
+          typeof config.networkName === 'string'
+            ? config.networkName
+            : config.networkName.__default;
+
         return {
           // fallback values:
           regionFlag: '',
@@ -115,9 +126,9 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
 
           // prefer our local trusted data for trivial things:
           region: config.region,
-          name: `Public Transport — ${config.networkName}`,
+          name: `Public Transport — ${projectName}`,
           description: `GTFS data in ${config.code}`,
-          osmKey: `network:wikidata=${config.networkWikidata}`,
+          osmKey: `network:wikidata=${networkQIds}`,
           refTag,
           wikiPageLink: config.licenseWaiverUrl,
         };

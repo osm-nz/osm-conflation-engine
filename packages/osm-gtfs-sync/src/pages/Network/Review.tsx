@@ -82,7 +82,7 @@ export const Review = memo<{
         onClick={async () => {
           const comms = CommsChannel(network.code);
           const blobUrl = await comms.dump();
-          downloadBlob(`${network.networkName}.sqlite3`, blobUrl);
+          downloadBlob(`${network.code}.sqlite3`, blobUrl);
         }}
       >
         Export sqlite3 DB dump

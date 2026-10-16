@@ -6,6 +6,7 @@ import type { GtfsDetailedRoute, Journey } from '../conflateStops.js';
 import { getOsmRef } from '../../helpers/data.js';
 import { hhmmss } from '../../helpers/js.js';
 import { deleteIgnoredTags } from './tagHelpers.js';
+import { getNetwork } from './conflateStopTags.ts';
 
 // no point editting a route if it's purely to edit these tags
 export const NON_MEANINGFUL_ROUTE_TAGS = new Set([
@@ -42,18 +43,25 @@ export function conflateRouteTags(
   }
 
   // 2. add NSI tags for network
-  if (!tags.network?.split(';').includes(config.networkName)) {
+  const expectedNetworkName = getNetwork(config.networkName, [
+    gtfsRoute.vehicleType,
+  ]);
+  const expectedNetworkWikidata = getNetwork(config.networkWikidata, [
+    gtfsRoute.vehicleType,
+  ]);
+
+  if (!tags.network?.split(';').includes(expectedNetworkName)) {
     tagChanges.network = tags.network
-      ? `${tags.network};${config.networkName}`
-      : config.networkName;
+      ? `${tags.network};${expectedNetworkName}`
+      : expectedNetworkName;
   }
   if (
-    config.networkWikidata &&
-    !tags['network:wikidata']?.split(';').includes(config.networkWikidata)
+    expectedNetworkWikidata &&
+    !tags['network:wikidata']?.split(';').includes(expectedNetworkWikidata)
   ) {
     tagChanges['network:wikidata'] = tags['network:wikidata']
-      ? `${tags['network:wikidata']};${config.networkWikidata}`
-      : config.networkWikidata;
+      ? `${tags['network:wikidata']};${expectedNetworkWikidata}`
+      : expectedNetworkWikidata;
   }
 
   // 3. delete spammy NSI tags

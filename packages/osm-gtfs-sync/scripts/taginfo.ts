@@ -27,22 +27,35 @@ const file = _file as Schema;
 const BASE_URL = file.project.doc_url!;
 
 for (const region of CONFIG) {
-  const nsiEntry = nsi.wikidata[region.networkWikidata];
+  const allNetworkNames =
+    typeof region.networkName === 'string'
+      ? [region.networkName]
+      : Object.values(region.networkName);
+  const networkWikidatas =
+    typeof region.networkWikidata === 'string'
+      ? [region.networkWikidata]
+      : Object.values(region.networkWikidata);
+
+  const nsiEntry = networkWikidatas.map((w) => nsi.wikidata[w]).find(Boolean);
 
   const countryName = new Intl.DisplayNames(undefined, { type: 'region' }).of(
     region.region.split('-', 1)[0],
   );
 
   const basic = {
-    description: `Used for conflating GTFS data with OSM, for ‘${region.networkName}’ (${countryName})`,
+    description: `Used for conflating GTFS data with OSM, for ${allNetworkNames.map((n) => `‘${n}’`).join(' and ')} (${countryName})`,
     icon_url: Object.values(nsiEntry?.logos || {})[0],
     object_types: ['node', 'relation'],
     doc_url: `${BASE_URL}#/project/::gtfs::${region.code}`,
   } satisfies Partial<Tag>;
 
   file.tags.push(
-    { ...basic, key: 'network', value: region.networkName },
-    { ...basic, key: 'network:wikidata', value: region.networkWikidata },
+    ...allNetworkNames.map((value) => ({ ...basic, key: 'network', value })),
+    ...networkWikidatas.map((value) => ({
+      ...basic,
+      key: 'network:wikidata',
+      value,
+    })),
   );
   const gtfsKeyPrefixes = [
     'gtfs:stop_id:',
@@ -56,7 +69,6 @@ for (const region of CONFIG) {
       object_types: keyPrefix.includes('route') ? ['relation'] : ['node'],
       description: `Used as a BACKUP OPTION ONLY, the ref=* tag is strongly preferred. This tag should only be used as a last-resort solution if multiple networks use the same stop, and ‘${region.networkName}’ (${countryName}) uses a different ref=* to the other networks.`,
       key: keyPrefix + region.code,
-      value: region.networkWikidata,
     });
   }
 

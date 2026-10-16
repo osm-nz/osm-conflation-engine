@@ -123,7 +123,7 @@ export const ImportNetwork: React.FC<{
         {$$(
           'gtfs.ImportNetwork.instructions',
           {
-            networkName: network.networkName,
+            networkName: network.code,
             host: new URL(network.gtfsSource.url).host,
           },
           {
