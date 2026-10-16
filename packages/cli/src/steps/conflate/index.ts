@@ -6,6 +6,7 @@ import {
   type ConflationResultExtra,
   type Ctx,
   type DatasetId,
+  type IgnoredLog,
   type MatchOutput,
   MatchType,
   type OSMData,
@@ -75,6 +76,8 @@ export async function conflate(
   sourceData: SourceData,
   osmData: OSMData,
 ): Promise<ConflateResult> {
+  const ignored: IgnoredLog = {};
+
   const osmDataById: Record<OsmId, OsmFeature> = { ...osmData.noRef };
   for (const cat of <const>['withRef', 'semi', 'duplicateRefs']) {
     for (const k in osmData[cat]) {
@@ -117,7 +120,10 @@ export async function conflate(
     const osmFeature = osmDataById[osm]!;
     const sourceFeature = sourceData[source]!;
 
-    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) {
+      ignored[osmFeature.id] = MatchType.OneToOne;
+      continue;
+    }
 
     const result = await ctx.callbacks.mergeOneToOne({
       osm: osmFeature,
@@ -140,6 +146,12 @@ export async function conflate(
 
   // 2.
   for (const { source, osm } of matches[MatchType.OneToMany]) {
+    for (const id of osm) {
+      if (osmDataById[id]!.flags & OsmFlags.IsCheckedRecently) {
+        ignored[id] = MatchType.OneToMany;
+      }
+    }
+
     const osmFeatures = osm
       .map((id) => osmDataById[id]!)
       .filter((osmFeature) => !(osmFeature.flags & OsmFlags.IsCheckedRecently));
@@ -187,7 +199,10 @@ export async function conflate(
       (id) => sourceData[id]!,
     );
 
-    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) {
+      ignored[osmFeature.id] = MatchType.ManyToOne;
+      continue;
+    }
 
     const result = await ctx.callbacks.mergeManyToOne?.({
       osm: osmFeature,
@@ -208,6 +223,11 @@ export async function conflate(
 
   // 4.
   for (const { source, osm } of matches[MatchType.ManyToMany]) {
+    for (const id of osm) {
+      if (osmDataById[id]!.flags & OsmFlags.IsCheckedRecently) {
+        ignored[id] = MatchType.ManyToMany;
+      }
+    }
     const osmFeatures = osm
       .map((id) => osmDataById[id]!)
       .filter((osmFeature) => !(osmFeature.flags & OsmFlags.IsCheckedRecently));
@@ -251,7 +271,10 @@ export async function conflate(
   for (const idToDelete of matches[MatchType.Delete]) {
     const osmFeature = osmData.withRef[idToDelete]!;
 
-    if (osmFeature.flags & OsmFlags.IsCheckedRecently) continue;
+    if (osmFeature.flags & OsmFlags.IsCheckedRecently) {
+      ignored[osmFeature.id] = MatchType.Delete;
+      continue;
+    }
 
     // the business-side needs to decide for each feature, if it will outright
     // delete it, or just remove the relevant tags.
@@ -365,7 +388,7 @@ export async function conflate(
     matches,
     handlerReturn,
   );
-  await createIndexAndSaveToDisk(ctx, metrics, matches, handlerReturn);
+  await createIndexAndSaveToDisk(ctx, metrics, matches, handlerReturn, ignored);
   await writeToRunHistory(metrics);
 
   return metrics;

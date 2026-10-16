@@ -5,6 +5,7 @@ import type { Feature, Polygon } from 'geojson';
 import type {
   ConflateResult,
   Ctx,
+  IgnoredLog,
   IndexFile,
   IndexFileProperties,
   MatchOutput,
@@ -30,12 +31,13 @@ export async function createIndexAndSaveToDisk(
   metrics: ConflateResult,
   matches: MatchOutput,
   output: OutputLayers,
+  ignored: IgnoredLog,
 ): Promise<void> {
   const outputFolder =
     ctx.config.output?.folder || join(process.cwd(), 'output');
   const subFolderName = 'datasets';
 
-  const reports = generateReports(ctx, matches, output);
+  const reports = generateReports(ctx, matches, output, ignored);
 
   const meta = Object.entries(output).flatMap(([category, groups]) =>
     Object.entries(groups).map(([group, items]) => {

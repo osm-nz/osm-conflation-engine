@@ -22,4 +22,13 @@
   </node>
 
   <!-- n3: missing from OSM -->
+
+  <!-- n4: has a recent check_date, so the issue is ignored -->
+  <node id="4" version="1" changeset="1" lat="-36.904" lon="174.902" user="" uid="0" visible="true" timestamp="2012-05-19T11:22:33Z">
+    <tag k="addr:housenumber" v="4" />
+    <tag k="addr:street" v="Example Street typoooo" />
+    <tag k="addr:hamlet" v="Oakleigh" />
+    <tag k="ref:au:address_id" v="70004" />
+    <tag k="check_date" v="2099-01-01" />
+  </node>
 </osm>

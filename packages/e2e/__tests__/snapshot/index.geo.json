@@ -50,6 +50,7 @@
     "report-conflation-create.md",
     "report-conflation-edit.md",
     "report-conflation-move.md",
-    "report-conflation-delete.md"
+    "report-conflation-delete.md",
+    "ignored.md"
   ]
 }

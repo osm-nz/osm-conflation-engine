@@ -118,3 +118,5 @@ export interface OutputLayers {
 }
 
 export type CoordKey = `${number},${number}`;
+
+export type IgnoredLog = Record<OsmId, MatchType>;

@@ -9,11 +9,13 @@ import type {
 } from '../../../types/callbacks.def.js';
 import {
   type Ctx,
+  type IgnoredLog,
   type MatchOutput,
   MatchType,
   type OutputLayers,
 } from '../../../types/internal.def.js';
 import { EARTH_RADIUS } from '../../../common/geo.js';
+import { CHECK_DATE_KEY } from '../../../constants/defaults.js';
 
 const OSM_TYPES: Record<OsmFeatureTypeShort, OsmFeatureType> = {
   n: 'node',
@@ -24,9 +26,17 @@ const OSM_TYPES: Record<OsmFeatureTypeShort, OsmFeatureType> = {
 const osmIdToUrl = (osmId: string) =>
   `https://osm.org/${OSM_TYPES[osmId[0] as OsmFeatureTypeShort]}/${osmId.slice(1)}`;
 
-const osmIdToLink = (osmId: string) => `[${osmId}](${osmIdToUrl(osmId)})`;
+function generateMatchReport(
+  ctx: Ctx,
+  data: MatchOutput,
+  type: MatchType,
+  ignored: IgnoredLog,
+) {
+  const osmIdToLink = (osmId: string) => {
+    const flag = osmId in ignored ? '†' : '';
+    return `[${osmId}${flag}](${osmIdToUrl(osmId)})`;
+  };
 
-function generateMatchReport(ctx: Ctx, data: MatchOutput, type: MatchType) {
   function sourceIdToLink(id: string) {
     if (!ctx.formatterUrl) return id;
     const url = ctx.formatterUrl.replaceAll('$1', id);
@@ -71,6 +81,8 @@ function generateMatchReport(ctx: Ctx, data: MatchOutput, type: MatchType) {
 
   return report;
 }
+
+const osmIdToLink = (osmId: string) => `[${osmId}](${osmIdToUrl(osmId)})`;
 
 function generateConflationReport(data: OutputLayers, action: Action) {
   let report = `# Conflation – ${action}\n\n`;
@@ -132,10 +144,32 @@ function generateConflationReport(data: OutputLayers, action: Action) {
   return report;
 }
 
+function generateIgnoredReport(ctx: Ctx, ignored: IgnoredLog) {
+  const checkDateKey = ctx.config.osm_data?.check_date_key || CHECK_DATE_KEY;
+  let report =
+    '# Ignored Features\n\nThese features passed the match stage, but skipped ' +
+    `the conflation stage because they have a [\`${checkDateKey}=*\`](https://osm.wiki/Key:${checkDateKey}) tag containing a recent date.\n`;
+
+  const byCategory: Partial<Record<MatchType, string>> = {};
+  for (const osmId in ignored) {
+    const matchType = ignored[<OsmId>osmId]!;
+    byCategory[matchType] ||= '';
+    byCategory[matchType] += `- ${osmIdToLink(osmId)}\n`;
+  }
+  for (const _category in byCategory) {
+    const category = <MatchType>+_category;
+    const values = byCategory[category];
+    report += `\n## ${MatchType[category]}\n\n${values}`;
+  }
+
+  return report;
+}
+
 export function generateReports(
   ctx: Ctx,
   matches: MatchOutput,
   conflated: OutputLayers,
+  ignored: IgnoredLog,
 ) {
   const reports: Record<string, string> = {
     // match
@@ -143,28 +177,38 @@ export function generateReports(
       ctx,
       matches,
       MatchType.OneToOne,
+      ignored,
     ),
     'report-match-OneToMany.md': generateMatchReport(
       ctx,
       matches,
       MatchType.OneToMany,
+      ignored,
     ),
     'report-match-ManyToMany.md': generateMatchReport(
       ctx,
       matches,
       MatchType.ManyToMany,
+      ignored,
     ),
     'report-match-ManyToOne.md': generateMatchReport(
       ctx,
       matches,
       MatchType.ManyToOne,
+      ignored,
     ),
     'report-match-Delete.md': generateMatchReport(
       ctx,
       matches,
       MatchType.Delete,
+      ignored,
     ),
-    'report-match-Guess.md': generateMatchReport(ctx, matches, MatchType.Guess),
+    'report-match-Guess.md': generateMatchReport(
+      ctx,
+      matches,
+      MatchType.Guess,
+      ignored,
+    ),
 
     // conflation
     'report-conflation-create.md': generateConflationReport(
@@ -177,6 +221,10 @@ export function generateReports(
       conflated,
       'delete',
     ),
+
+    // other
+
+    'ignored.md': generateIgnoredReport(ctx, ignored),
   };
 
   for (const report in reports) {
