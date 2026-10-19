@@ -28,6 +28,11 @@
     "typecheck": "tsc",
     "test": "vitest"
   },
+  "tsdown": {
+    "loader": {
+      ".sql": "text"
+    }
+  },
   "dependencies": {
     "@actions/core": "^3.0.1",
     "ajv": "^8.20.0",

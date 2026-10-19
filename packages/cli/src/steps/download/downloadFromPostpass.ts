@@ -15,6 +15,7 @@ import {
   loadOsmFeature,
   saveLoadedOsmFeatures,
 } from './util/loadOsmFeature.js';
+import DEFAULT_QUERY from './downloadFromPostpass.sql';
 
 type PostpassResponse = FeatureCollection<
   Geometry,
@@ -40,15 +41,12 @@ export async function downloadFromPostpass(
   }
 
   const DEFAULT_SERVER_URL = 'https://postpass.geofabrik.de/api/interpreter';
-  const DEFAULT_QUERY = `
-    SELECT osm_type, osm_id, tags, ST_PointOnSurface(geom) AS geom
-    FROM postpass_pointlinepolygon
-    WHERE tags ? '${ctx.config.merge.osm_key}'
-  `;
-
   const query = queryFile
     ? await fs.readFile(queryFile, 'utf8')
-    : DEFAULT_QUERY;
+    : DEFAULT_QUERY.replace(
+        '{{ctx.config.merge.osm_key}}',
+        ctx.config.merge.osm_key,
+      );
 
   console.info('fetching OSM data via postpass…');
   const response = await fetch(serverUrl || DEFAULT_SERVER_URL, {
