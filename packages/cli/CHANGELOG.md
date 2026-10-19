@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.13.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.12.0...cli-v3.13.0) (2026-10-19)
+
+
+### Features
+
+* **cli:** generate a report for features skipped due to check_date tag ([9a83b60](https://github.com/osm-nz/osm-conflation-engine/commit/9a83b60c54bfb99af035411971fa03bcff29b0b5))
+* **cli:** validate the taginfo_project_url ([fcfe9b5](https://github.com/osm-nz/osm-conflation-engine/commit/fcfe9b5d2775af56e4323d2453d000f6ca565dc5))
+
+
+### Bug Fixes
+
+* **cli:** type=* tag missing when using postpass ([d3d93ee](https://github.com/osm-nz/osm-conflation-engine/commit/d3d93ee998784c2f8c84d68f2ea90451df8745b1))
+
 ## [3.12.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.11.1...cli-v3.12.0) (2026-10-08)
 
 
