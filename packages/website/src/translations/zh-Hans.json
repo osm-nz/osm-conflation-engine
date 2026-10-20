@@ -28,6 +28,8 @@
   "ConflationResult.title": "合并结果概览",
   "DataContext.error": "下载项目列表时出错",
   "DatasetMap.feature_count": "{$count :integer} 个要素",
+  "DatasetMap.hint_deselect": "左键单击取消选择，右键单击暂时隐藏",
+  "DatasetMap.hint_select": "左键单击选择，右键单击暂时隐藏",
   "DatasetMap.legend_title": "变更数量",
   "DownloadOsmPatchFileButton.loginReason": "建议登录 OpenStreetMap，以免其他导入者与你同时处理同一区域。",
   "FeatureMap.hint_deselect": "点击取消选择",

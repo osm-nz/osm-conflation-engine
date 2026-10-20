@@ -61,7 +61,7 @@ export function addHoverPopup(
   source: string,
   layers: string[],
   idProperty: string,
-  custom?: {
+  custom: {
     content: HTMLElement;
     /** must be stable! */
     onHover(id: string | undefined): void;
@@ -71,9 +71,8 @@ export function addHoverPopup(
     closeButton: false,
     closeOnClick: false,
     offset: 8,
-    maxWidth: custom ? '320px' : undefined,
-  });
-  if (custom) popup.setDOMContent(custom.content);
+    maxWidth: '320px',
+  }).setDOMContent(custom.content);
 
   let current: string | undefined;
   const setHovered = (id: string | undefined) => {
@@ -82,7 +81,7 @@ export function addHoverPopup(
       map.setFeatureState({ source, id: current }, { hover: false });
     }
     current = id;
-    custom?.onHover(id);
+    custom.onHover(id);
     if (current) {
       map.setFeatureState({ source, id: current }, { hover: true });
     }
@@ -100,7 +99,6 @@ export function addHoverPopup(
 
     map.getCanvas().style.cursor = 'pointer';
     setHovered(feature.properties[idProperty]);
-    if (!custom) popup.setText(feature.properties.label);
     popup.setLngLat(event.lngLat).addTo(map);
   });
   map.on('mouseleave', layers, clearHover);

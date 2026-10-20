@@ -1,4 +1,6 @@
 import { use, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Text } from '@mantine/core';
 import type maplibregl from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import { LocaleContext } from '../../../context/LocaleContext.js';
@@ -48,6 +50,10 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
   const { $, locale } = use(LocaleContext);
   const containerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map>();
+
+  const [popupPortal] = useState(() => document.createElement('div'));
+  const [hoveredId, setHoveredId] = useState<string>();
+  const hovered = hoveredId && rows.find((row) => row.title === hoveredId);
 
   const skipNextFitBoundsRef = useRef(false);
   const renderedIdsRef = useRef<string>(undefined);
@@ -108,7 +114,10 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
       setMap(newMap);
     });
 
-    const { clearHover } = addHoverPopup(newMap, SOURCE, LAYERS, 'title');
+    const { clearHover } = addHoverPopup(newMap, SOURCE, LAYERS, 'title', {
+      content: popupPortal,
+      onHover: setHoveredId,
+    });
 
     newMap.on('click', LAYERS, (event) => {
       const feature = event.features?.[0];
@@ -130,7 +139,7 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
       clearHover();
       newMap.remove();
     };
-  }, [onToggle, onHide]);
+  }, [onToggle, onHide, popupPortal]);
 
   // render the datasets, and fit the map to them if the list changed
   useEffect(() => {
@@ -144,7 +153,6 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
           properties: {
             ...row.original.properties,
             colour: getColourFromScale(row.totalCount),
-            label: `${row.title} (${row.count || $('DatasetMap.feature_count', { count: row.totalCount })})`,
           },
         };
         return [f, getCentroid(f)].filter(isTruthy);
@@ -166,13 +174,38 @@ export const DatasetMap: React.FC<DatasetMapProps> = ({
 
     const bounds = calcBBox(rows.map((row) => row.original.geometry));
     if (bounds) map.fitBounds(bounds, { padding: 32, animate: false });
-  }, [map, rows, $]);
+  }, [map, rows]);
 
   useSyncSelectedFeatures(map, SOURCE, selected);
 
   return (
     <>
       <div ref={containerRef} className={classes.map} />
+
+      {hovered &&
+        createPortal(
+          <>
+            <Text size="xs" mah="20vh" style={{ overflow: 'hidden' }}>
+              {hovered.title.split(';').flatMap((part, index) => [
+                // eslint-disable-next-line @eslint-react/no-array-index-key -- stable
+                !!index && <br key={index} />,
+                part.trim(),
+              ])}
+            </Text>
+            <Text size="xs">
+              (
+              {hovered.count ||
+                $('DatasetMap.feature_count', { count: hovered.totalCount })}
+              )
+            </Text>
+            <Text size="xs" c="dimmed" mt={4}>
+              {selected.has(hovered.title)
+                ? $('DatasetMap.hint_deselect')
+                : $('DatasetMap.hint_select')}
+            </Text>
+          </>,
+          popupPortal,
+        )}
 
       <div className={classes.legend}>
         <strong>{$('DatasetMap.legend_title')}</strong>

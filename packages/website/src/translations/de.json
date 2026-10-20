@@ -28,6 +28,8 @@
   "ConflationResult.title": "Abgleich – Übersicht",
   "DataContext.error": "Fehler beim Herunterladen der Projektliste",
   "DatasetMap.feature_count": ".input {$count :integer}\n.match $count\none {{{$count} Objekt}}\n*   {{{$count} Objekte}}",
+  "DatasetMap.hint_deselect": "Linksklick zum Abwählen, Rechtsklick zum vorübergehenden Ausblenden",
+  "DatasetMap.hint_select": "Linksklick zum Auswählen, Rechtsklick zum vorübergehenden Ausblenden",
   "DatasetMap.legend_title": "Anzahl der Änderungen",
   "DownloadOsmPatchFileButton.loginReason": "Es wird empfohlen, dich bei OpenStreetMap anzumelden, damit andere Importeure nicht gleichzeitig mit dir am selben Sektor arbeiten.",
   "FeatureMap.hint_deselect": "Klicken zum Abwählen",
