@@ -47,7 +47,7 @@ catalogs:
       version: 8.3.1
     tag2link:
       specifier: latest
-      version: 2026.9.21
+      version: 2026.10.21
     tsdown:
       specifier: ^0.22.3
       version: 0.22.3
@@ -134,7 +134,7 @@ importers:
         version: 8.6.5
       tag2link:
         specifier: 'catalog:'
-        version: 2026.9.21
+        version: 2026.10.21
     devDependencies:
       '@types/d3-geo':
         specifier: ^3.1.0
@@ -369,7 +369,7 @@ importers:
         version: 2.4.0(react@19.2.8)
       tag2link:
         specifier: 'catalog:'
-        version: 2026.9.21
+        version: 2026.10.21
     devDependencies:
       '@osm-conflation-engine/cli':
         specifier: 'workspace:'
@@ -4066,8 +4066,8 @@ packages:
   tabbable@6.5.0:
     resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
 
-  tag2link@2026.9.21:
-    resolution: {integrity: sha512-PpRyVrkMzOVtZ5Sclsa71l+YZBUKWwB7tZDVKhhOgu1cstu+3mCt1gf658YXxErMoucKmbv7fUfQ8QzCLrAGAA==}
+  tag2link@2026.10.21:
+    resolution: {integrity: sha512-5yByCo7CxZ/zXaxQ732EXSui3LPXKf9YIlGcOkm/d20Pv387MKaqbyrpoMjsDrbBm4V9RcP2GUXGUZISeWNQjw==}
 
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
@@ -8336,7 +8336,7 @@ snapshots:
 
   tabbable@6.5.0: {}
 
-  tag2link@2026.9.21: {}
+  tag2link@2026.10.21: {}
 
   tagged-tag@1.0.0: {}
 
