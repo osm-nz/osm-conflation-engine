@@ -114,7 +114,7 @@ export const Navbar: React.FC = () => {
         <Menu.Dropdown>
           <Menu.Item
             component="a"
-            href="https://osm.wiki/Example" // TODO: we need to make a separate wiki page eventually
+            href="https://osm.wiki/Osm-conflation-engine"
             target="_blank"
             rel="noopener"
             leftSection={<IconHelp size={20} />}
