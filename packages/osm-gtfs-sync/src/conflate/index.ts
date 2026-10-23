@@ -57,7 +57,7 @@ export async function conflate(
 
   log('Calculating Bbox from GTFS stops...');
   const [bbox] = await comms.exec<BBox>(
-    'SELECT min(stop_lat) minLat, max(stop_lat) maxLat, min(stop_lon) minLon, max(stop_lon) maxLon FROM stops',
+    /* sql */ 'SELECT min(stop_lat) minLat, max(stop_lat) maxLat, min(stop_lon) minLon, max(stop_lon) maxLon FROM stops',
   );
   result.bbox = bbox;
   if (signal?.aborted) return;
@@ -116,9 +116,9 @@ export async function conflate(
   // to the OSM matching logic.
   const cols = await comms.getColumns('stops');
   const stopFilter = cols.has('location_type')
-    ? `WHERE s.location_type IS NULL OR s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}', '')`
+    ? /* sql */ `WHERE s.location_type IS NULL OR s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}', '')`
     : '';
-  const [{ count: gtfsCount }] = await comms.exec<{ count: number }>(`
+  const [{ count: gtfsCount }] = await comms.exec<{ count: number }>(/* sql */ `
     SELECT
       (SELECT COUNT(*) FROM stops s ${stopFilter}) +
       (SELECT COUNT(DISTINCT route_short_name) FROM routes)

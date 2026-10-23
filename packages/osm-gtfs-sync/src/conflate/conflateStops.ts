@@ -206,7 +206,7 @@ export async function conflateStops(
 ) {
   const warnings = new Set<string>();
 
-  const allStops = await comms.exec<Stop>('SELECT * FROM stops');
+  const allStops = await comms.exec<Stop>(/* sql */ 'SELECT * FROM stops');
   const allStopsById = Object.groupBy(allStops, (s) => s.stop_id);
   const allStopsByCode = Object.groupBy(allStops, (s) =>
     getStopCode(s, config),
@@ -222,7 +222,7 @@ export async function conflateStops(
   const operatorsByRsn = Object.groupBy(
     await comms.exec<
       Merged<'route_short_name' | 'route_long_name' | 'agency_name'>
-    >(`
+    >(/* sql */ `
     SELECT DISTINCT
     ${cols.r.has('agency_id') ? 'a.agency_name,' : ''}
       r.route_short_name,
@@ -238,7 +238,7 @@ export async function conflateStops(
       stops: Stringified<RawPatternStop[]>;
       trips: Stringified<RawPatternTrip[]>;
     }
-  >(`
+  >(/* sql */ `
     WITH trip_patterns AS (
       SELECT
         st.trip_id,

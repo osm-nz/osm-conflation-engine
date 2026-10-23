@@ -35,8 +35,8 @@ export async function conflateStations(
   const cols = await comms.getColumns('stops');
   const allStops = await comms.exec<Stop>(
     cols.has('location_type')
-      ? `SELECT * FROM stops s WHERE s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}')`
-      : 'SELECT * FROM stops',
+      ? /* sql */ `SELECT * FROM stops s WHERE s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}')`
+      : /* sql */ 'SELECT * FROM stops',
   );
   const stopsById = Object.groupBy(allStops, (item) => item.stop_id);
   const stopsByStation = Object.groupBy(
