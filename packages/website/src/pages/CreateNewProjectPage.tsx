@@ -13,6 +13,7 @@ import {
 import { SourceCodeLink } from '../components/SourceCodeLink.js';
 import { OsmTag } from '../components/OsmTag.js';
 import { LocaleContext } from '../context/LocaleContext.js';
+import { GITHUB_URL, WIKI_PAGE } from '../components/Navbar.js';
 import classes from './CreateNewProjectPage.module.css';
 
 const PROJECT_TYPES = [
@@ -22,8 +23,20 @@ const PROJECT_TYPES = [
     Icon: IconMailbox,
     blurb: (
       <>
-        TODO: There will be a plugin in the future make addresses easier to
-        setup
+        In the future, a plugin will be created to make it easier to setup
+        imports from OpenAddresses. For now, you need to write the downloading
+        and preprocessing code yourself, see the{' '}
+        <Anchor href={GITHUB_URL} target="_blank" rel="noopener" fw={600}>
+          README on GitHub
+        </Anchor>{' '}
+        and{' '}
+        <SourceCodeLink
+          provider="github.com"
+          org="osm-nz"
+          repo="linz-address-import"
+          size="sm"
+        />{' '}
+        for an example project.
       </>
     ),
   },
@@ -31,7 +44,18 @@ const PROJECT_TYPES = [
     value: 'alltheplaces',
     label: 'All The Places',
     Icon: IconBuildingStore,
-    blurb: <>TODO:??</>,
+    blurb: (
+      <>
+        In the future, a plugin will be created to make it easier to configure
+        imports from All The Places. <br />
+        For now, you need to write the downloading and preprocessing code
+        yourself, see the{' '}
+        <Anchor href={GITHUB_URL} target="_blank" rel="noopener" fw={600}>
+          README on GitHub
+        </Anchor>
+        .
+      </>
+    ),
   },
   {
     value: 'gtfs',
@@ -64,6 +88,10 @@ const PROJECT_TYPES = [
           rel="noopener"
         >
           sqlite query tool
+        </Anchor>
+        . More information is available on{' '}
+        <Anchor href={`${WIKI_PAGE}/GTFS`} target="_blank" rel="noopener">
+          the GTFS wiki page
         </Anchor>
         .
       </>
@@ -110,7 +138,22 @@ const PROJECT_TYPES = [
     value: 'other',
     label: 'Other',
     Icon: IconDots,
-    blurb: <>See the README / wiki. TODO: write better docs</>,
+    blurb: (
+      <>
+        For all other data types, see the{' '}
+        <Anchor href={GITHUB_URL} target="_blank" rel="noopener" fw={600}>
+          README on GitHub
+        </Anchor>{' '}
+        and{' '}
+        <SourceCodeLink
+          provider="github.com"
+          org="osm-nz"
+          repo="doc-accommodation-import"
+          size="sm"
+        />{' '}
+        for an simple example project.
+      </>
+    ),
   },
 ] as const;
 

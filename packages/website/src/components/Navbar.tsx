@@ -22,8 +22,9 @@ import { NavbarLanguageSwitcher } from './NavbarLanguageSwitcher.js';
 import { NavbarProjectInfo } from './NavbarProjectInfo.js';
 import { NavbarProjectSelector } from './NavbarProjectSelector.js';
 
-const GITHUB_URL = 'https://github.com/osm-nz/osm-conflation-engine';
+export const GITHUB_URL = 'https://github.com/osm-nz/osm-conflation-engine';
 export const APP_ICON_URL = 'https://osm-nz.github.io/img/logo.png';
+export const WIKI_PAGE = 'https://osm.wiki/Osm-conflation-engine';
 
 /** a navbar link which is highlighted when the current route matches */
 const NavItem: React.FC<React.PropsWithChildren<{ to: string }>> = ({
@@ -114,7 +115,7 @@ export const Navbar: React.FC = () => {
         <Menu.Dropdown>
           <Menu.Item
             component="a"
-            href="https://osm.wiki/Osm-conflation-engine"
+            href={WIKI_PAGE}
             target="_blank"
             rel="noopener"
             leftSection={<IconHelp size={20} />}
