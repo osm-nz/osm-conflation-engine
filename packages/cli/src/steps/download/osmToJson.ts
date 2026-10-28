@@ -1,6 +1,5 @@
 import { existsSync } from 'node:fs';
 import pbf2json, { type Item } from 'pbf2json';
-import type { OsmFeature as StandardOsmFeature } from 'osm-api';
 import {
   type Ctx,
   type OSMData,
@@ -13,12 +12,6 @@ import {
   loadOsmFeature,
   saveLoadedOsmFeatures,
 } from './util/loadOsmFeature.js';
-
-export type PbfMetadata = Partial<
-  Pick<StandardOsmFeature, 'changeset' | 'version' | 'user'> & {
-    timestamp: number; // unlike the API, the golang code returns a number
-  }
->;
 
 export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
   if (ctx.use_cache && existsSync(ctx.tempFileNames.osm_processed_other)) {
@@ -47,9 +40,9 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
         file: ctx.tempFileNames.pbf,
         tags: pbfFilter,
         leveldb: '/tmp',
-        // @ts-expect-error -- missing from typedefs since we
-        //                     added this option in our fork.
-        metadata: true,
+        options: {
+          metadata: true,
+        },
       })
       .on(
         'data',
@@ -57,26 +50,15 @@ export async function osmToJson(ctx: Ctx, pbfFilter: string[]) {
         (item: Item) => {
           anythingSeen ||= true;
           const coords = item.type === 'node' ? item : item.centroid;
-          // @ts-expect-error -- missing from typedefs since we
-          //                     added this option in our fork.
-          const metadata: PbfMetadata | undefined = item.meta;
-          if (metadata) anyMetadata = true;
+          const hasMetadata = item.meta && !!Object.keys(item.meta).length;
+          if (hasMetadata) anyMetadata = true;
 
           const tags = pickTags(item.tags);
 
           const object: OsmFeature = {
             id: `${<OsmFeatureTypeShort>item.type[0]}${item.id}`,
             centroid: [+coords.lon, +coords.lat],
-            metadata: metadata
-              ? {
-                  changeset: metadata.changeset,
-                  timestamp: metadata.timestamp
-                    ? new Date(1e3 * metadata.timestamp).toISOString()
-                    : undefined,
-                  user: metadata.user,
-                  version: metadata.version,
-                }
-              : undefined,
+            metadata: hasMetadata ? item.meta : undefined,
             tags,
 
             // added later

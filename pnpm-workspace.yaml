@@ -34,6 +34,7 @@ minimumReleaseAgeExclude:
   - react-mf2
   - gtfs-sqlite
   - gtfs-types
+  - '@types/pbf2json@7.3.0'
 
 patchedDependencies:
   osm-api@4.0.1: patches/osm-api.patch
