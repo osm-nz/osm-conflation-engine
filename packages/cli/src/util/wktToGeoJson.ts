@@ -1,6 +1,6 @@
 import { chunk } from '../../../common/index.js';
 import type { Coord, GeoJsonCoords } from '../../../types.js';
-import { simplify } from './simplify.js';
+import { simplify } from './simplify-geometry.js';
 
 /** point | line | area/multipolygon-with-1-outer-way | mutlipolygon with multiple outer ways */
 type CoordArray = Coord | Coord[] | Coord[][] | Coord[][][];
