@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.13.0...cli-v3.14.0) (2026-10-31)
+
+
+### Features
+
+* **cli:** migrate from our fork back to the official pbf2json ([bd2cb22](https://github.com/osm-nz/osm-conflation-engine/commit/bd2cb22d7f6d6abf21b37b30956c2c0232635449))
+
 ## [3.13.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.12.0...cli-v3.13.0) (2026-10-19)
 
 
