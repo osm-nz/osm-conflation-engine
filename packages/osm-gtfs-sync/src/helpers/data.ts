@@ -40,6 +40,10 @@ export function getOsmRef(
     keys.unshift(
       `gtfs:stop_code:${network.code}`,
       `gtfs:stop_id:${network.code}`,
+      // these tags are deprecated:
+      'gtfs:stop_code',
+      'gtfs:stop_id',
+      'stop_id',
     );
   }
   if (type === 'route') {

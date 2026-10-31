@@ -224,12 +224,17 @@ export async function conflateStops(
       Merged<'route_short_name' | 'route_long_name' | 'agency_name'>
     >(/* sql */ `
     SELECT DISTINCT
-    ${cols.r.has('agency_id') ? 'a.agency_name,' : ''}
+      a.agency_name,
       r.route_short_name,
       r.route_long_name
     FROM routes r
-      ${cols.r.has('agency_id') ? 'INNER JOIN agency a ON r.agency_id = a.agency_id' : ''}
+    LEFT JOIN agency a ON
+      ${cols.r.has('agency_id') ? 'a.agency_id = r.agency_id OR' : ''}
+      (SELECT count(*) FROM agency) = 1
     `),
+    // r.agency_id is optional if the feed has exactly 1 agency.
+    // in that case, we need to automatically match to the only
+    // row in agency.txt
     (row) => row.route_short_name,
   );
 

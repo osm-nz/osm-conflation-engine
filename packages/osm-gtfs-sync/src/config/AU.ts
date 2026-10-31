@@ -65,4 +65,73 @@ export const AU: NetworkConfig[] = [
     licenseWaiverUrl:
       'https://osm.wiki/Contributors#Department_of_Transport_and_Main_Roads',
   },
+  {
+    code: 'AU-SA',
+    region: 'AU-SA',
+    networkName: 'Adelaide Metro',
+    networkWikidata: 'Q4681753',
+    gtfsSource: {
+      mode: 'automatic',
+      url: 'https://gtfs.adelaidemetro.com.au/v1/static/latest/google_transit.zip',
+    },
+    licenseWaiverUrl:
+      'https://osm.wiki/File:Data.sa.gov.au_CCBYPermission_Open_Street_Map.pdf',
+    useStopId: true,
+  },
+  {
+    code: 'AU-TAS',
+    region: 'AU-TAS',
+    networkName: 'Metro Tasmania',
+    networkWikidata: 'Q6824728',
+    gtfsSource: {
+      mode: 'manual',
+      url: 'https://www.transport.tas.gov.au/public_transport/gtfs-data',
+    },
+    licenseWaiverUrl:
+      'https://osm.wiki/File:TAS_StateGrowth_GTFS_OSM_Waiver_signed.pdf',
+  },
+  {
+    code: 'AU-VIC-1',
+    region: 'AU-VIC',
+    networkName: 'PTV - Regional Trains',
+    networkWikidata: 'Q7257648',
+    gtfsSource: {
+      mode: 'manual',
+      url: 'https://opendata.transport.vic.gov.au/dataset/gtfs-schedule#1',
+    },
+    licenseWaiverUrl: 'https://osm.wiki/File:DTP_Waiver_signed.pdf',
+  },
+  {
+    code: 'AU-VIC-2',
+    region: 'AU-VIC',
+    networkName: 'PTV - Metropolitan Trains',
+    networkWikidata: 'Q7257648',
+    gtfsSource: {
+      mode: 'manual',
+      url: 'https://opendata.transport.vic.gov.au/dataset/gtfs-schedule#2',
+    },
+    licenseWaiverUrl: 'https://osm.wiki/File:DTP_Waiver_signed.pdf',
+  },
+  {
+    code: 'AU-VIC-3',
+    region: 'AU-VIC',
+    networkName: 'Yarra Trams',
+    networkWikidata: 'Q16927551',
+    gtfsSource: {
+      mode: 'manual',
+      url: 'https://opendata.transport.vic.gov.au/dataset/gtfs-schedule#3',
+    },
+    licenseWaiverUrl: 'https://osm.wiki/File:DTP_Waiver_signed.pdf',
+  },
+  {
+    code: 'AU-VIC-4',
+    region: 'AU-VIC',
+    networkName: 'PTV - Metropolitan Buses',
+    networkWikidata: 'Q7257648',
+    gtfsSource: {
+      mode: 'manual',
+      url: 'https://opendata.transport.vic.gov.au/dataset/gtfs-schedule#4',
+    },
+    licenseWaiverUrl: 'https://osm.wiki/File:DTP_Waiver_signed.pdf',
+  },
 ];
