@@ -29,10 +29,10 @@ exports[`conflate > works for a full example feed > metrics 1`] = `
   },
   "countsByPhase": {
     "conflated": {
-      "create": 2,
+      "create": 3,
       "delete": 0,
-      "edit": 5,
-      "perfect": 0,
+      "edit": 6,
+      "perfect": 1,
     },
     "init": {
       "ignored": 0,
@@ -43,17 +43,17 @@ exports[`conflate > works for a full example feed > metrics 1`] = `
         "recentlyChanged": 1,
         "recentlyChecked": 0,
         "semi": 0,
-        "withRef": 7,
+        "withRef": 10,
       },
-      "sourceDataset": 8,
+      "sourceDataset": 11,
     },
     "matched": {
-      "1": 5,
+      "1": 7,
       "2": 0,
       "3": 0,
       "4": 0,
       "5": 0,
-      "6": 2,
+      "6": 3,
     },
   },
   "warnings": [
@@ -281,7 +281,13 @@ exports[`conflate > works for a full example feed > stations 1`] = `
           "id": "r10",
           "properties": {
             "__action": "edit",
-            "__members": [],
+            "__members": [
+              {
+                "ref": 6,
+                "role": "entrance",
+                "type": "node",
+              },
+            ],
             "ref": "STN1",
           },
           "type": "Feature",
@@ -302,6 +308,12 @@ exports[`conflate > works for a full example feed > stops 1`] = `
     "edit": 2,
     "skipped": 0,
     "total": 4,
+  },
+  "entranceCount": {
+    "add": 1,
+    "edit": 1,
+    "skipped": 0,
+    "total": 3,
   },
   "gtfsRouteData": {
     "802X": {
@@ -443,6 +455,7 @@ exports[`conflate > works for a full example feed > stops 1`] = `
   },
   "osmPatchDisused": {
     "changesetTags": {
+      "comment": "[do not upload this diff, its just an FYI]",
       "created_by": "osm-gtfs-sync 0.0.0",
       "source": "GTFS feed for Autobüs",
     },
@@ -477,36 +490,16 @@ exports[`conflate > works for a full example feed > stops 1`] = `
         },
         "type": "Feature",
       },
-      {
-        "geometry": {
-          "coordinates": [
-            174.7711,
-            -36.7879,
-          ],
-          "type": "Point",
-        },
-        "id": "E1",
-        "properties": {
-          "name": "Taka Bus Interchange Main Entrance",
-          "ref": "E1",
-        },
-        "type": "Feature",
-      },
-      {
-        "geometry": {
-          "coordinates": [
-            174.771,
-            -36.7878,
-          ],
-          "type": "Point",
-        },
-        "id": "E2",
-        "properties": {
-          "name": "Taka Bus Interchange Side Entrance",
-          "ref": "E2",
-        },
-        "type": "Feature",
-      },
+    ],
+    "type": "FeatureCollection",
+  },
+  "osmPatchEntrancesMissing": {
+    "changesetTags": {
+      "comment": "Auto-add missing transit station entrances from GTFS data",
+      "created_by": "osm-gtfs-sync 0.0.0",
+      "source": "GTFS feed for Autobüs",
+    },
+    "features": [
       {
         "geometry": {
           "coordinates": [
@@ -517,13 +510,60 @@ exports[`conflate > works for a full example feed > stops 1`] = `
         },
         "id": "E3",
         "properties": {
+          "gtfs:stop_code:EG-EX": "E3",
           "name": "Taka Bus Interchange Rear Entrance",
-          "ref": "E3",
+          "railway": "subway_entrance",
+          "ref": "C",
         },
         "type": "Feature",
       },
     ],
-    "size": "medium",
+    "type": "FeatureCollection",
+  },
+  "osmPatchEntrancesWrong": {
+    "changesetTags": {
+      "comment": "Auto-fix transit station entrances from GTFS data",
+      "created_by": "osm-gtfs-sync 0.0.0",
+      "source": "GTFS feed for Autobüs",
+    },
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                174.771,
+                -36.7876,
+              ],
+              [
+                174.7712,
+                -36.7878,
+              ],
+              [
+                174.771,
+                -36.788,
+              ],
+              [
+                174.77079999999998,
+                -36.7878,
+              ],
+              [
+                174.771,
+                -36.7876,
+              ],
+            ],
+          ],
+          "type": "Polygon",
+        },
+        "id": "n6",
+        "properties": {
+          "__action": "edit",
+          "name": "Taka Bus Interchange Side Entrance",
+          "ref": "B",
+        },
+        "type": "Feature",
+      },
+    ],
     "type": "FeatureCollection",
   },
   "osmPatchMissing": {
@@ -554,7 +594,6 @@ exports[`conflate > works for a full example feed > stops 1`] = `
         "type": "Feature",
       },
     ],
-    "size": "medium",
     "type": "FeatureCollection",
   },
   "osmPatchWrong": {
@@ -642,7 +681,6 @@ exports[`conflate > works for a full example feed > stops 1`] = `
         "type": "Feature",
       },
     ],
-    "size": "medium",
     "type": "FeatureCollection",
   },
   "osmRawByRef": {
@@ -711,6 +749,38 @@ exports[`conflate > works for a full example feed > stops 1`] = `
         "highway": "bus_stop",
         "name": "Lower Albert Street (wrong location)",
         "ref": "103",
+      },
+      "timestamp": "2020-01-01T00:00:00Z",
+      "type": "node",
+      "uid": 2,
+      "user": "mapper",
+      "version": 1,
+    },
+    "E1": {
+      "changeset": 101,
+      "id": 4,
+      "lat": -36.7879,
+      "lon": 174.7711,
+      "tags": {
+        "gtfs:stop_code:EG-EX": "E1",
+        "railway": "train_station_entrance",
+        "ref": "1",
+      },
+      "timestamp": "2020-01-01T00:00:00Z",
+      "type": "node",
+      "uid": 2,
+      "user": "mapper",
+      "version": 1,
+    },
+    "E2": {
+      "changeset": 101,
+      "id": 6,
+      "lat": -36.7878,
+      "lon": 174.771,
+      "tags": {
+        "entrance": "yes",
+        "gtfs:stop_code:EG-EX": "E2",
+        "ref": "A",
       },
       "timestamp": "2020-01-01T00:00:00Z",
       "type": "node",

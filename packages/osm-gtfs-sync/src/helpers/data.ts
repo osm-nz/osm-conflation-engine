@@ -13,8 +13,16 @@ export function getStopCode(stop: Stop, config: NetworkConfig) {
   return stop.stop_code || stop.stop_id;
 }
 
-export type BaseRole = 'stop' | 'platform';
+export type BaseRole = 'stop' | 'platform' | 'entrance';
 export function getBaseRole(tags: Tags | undefined): BaseRole | undefined {
+  if (
+    tags?.entrance ||
+    tags?.railway === 'train_station_entrance' ||
+    tags?.railway === 'subway_entrance'
+  ) {
+    return 'entrance';
+  }
+
   if (tags?.highway === 'bus_stop' || tags?.public_transport === 'platform') {
     return 'platform';
   }
@@ -31,12 +39,18 @@ export function getBaseRole(tags: Tags | undefined): BaseRole | undefined {
  * feed, falling back to `ref`.
  */
 export function getOsmRef(
-  type: 'stop' | 'route',
+  type: 'entrance' | 'stop' | 'route',
   network: NetworkConfig,
   tags: Tags | undefined,
 ) {
-  const keys = ['ref'];
-  if (type === 'stop') {
+  const keys: string[] = [];
+
+  if (type !== 'entrance') {
+    // for entrances, ref is basically the local_ref, so we exclude it
+    keys.unshift('ref');
+  }
+
+  if (type === 'stop' || type === 'entrance') {
     keys.unshift(
       `gtfs:stop_code:${network.code}`,
       `gtfs:stop_id:${network.code}`,
@@ -46,6 +60,7 @@ export function getOsmRef(
       'stop_id',
     );
   }
+
   if (type === 'route') {
     keys.unshift(
       `gtfs:route_short_name:${network.code}`,
@@ -57,7 +72,11 @@ export function getOsmRef(
     const value = tags?.[key];
     if (value) return { key, value };
   }
-  return { key: 'ref', value: undefined };
+  const defaultKey =
+    type === 'entrance'
+      ? `gtfs:${network.useStopId ? 'stop_id' : 'stop_code'}:${network.code}`
+      : 'ref';
+  return { key: defaultKey, value: undefined };
 }
 
 export function getChangesetTags(network: NetworkConfig) {

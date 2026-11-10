@@ -1,8 +1,13 @@
-import { type Stop, VehicleType, WheelchairBoardingType } from 'gtfs-types';
+import {
+  LocationType,
+  type Stop,
+  VehicleType,
+  WheelchairBoardingType,
+} from 'gtfs-types';
 import type { Tags } from 'osm-api';
 import type { Network, NetworkConfig } from '../../types/config.def.js';
 import { getStopTagsForTransportMode } from '../../helpers/tagging.js';
-import { getOsmRef } from '../../helpers/data.js';
+import { getBaseRole, getOsmRef } from '../../helpers/data.js';
 import { deleteIgnoredTags } from './tagHelpers.js';
 
 // no point editting a node if it's purely to edit these tags
@@ -66,8 +71,14 @@ export function conflateStopTags(
 ) {
   const tagChanges: Tags = {};
 
+  const isEntrance = gtfsItem.location_type === LocationType.ENTRANCE_EXIT;
+
   // 0. check the ref tag. Pointless, but included for consistency
-  const { key: refKey, value: ref } = getOsmRef('stop', config, tags);
+  const { key: refKey, value: ref } = getOsmRef(
+    isEntrance ? 'entrance' : 'stop',
+    config,
+    tags,
+  );
   if (ref !== gtfsStopCode) tagChanges[refKey] = gtfsStopCode;
 
   // 1. ensure base tags are defined
@@ -103,6 +114,14 @@ export function conflateStopTags(
     }
   }
 
+  // 1b. different logic for entrances:
+  if (isEntrance && getBaseRole(tags) !== 'entrance') {
+    // it's supposed to be an entrance, but it has no entrance-like tags.
+    // therefore, make an arbitrary choice for an entrance tag, as
+    // a default suggestion. the user can change this of course.
+    tagChanges.railway = 'subway_entrance';
+  }
+
   // 2. add NSI tags for network
   const expectedNetworkName = getNetwork(
     config.networkName,
@@ -113,12 +132,13 @@ export function conflateStopTags(
     gtfsModeOfTransports,
   );
 
-  if (!tags.network?.split(';').includes(expectedNetworkName)) {
+  if (!isEntrance && !tags.network?.split(';').includes(expectedNetworkName)) {
     tagChanges.network = tags.network
       ? `${tags.network};${expectedNetworkName}`
       : expectedNetworkName;
   }
   if (
+    !isEntrance &&
     expectedNetworkWikidata &&
     !tags['network:wikidata']?.split(';').includes(expectedNetworkWikidata)
   ) {
@@ -165,13 +185,19 @@ export function conflateStopTags(
   }
 
   // 6. sync local_ref. We also accept loc_ref, but not both
+  //    For entrances it's different, they use `ref` for the local ref.
+  const preferredLocalKey = isEntrance ? 'ref' : 'local_ref';
+  const fallbackLocalKey = 'loc_ref';
   if (
     gtfsItem.platform_code &&
-    (tags.local_ref || tags.loc_ref) !== gtfsItem.platform_code
+    (tags[preferredLocalKey] || tags[fallbackLocalKey]) !==
+      gtfsItem.platform_code
   ) {
-    tagChanges.local_ref = gtfsItem.platform_code;
+    tagChanges[preferredLocalKey] = gtfsItem.platform_code;
   }
-  if (tags.loc_ref && tags.local_ref) tagChanges.loc_ref = '🗑️';
+  if (tags[fallbackLocalKey] && tags[preferredLocalKey]) {
+    tagChanges[fallbackLocalKey] = '🗑️';
+  }
 
   // 7. delete tags that duplicate each other
   const finalishTags = { ...tags, ...tagChanges };

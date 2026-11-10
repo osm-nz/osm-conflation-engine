@@ -25,6 +25,25 @@ export const RenderStops: React.FC<{
         {data.osmPatchDisused.features.length.toLocaleString()} disused
       </button>{' '}
       but this does not matter.
+      <br />
+      <br />
+      Entrance:{' '}
+      <button
+        onClick={() =>
+          onSelect({ 'Entrances Missing': data.osmPatchEntrancesMissing })
+        }
+      >
+        {data.osmPatchEntrancesMissing.features.length.toLocaleString()} missing
+      </button>
+      ,{' '}
+      <button
+        onClick={() =>
+          onSelect({ 'Entrances Wrong': data.osmPatchEntrancesWrong })
+        }
+      >
+        {data.osmPatchEntrancesWrong.features.length.toLocaleString()} wrong
+      </button>
+      , {getOkayCount(data.entranceCount).toLocaleString()} are okay.
       <Warnings warnings={data.warnings} />
     </>
   );

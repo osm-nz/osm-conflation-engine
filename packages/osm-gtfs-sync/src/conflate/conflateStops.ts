@@ -2,6 +2,7 @@ import type { OsmFeature, OsmPatch, OsmPatchFeature } from 'osm-api';
 import {
   Alight,
   GTFSBool,
+  LocationType,
   type Stop,
   type StopId,
   type TripId,
@@ -118,6 +119,17 @@ export interface FinalGTFSOutput {
   [rsn: string]: GtfsDetailedRoute;
 }
 
+function createPatchFile(config: NetworkConfig, comment: string): OsmPatch {
+  return {
+    type: 'FeatureCollection',
+    features: [],
+    changesetTags: {
+      ...getChangesetTags(config),
+      comment,
+    },
+  };
+}
+
 /**
  * if we find two stops in OSM with the same ref, then
  * determine the most likely match using a numeric ranking.
@@ -150,10 +162,14 @@ export function getOsmStopsByRef(osmRaw: OsmFeature[], config: NetworkConfig) {
   const osmRawByRef: { [stopCode: string]: OsmFeature } = {};
 
   for (const feature of osmRaw) {
-    const isStop = !!getBaseRole(feature.tags);
+    const role = getBaseRole(feature.tags);
 
-    const ref = getOsmRef('stop', config, feature.tags).value;
-    if (isStop && ref) {
+    const ref = getOsmRef(
+      role === 'entrance' ? 'entrance' : 'stop',
+      config,
+      feature.tags,
+    ).value;
+    if (role && ref) {
       temporary[ref] ||= [];
       temporary[ref].push(feature);
     }
@@ -450,65 +466,62 @@ export async function conflateStops(
     }
   }
 
-  const osmPatchMissing: OsmPatch = {
-    type: 'FeatureCollection',
-    features: [],
-    size: 'medium',
-    changesetTags: {
-      ...getChangesetTags(config),
-      comment: 'Auto-add missing transit stops from GTFS data',
-    },
-  };
-  const osmPatchWrong: OsmPatch = {
-    type: 'FeatureCollection',
-    features: [],
-    size: 'medium',
-    changesetTags: {
-      ...getChangesetTags(config),
-      comment: 'Auto-fix transit stops from GTFS data',
-    },
-  };
-  const osmPatchDisused: OsmPatch = {
-    type: 'FeatureCollection',
-    features: [],
-    size: 'medium',
-    changesetTags: {
-      ...getChangesetTags(config),
-      // no changeset comment, this one isn't meant to be uploaded.
-      // it's just an FYI.
-    },
-  };
+  const osmPatchMissing = createPatchFile(
+    config,
+    'Auto-add missing transit stops from GTFS data',
+  );
+  const osmPatchWrong = createPatchFile(
+    config,
+    'Auto-fix transit stops from GTFS data',
+  );
+  const osmPatchEntrancesMissing = createPatchFile(
+    config,
+    'Auto-add missing transit station entrances from GTFS data',
+  );
+  const osmPatchEntrancesWrong = createPatchFile(
+    config,
+    'Auto-fix transit station entrances from GTFS data',
+  );
+  const osmPatchDisused = createPatchFile(
+    config,
+    '[do not upload this diff, its just an FYI]',
+  );
 
   config.ignoreStops ||= {};
 
   const { osmRawByRef, duplicateRefs } = getOsmStopsByRef(osmRaw, config);
 
-  let skipped = 0;
+  let skippedStops = 0;
+  let skippedEntrances = 0;
+  let totalEntrances = 0;
 
   for (const stopCode in allStopsByCode) {
     const osmItem = osmRawByRef[stopCode];
-
-    // don't import stops that the user wants to ignore
-    if (stopCode in config.ignoreStops) continue;
 
     // try to find the stopId that's acutally in use
     const gtfsItem =
       allStopsByCode[stopCode]!.find((s) => s.stop_id in stopsInUse) ||
       allStopsByCode[stopCode]![0];
 
+    const isEntrance = gtfsItem.location_type === LocationType.ENTRANCE_EXIT;
+    if (isEntrance) totalEntrances++;
+
+    // don't import stops that the user wants to ignore
+    if (stopCode in config.ignoreStops) continue;
+
     // if the stop is outside the user-defined bbox, skip it.
     if (
       config.bbox &&
       !isInBbox(config.bbox, gtfsItem.stop_lat!, gtfsItem.stop_lon!)
     ) {
-      skipped++;
+      if (isEntrance) skippedEntrances++;
+      else skippedStops++;
       continue;
     }
 
-    const modeOfTransports: Set<VehicleType> | undefined =
-      stopsInUse[gtfsItem.stop_id];
+    const modeOfTransports = stopsInUse[gtfsItem.stop_id] || new Set();
 
-    if (modeOfTransports === undefined) {
+    if (!modeOfTransports.size && !isEntrance) {
       // skip stops that are not used by any routes.
       // this is a design decision but also a technical
       // limitation because we need at least 1 route to
@@ -529,7 +542,8 @@ export async function conflateStops(
       warnings.add(
         `Skipping ${stopCode} because there are multiple matches in OSM (${[...duplicateRefs[stopCode]].join(', ')})`,
       );
-      skipped++;
+      if (isEntrance) skippedEntrances++;
+      else skippedStops++;
       continue;
     }
 
@@ -589,7 +603,7 @@ export async function conflateStops(
 
         if (anyMeaningfulChanges) {
           // some tags need changing
-          osmPatchWrong.features.push({
+          (isEntrance ? osmPatchEntrancesWrong : osmPatchWrong).features.push({
             type: 'Feature',
             id: osmItem.type[0] + osmItem.id,
             geometry: {
@@ -607,19 +621,32 @@ export async function conflateStops(
       } else {
         // stop is too far away to conceively be the one we're looking for.
         // so suggest creating a new one
-        osmPatchMissing.features.push(fallback);
+        (isEntrance ? osmPatchEntrancesMissing : osmPatchMissing).features.push(
+          fallback,
+        );
       }
     } else {
       // stop does not exist in OSM -> so suggest creating it
-      osmPatchMissing.features.push(fallback);
+      (isEntrance ? osmPatchEntrancesMissing : osmPatchMissing).features.push(
+        fallback,
+      );
     }
   }
 
   const count: Count = {
     add: osmPatchMissing.features.length,
     edit: osmPatchWrong.features.length,
-    skipped,
-    total: Object.keys(allStopsByCode).length - osmPatchDisused.features.length,
+    skipped: skippedStops,
+    total:
+      Object.keys(allStopsByCode).length -
+      osmPatchDisused.features.length -
+      totalEntrances,
+  };
+  const entranceCount: Count = {
+    add: osmPatchEntrancesMissing.features.length,
+    edit: osmPatchEntrancesWrong.features.length,
+    skipped: skippedEntrances,
+    total: totalEntrances,
   };
 
   return {
@@ -630,5 +657,9 @@ export async function conflateStops(
     osmRawByRef,
     count,
     warnings,
+
+    entranceCount,
+    osmPatchEntrancesMissing,
+    osmPatchEntrancesWrong,
   };
 }

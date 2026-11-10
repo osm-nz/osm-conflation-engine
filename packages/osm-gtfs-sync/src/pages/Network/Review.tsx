@@ -36,6 +36,14 @@ export const Review = memo<{
               </td>
             </tr>
           )}
+          {result.stops && (
+            <tr>
+              <td style={{ paddingRight: 8 }}>Entrances</td>
+              <td style={{ width: '100%' }}>
+                <ProgressBar count={result.stops.entranceCount} />
+              </td>
+            </tr>
+          )}
           {result.stations && (
             <tr>
               <td style={{ paddingRight: 8 }}>Stations</td>

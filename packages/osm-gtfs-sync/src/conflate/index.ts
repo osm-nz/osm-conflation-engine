@@ -90,8 +90,14 @@ export async function conflate(
 
   log('saving progress update...');
   const layers = [result.stops, result.stations, result.routes];
+  const counts = [
+    result.stops.count,
+    result.stops.entranceCount,
+    result.stations.count,
+    result.routes.count,
+  ];
   const sum = (key: keyof Count) =>
-    layers.reduce((total, layer) => total + layer.count[key], 0);
+    counts.reduce((total, count) => total + count[key], 0);
 
   const create = sum('add');
   const edit = sum('edit');
@@ -110,7 +116,7 @@ export async function conflate(
   // to the OSM matching logic.
   const cols = await comms.getColumns('stops');
   const stopFilter = cols.has('location_type')
-    ? /* sql */ `WHERE s.location_type IS NULL OR s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}', '')`
+    ? /* sql */ `WHERE s.location_type IS NULL OR s.location_type IN ('${LocationType.STOP}', '${LocationType.STATION}', '${LocationType.ENTRANCE_EXIT}', '')`
     : '';
   const [{ count: gtfsCount }] = await comms.exec<{ count: number }>(/* sql */ `
     SELECT
