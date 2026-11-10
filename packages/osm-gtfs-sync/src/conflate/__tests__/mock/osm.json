@@ -1,0 +1,193 @@
+[
+  {
+    "type": "node",
+    "id": 1,
+    "lat": -36.7881,
+    "lon": 174.7713,
+    "timestamp": "2099-12-30T00:00:00Z",
+    "version": 3,
+    "changeset": 100,
+    "user": "gtfs_import",
+    "uid": 1,
+    "tags": {
+      "highway": "bus_stop",
+      "public_transport": "platform",
+      "bus": "yes",
+      "name": "Taka Bus Interchange, Stop A",
+      "ref": "100",
+      "network": "Autobüs",
+      "network:wikidata": "Q12345",
+      "wheelchair": "yes"
+    }
+  },
+  {
+    "type": "node",
+    "id": 2,
+    "lat": -36.7882,
+    "lon": 174.7714,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "public_transport": "platform",
+      "railway": "platform",
+      "ref": "101"
+    }
+  },
+  {
+    "type": "node",
+    "id": 3,
+    "lat": -36.7935,
+    "lon": 174.761,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "highway": "bus_stop",
+      "public_transport": "platform",
+      "name": "Esmonde Road",
+      "gtfs:stop_code:EG-EX": "102",
+      "network": "Other Network",
+      "network:wikidata": "Q999"
+    }
+  },
+  {
+    "type": "node",
+    "id": 4,
+    "lat": -36.7879,
+    "lon": 174.7711,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "railway": "train_station_entrance",
+      "gtfs:stop_code:EG-EX": "E1",
+      "ref": "1"
+    }
+  },
+  {
+    "type": "node",
+    "id": 5,
+    "lat": -36.9,
+    "lon": 174.85,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "highway": "bus_stop",
+      "ref": "103",
+      "name": "Lower Albert Street (wrong location)"
+    }
+  },
+  {
+    "type": "node",
+    "id": 6,
+    "lat": -36.7878,
+    "lon": 174.771,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "entrance": "yes",
+      "gtfs:stop_code:EG-EX": "E2",
+      "ref": "A"
+    }
+  },
+  {
+    "type": "relation",
+    "id": 10,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "type": "public_transport",
+      "public_transport": "stop_area",
+      "name": "Taka Bus Interchange"
+    },
+    "members": [
+      { "type": "node", "ref": 1, "role": "platform" },
+      { "type": "node", "ref": 2, "role": "platform" },
+      { "type": "node", "ref": 999, "role": "" }
+    ]
+  },
+  {
+    "type": "relation",
+    "id": 20,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "type": "route",
+      "route": "bus",
+      "ref": "802X",
+      "name": "Bus 802X: Taka Bus Interchange => Lower Albert Street",
+      "from": "Taka Bus Interchange, Stop A",
+      "to": "Lower Albert Street",
+      "public_transport:version": "2",
+      "network": "Autobüs",
+      "network:wikidata": "Q12345"
+    },
+    "members": [
+      { "type": "node", "ref": 1, "role": "platform" },
+      { "type": "node", "ref": 3, "role": "platform" },
+      { "type": "way", "ref": 500, "role": "" }
+    ]
+  },
+  {
+    "type": "relation",
+    "id": 21,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "type": "route",
+      "route": "bus",
+      "ref": "802X",
+      "name": "Bus 802X: Lower Albert Street => Taka Bus Interchange",
+      "from": "Lower Albert Street",
+      "to": "Taka Bus Interchange, Stop B",
+      "public_transport:version": "2"
+    },
+    "members": [
+      { "type": "node", "ref": 3, "role": "platform" },
+      { "type": "node", "ref": 2, "role": "platform" }
+    ]
+  },
+  {
+    "type": "relation",
+    "id": 30,
+    "timestamp": "2020-01-01T00:00:00Z",
+    "version": 1,
+    "changeset": 101,
+    "user": "mapper",
+    "uid": 2,
+    "tags": {
+      "type": "route_master",
+      "route_master": "bus",
+      "ref": "802X",
+      "name": "Bus 802X",
+      "network": "Autobüs",
+      "network:wikidata": "Q12345"
+    },
+    "members": [
+      { "type": "relation", "ref": 20, "role": "" },
+      { "type": "relation", "ref": 21, "role": "" }
+    ]
+  }
+]

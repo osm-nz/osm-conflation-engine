@@ -1,0 +1,3 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_color
+R1,A1,802X,"Baysw-City Express",702,9c7822
+R2,A1,813,"Devo-Taka",3,5f4892

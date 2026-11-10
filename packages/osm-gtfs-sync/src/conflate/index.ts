@@ -36,7 +36,7 @@ export async function conflate(
     isComplete: false,
     message: 'connecting to sqlite database in the WebWorker…',
   };
-  onProgress?.(result);
+  onProgress?.(structuredClone(result));
   const log = (message?: string) => {
     if (message) {
       console.info(message);
@@ -62,9 +62,6 @@ export async function conflate(
   result.bbox = bbox;
   if (signal?.aborted) return;
 
-  // @ts-expect-error -- TODO: temp for experimenting
-  window.comms = comms;
-
   log(`Fetching OSM data from ${osmSource}...`);
   const { osmData, query, source } = await fetchOsmData(
     osmSource,
@@ -72,9 +69,6 @@ export async function conflate(
     config.code,
   );
   if (signal?.aborted) return;
-
-  // @ts-expect-error -- TODO: temp for experimenting
-  window.osmData = osmData;
 
   log('conflating stops...');
   result.stops = await conflateStops(config, osmData, comms);

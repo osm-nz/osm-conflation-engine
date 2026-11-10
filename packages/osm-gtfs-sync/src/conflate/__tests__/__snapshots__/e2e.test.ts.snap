@@ -1,0 +1,737 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`conflate > works for a full example feed > metrics 1`] = `
+{
+  "config": {
+    "$schema": "https://unpkg.com/@osm-conflation-engine/cli/dist/config.schema.json",
+    "merge": {
+      "dataset_column": "",
+      "osm_key": "network:wikidata=Q12345",
+    },
+    "metadata": {
+      "description": "GTFS data in EG-EX",
+      "license_waiver_url": "",
+      "name": "Public Transport — Autobüs",
+      "region": "EG",
+      "wiki_page": "https://www.wikidata.org/wiki/Q12345#P8253",
+    },
+    "osm_data": {
+      "source": {
+        "overpass_query_file": "/* mock query */",
+        "type": "overpass",
+      },
+      "tags_to_keep": [],
+    },
+    "source_data": {
+      "file": "https://example.com/gtfs.zip",
+      "type": "file",
+    },
+  },
+  "countsByPhase": {
+    "conflated": {
+      "create": 2,
+      "delete": 0,
+      "edit": 5,
+      "perfect": 0,
+    },
+    "init": {
+      "ignored": 0,
+      "osm": {
+        "duplicateRefs": 0,
+        "lastEditedByImporter": 1,
+        "noRef": 0,
+        "recentlyChanged": 1,
+        "recentlyChecked": 0,
+        "semi": 0,
+        "withRef": 7,
+      },
+      "sourceDataset": 8,
+    },
+    "matched": {
+      "1": 5,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 2,
+    },
+  },
+  "warnings": [
+    "r21 (802X) has no geometry",
+    "Config has no defintion for operator “Autobüs Ltd”",
+  ],
+}
+`;
+
+exports[`conflate > works for a full example feed > routes 1`] = `
+{
+  "count": {
+    "add": 1,
+    "edit": 2,
+    "skipped": 0,
+    "total": 2,
+  },
+  "osmPatch": {
+    "add": {
+      "changesetTags": {
+        "comment": "Add missing transit route relations from GTFS data",
+        "created_by": "osm-gtfs-sync 0.0.0",
+        "source": "GTFS feed for Autobüs",
+      },
+      "features": [
+        {
+          "geometry": {
+            "geometries": [],
+            "type": "GeometryCollection",
+          },
+          "id": "813",
+          "properties": {
+            "__members": [
+              {
+                "ref": 2,
+                "role": "platform_entry_only",
+                "type": "node",
+              },
+              {
+                "ref": 3,
+                "role": "platform_exit_only",
+                "type": "node",
+              },
+            ],
+            "colour": "#5f4892",
+            "duration": "00:05",
+            "network": "Autobüs",
+            "network:wikidata": "Q12345",
+            "operator": "Autobüs Ltd",
+            "ref": "813",
+            "route": "bus",
+            "type": "route",
+          },
+          "type": "Feature",
+        },
+      ],
+      "size": "medium",
+      "type": "FeatureCollection",
+    },
+    "edit": {
+      "changesetTags": {
+        "comment": "Auto-update the stop/platform roles of transit route relations from GTFS data",
+        "created_by": "osm-gtfs-sync 0.0.0",
+        "source": "GTFS feed for Autobüs",
+      },
+      "features": [
+        {
+          "__comment": "802X",
+          "geometry": {
+            "geometries": [],
+            "type": "GeometryCollection",
+          },
+          "id": "r20",
+          "properties": {
+            "__action": "edit",
+            "__members": [
+              {
+                "ref": 1,
+                "role": "platform_entry_only",
+                "type": "node",
+              },
+              {
+                "ref": 3,
+                "role": "platform_on_demand",
+                "type": "node",
+              },
+              {
+                "ref": 5,
+                "role": "platform_exit_only",
+                "type": "node",
+              },
+            ],
+            "bicycle": "yes",
+            "colour": "#9c7822",
+            "duration": "00:35",
+            "operator": "Autobüs Ltd",
+            "wheelchair": "yes",
+          },
+          "type": "Feature",
+        },
+        {
+          "__comment": "802X",
+          "geometry": {
+            "geometries": [],
+            "type": "GeometryCollection",
+          },
+          "id": "r21",
+          "properties": {
+            "__action": "edit",
+            "__members": [
+              {
+                "ref": 5,
+                "role": "platform_entry_only",
+                "type": "node",
+              },
+              {
+                "ref": 2,
+                "role": "platform_exit_only",
+                "type": "node",
+              },
+            ],
+            "bicycle": "no",
+            "colour": "#9c7822",
+            "duration": "00:30",
+            "network": "Autobüs",
+            "network:wikidata": "Q12345",
+            "operator": "Autobüs Ltd",
+            "wheelchair": "yes",
+          },
+          "type": "Feature",
+        },
+      ],
+      "size": "medium",
+      "type": "FeatureCollection",
+    },
+    "routeMaster": {
+      "changesetTags": {
+        "comment": "Auto-update route_master relations for public transport routes",
+        "created_by": "osm-gtfs-sync 0.0.0",
+        "source": "GTFS feed for Autobüs",
+      },
+      "features": [
+        {
+          "__comment": "route_master for 802X",
+          "geometry": {
+            "geometries": [],
+            "type": "GeometryCollection",
+          },
+          "id": "r30",
+          "properties": {
+            "__action": "edit",
+            "__members": [],
+            "colour": "#9c7822",
+            "operator": "Autobüs Ltd",
+          },
+          "type": "Feature",
+        },
+      ],
+      "size": "medium",
+      "type": "FeatureCollection",
+    },
+  },
+  "warnings": Set {
+    "r21 (802X) has no geometry",
+    "Config has no defintion for operator “Autobüs Ltd”",
+  },
+}
+`;
+
+exports[`conflate > works for a full example feed > stations 1`] = `
+{
+  "count": {
+    "add": 0,
+    "edit": 1,
+    "skipped": 0,
+    "total": 1,
+  },
+  "osmPatch": {
+    "create": {
+      "changesetTags": {
+        "comment": "Auto-add missing stop_area relations from GTFS data",
+        "created_by": "osm-gtfs-sync 0.0.0",
+        "source": "GTFS feed for Autobüs",
+      },
+      "features": [],
+      "size": "medium",
+      "type": "FeatureCollection",
+    },
+    "update": {
+      "changesetTags": {
+        "comment": "Auto-fix stop_area relations from GTFS data",
+        "created_by": "osm-gtfs-sync 0.0.0",
+        "source": "GTFS feed for Autobüs",
+      },
+      "features": [
+        {
+          "__comment": "[STN1] Taka Bus Interchange",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  174.7713,
+                  -36.7879,
+                ],
+                [
+                  174.7715,
+                  -36.7881,
+                ],
+                [
+                  174.7713,
+                  -36.7883,
+                ],
+                [
+                  174.7711,
+                  -36.7881,
+                ],
+                [
+                  174.7713,
+                  -36.7879,
+                ],
+              ],
+            ],
+            "type": "Polygon",
+          },
+          "id": "r10",
+          "properties": {
+            "__action": "edit",
+            "__members": [],
+            "ref": "STN1",
+          },
+          "type": "Feature",
+        },
+      ],
+      "size": "medium",
+      "type": "FeatureCollection",
+    },
+  },
+  "warnings": Set {},
+}
+`;
+
+exports[`conflate > works for a full example feed > stops 1`] = `
+{
+  "count": {
+    "add": 1,
+    "edit": 2,
+    "skipped": 0,
+    "total": 4,
+  },
+  "gtfsRouteData": {
+    "802X": {
+      "colour": "9c7822",
+      "ignore": false,
+      "journeys": [
+        {
+          "bicycle": Set {
+            1,
+          },
+          "duration": [
+            1800,
+            2100,
+          ],
+          "headsigns": Set {
+            "City Centre",
+          },
+          "keep": true,
+          "match": {
+            "rId": 20,
+          },
+          "stopIds": [
+            {
+              "flags": 1,
+              "stopId": "100",
+            },
+            {
+              "flags": 7,
+              "stopId": "102",
+            },
+            {
+              "flags": 2,
+              "stopId": "103",
+            },
+          ],
+          "tripIds": [
+            "T1",
+            "T2",
+          ],
+          "wheelchair": Set {
+            1,
+          },
+        },
+        {
+          "bicycle": Set {
+            2,
+          },
+          "duration": [
+            1800,
+          ],
+          "headsigns": Set {
+            "Bayswater",
+          },
+          "keep": true,
+          "match": {
+            "rId": 21,
+          },
+          "stopIds": [
+            {
+              "flags": 1,
+              "stopId": "103",
+            },
+            {
+              "flags": 3,
+              "stopId": "102",
+            },
+            {
+              "flags": 2,
+              "stopId": "101",
+            },
+          ],
+          "tripIds": [
+            "T3",
+          ],
+          "wheelchair": Set {
+            1,
+          },
+        },
+      ],
+      "match": {
+        "PTv": 2,
+        "rId": 30,
+      },
+      "operators": [
+        "Autobüs Ltd",
+      ],
+      "rln": "Baysw-City Express",
+      "rsn": "802X",
+      "tripIds": Set {
+        "T1",
+        "T2",
+        "T3",
+      },
+      "vehicleType": 702,
+    },
+    "813": {
+      "colour": "5f4892",
+      "ignore": false,
+      "journeys": [
+        {
+          "bicycle": Set {
+            0,
+          },
+          "duration": [
+            300,
+          ],
+          "headsigns": Set {
+            "Devonport",
+          },
+          "keep": true,
+          "stopIds": [
+            {
+              "flags": 1,
+              "stopId": "101",
+            },
+            {
+              "flags": 2,
+              "stopId": "102",
+            },
+          ],
+          "tripIds": [
+            "T4",
+          ],
+          "wheelchair": Set {
+            0,
+          },
+        },
+      ],
+      "operators": [
+        "Autobüs Ltd",
+      ],
+      "rln": "Devo-Taka",
+      "rsn": "813",
+      "tripIds": Set {
+        "T4",
+      },
+      "vehicleType": 3,
+    },
+  },
+  "osmPatchDisused": {
+    "changesetTags": {
+      "created_by": "osm-gtfs-sync 0.0.0",
+      "source": "GTFS feed for Autobüs",
+    },
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            174.78,
+            -36.8,
+          ],
+          "type": "Point",
+        },
+        "id": "104",
+        "properties": {
+          "name": "Wicklow Road Little Free Library",
+          "ref": "104",
+        },
+        "type": "Feature",
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            174.7712,
+            -36.788,
+          ],
+          "type": "Point",
+        },
+        "id": "STN1",
+        "properties": {
+          "name": "Taka Bus Interchange",
+          "ref": "STN1",
+        },
+        "type": "Feature",
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            174.7711,
+            -36.7879,
+          ],
+          "type": "Point",
+        },
+        "id": "E1",
+        "properties": {
+          "name": "Taka Bus Interchange Main Entrance",
+          "ref": "E1",
+        },
+        "type": "Feature",
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            174.771,
+            -36.7878,
+          ],
+          "type": "Point",
+        },
+        "id": "E2",
+        "properties": {
+          "name": "Taka Bus Interchange Side Entrance",
+          "ref": "E2",
+        },
+        "type": "Feature",
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            174.7709,
+            -36.7877,
+          ],
+          "type": "Point",
+        },
+        "id": "E3",
+        "properties": {
+          "name": "Taka Bus Interchange Rear Entrance",
+          "ref": "E3",
+        },
+        "type": "Feature",
+      },
+    ],
+    "size": "medium",
+    "type": "FeatureCollection",
+  },
+  "osmPatchMissing": {
+    "changesetTags": {
+      "comment": "Auto-add missing transit stops from GTFS data",
+      "created_by": "osm-gtfs-sync 0.0.0",
+      "source": "GTFS feed for Autobüs",
+    },
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            174.7656,
+            -36.8446,
+          ],
+          "type": "Point",
+        },
+        "id": "103",
+        "properties": {
+          "bus": "yes",
+          "highway": "bus_stop",
+          "name": "Lower Albert Street",
+          "network": "Autobüs",
+          "network:wikidata": "Q12345",
+          "public_transport": "platform",
+          "ref": "103",
+        },
+        "type": "Feature",
+      },
+    ],
+    "size": "medium",
+    "type": "FeatureCollection",
+  },
+  "osmPatchWrong": {
+    "changesetTags": {
+      "comment": "Auto-fix transit stops from GTFS data",
+      "created_by": "osm-gtfs-sync 0.0.0",
+      "source": "GTFS feed for Autobüs",
+    },
+    "features": [
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                174.7714,
+                -36.788000000000004,
+              ],
+              [
+                174.7716,
+                -36.7882,
+              ],
+              [
+                174.7714,
+                -36.7884,
+              ],
+              [
+                174.7712,
+                -36.7882,
+              ],
+              [
+                174.7714,
+                -36.788000000000004,
+              ],
+            ],
+          ],
+          "type": "Polygon",
+        },
+        "id": "n2",
+        "properties": {
+          "__action": "edit",
+          "bus": "yes",
+          "name": "Taka Bus Interchange, Stop B",
+          "network": "Autobüs",
+          "network:wikidata": "Q12345",
+          "wheelchair": "yes",
+        },
+        "type": "Feature",
+      },
+      {
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                174.761,
+                -36.7933,
+              ],
+              [
+                174.7612,
+                -36.7935,
+              ],
+              [
+                174.761,
+                -36.7937,
+              ],
+              [
+                174.7608,
+                -36.7935,
+              ],
+              [
+                174.761,
+                -36.7933,
+              ],
+            ],
+          ],
+          "type": "Polygon",
+        },
+        "id": "n3",
+        "properties": {
+          "__action": "edit",
+          "bus": "yes",
+          "network": "Other Network;Autobüs",
+          "network:wikidata": "Q999;Q12345",
+          "wheelchair": "no",
+        },
+        "type": "Feature",
+      },
+    ],
+    "size": "medium",
+    "type": "FeatureCollection",
+  },
+  "osmRawByRef": {
+    "100": {
+      "changeset": 100,
+      "id": 1,
+      "lat": -36.7881,
+      "lon": 174.7713,
+      "tags": {
+        "bus": "yes",
+        "highway": "bus_stop",
+        "name": "Taka Bus Interchange, Stop A",
+        "network": "Autobüs",
+        "network:wikidata": "Q12345",
+        "public_transport": "platform",
+        "ref": "100",
+        "wheelchair": "yes",
+      },
+      "timestamp": "2099-12-30T00:00:00Z",
+      "type": "node",
+      "uid": 1,
+      "user": "gtfs_import",
+      "version": 3,
+    },
+    "101": {
+      "changeset": 101,
+      "id": 2,
+      "lat": -36.7882,
+      "lon": 174.7714,
+      "tags": {
+        "public_transport": "platform",
+        "railway": "platform",
+        "ref": "101",
+      },
+      "timestamp": "2020-01-01T00:00:00Z",
+      "type": "node",
+      "uid": 2,
+      "user": "mapper",
+      "version": 1,
+    },
+    "102": {
+      "changeset": 101,
+      "id": 3,
+      "lat": -36.7935,
+      "lon": 174.761,
+      "tags": {
+        "gtfs:stop_code:EG-EX": "102",
+        "highway": "bus_stop",
+        "name": "Esmonde Road",
+        "network": "Other Network",
+        "network:wikidata": "Q999",
+        "public_transport": "platform",
+      },
+      "timestamp": "2020-01-01T00:00:00Z",
+      "type": "node",
+      "uid": 2,
+      "user": "mapper",
+      "version": 1,
+    },
+    "103": {
+      "changeset": 101,
+      "id": 5,
+      "lat": -36.9,
+      "lon": 174.85,
+      "tags": {
+        "highway": "bus_stop",
+        "name": "Lower Albert Street (wrong location)",
+        "ref": "103",
+      },
+      "timestamp": "2020-01-01T00:00:00Z",
+      "type": "node",
+      "uid": 2,
+      "user": "mapper",
+      "version": 1,
+    },
+  },
+  "warnings": Set {},
+}
+`;
+
+exports[`conflate > works for a full example feed > summary 1`] = `
+{
+  "bbox": {
+    "maxLat": -36.7877,
+    "maxLon": 174.78,
+    "minLat": -36.8446,
+    "minLon": 174.761,
+  },
+  "isComplete": true,
+  "message": "done!",
+}
+`;

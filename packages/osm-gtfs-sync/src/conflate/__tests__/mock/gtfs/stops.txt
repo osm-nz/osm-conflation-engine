@@ -1,0 +1,10 @@
+stop_id,stop_code,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding,platform_code
+STN1,STN1,Taka Bus Interchange,-36.7880,174.7712,1,,,
+100,100,"Taka Bus Interchange, Stop A",-36.7881,174.7713,0,STN1,1,
+101,101,"Taka Bus Interchange, Stop B",-36.7882,174.7714,0,STN1,1,
+102,102,Esmonde Road,-36.7935,174.7610,0,,2,
+103,103,Lower Albert Street,-36.8446,174.7656,,,,
+104,104,Wicklow Road Little Free Library,-36.8000,174.7800,0,,,
+E1,E1,Taka Bus Interchange Main Entrance,-36.7879,174.7711,2,STN1,,
+E2,E2,Taka Bus Interchange Side Entrance,-36.7878,174.7710,2,STN1,,B
+E3,E3,Taka Bus Interchange Rear Entrance,-36.7877,174.7709,2,STN1,,C

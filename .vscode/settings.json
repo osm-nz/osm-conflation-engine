@@ -4,6 +4,10 @@
   "i18n-ally.keystyle": "flat",
   "i18n-ally.localesPaths": ["packages/website/src/translations"],
 
+  "files.associations": {
+    "**/gtfs/*.txt": "csv"
+  },
+
   "json.schemas": [
     {
       "fileMatch": ["taginfo.json"],
