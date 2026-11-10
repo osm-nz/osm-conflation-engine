@@ -38,7 +38,7 @@
     "@types/react-dom": "catalog:",
     "@types/taginfo-projects": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "name-suggestion-index": "^8.0.20260918",
+    "name-suggestion-index": "^8.0.20261101",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tsx": "^4.23.15",
