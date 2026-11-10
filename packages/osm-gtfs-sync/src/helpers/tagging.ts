@@ -8,6 +8,11 @@ export function getRouteTagsForTransportMode(
 ): Tags {
   switch (vehicleType) {
     case VehicleType.GENERIC_BUS:
+    case VehicleType.REGIONAL_BUS:
+    case VehicleType.EXPRESS_BUS:
+    case VehicleType.STOPPING_BUS:
+    case VehicleType.LOCAL_BUS:
+    case VehicleType.NIGHT_BUS:
     case VehicleType.SPECIAL_COACH:
     case VehicleType.REGIONAL_COACH:
     case VehicleType.RAIL_REPLACEMENT_BUS:
@@ -59,6 +64,11 @@ export function getStopTagsForTransportMode(
 ) {
   switch (vehicleType) {
     case VehicleType.GENERIC_BUS:
+    case VehicleType.REGIONAL_BUS:
+    case VehicleType.EXPRESS_BUS:
+    case VehicleType.STOPPING_BUS:
+    case VehicleType.LOCAL_BUS:
+    case VehicleType.NIGHT_BUS:
     case VehicleType.SPECIAL_COACH:
     case VehicleType.REGIONAL_COACH:
     case VehicleType.RAIL_REPLACEMENT_BUS:
