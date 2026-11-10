@@ -37,6 +37,11 @@ export const NZ: NetworkConfig[] = [
 
       9329: '9328', // swanson platform 2 -> 1
       9508: '9507', // manukau platform 2 -> 1
+
+      // 'virtual points' for ferries
+      834: null,
+      835: null,
+      836: null,
     },
 
     operatorMap: {
@@ -258,7 +263,7 @@ export const NZ: NetworkConfig[] = [
         name: 'Tranzit Group',
         wikidata: 'Q55636134',
       },
-      'NZ Bus': { name: 'NZ Bus', wikidata: 'Q6956272' },
+      'NZ Bus': { name: 'Kinetic', wikidata: 'Q85774435' },
       'East By West Ferry': {
         name: 'East By West',
         wikidata: 'Q117461595',
@@ -289,8 +294,7 @@ export const NZ: NetworkConfig[] = [
     networkWikidata: 'Q112189811',
     gtfsSource: {
       mode: 'automatic',
-      // eslint-disable-next-line unicorn/prefer-https -- website only supports http
-      url: 'http://gtfs.dynamis.live/boprc/prod/boprc-nz.zip',
+      url: 'https://au-gtfs.remix.com/boprc-nz-public.zip',
     },
     licenseWaiverUrl:
       'https://osm.wiki/Contributors#Bay_of_Plenty_Regional_Council',
