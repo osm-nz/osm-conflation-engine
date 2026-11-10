@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "gtfs-sqlite": "^0.2.0",
-    "gtfs-types": "^5.1.1",
+    "gtfs-types": "^6.0.0",
     "idb-keyval": "^6.2.1",
     "leaflet": "^1.9.4",
     "md5": "^2.3.0",
