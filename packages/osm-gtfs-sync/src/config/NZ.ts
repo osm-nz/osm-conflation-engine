@@ -296,6 +296,9 @@ export const NZ: NetworkConfig[] = [
       mode: 'automatic',
       url: 'https://au-gtfs.remix.com/boprc-nz-public.zip',
     },
+    operatorMap: {
+      Baybus: { name: '', wikidata: '' },
+    },
     licenseWaiverUrl:
       'https://osm.wiki/Contributors#Bay_of_Plenty_Regional_Council',
   },
