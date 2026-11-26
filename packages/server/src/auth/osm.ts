@@ -3,7 +3,7 @@ import { ForbiddenException } from 'chanfana';
 import { USER_AGENT } from '../constants.js';
 
 const MIN_ACCOUNT_AGE_DAYS = 20;
-const MIN_CHANGESETS = 20;
+const MIN_CHANGESETS = 1;
 
 export async function verifyOsmUser(
   authHeader: string,
