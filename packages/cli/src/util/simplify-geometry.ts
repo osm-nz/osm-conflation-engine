@@ -3,7 +3,7 @@
 // example: https://github.com/osm-nz/linz-address-import/blob/main/src/extraLayers/linzTopo/geoOperations/__tests__/simplify.geo.json
 //
 
-type Coord = [x: number, y: number];
+import type { Vec2 as Coord } from '@osm-conflation-engine/cli';
 
 // to suit your point format, run search/replace for '.x' and '.y';
 // for 3D version, see 3d branch (configurability would draw significant performance overhead)
@@ -42,12 +42,12 @@ function getSqSegDistance(p: Coord, p1: Coord, p2: Coord) {
 
 // basic distance-based simplification
 function simplifyRadialDistance(points: Coord[], sqTolerance: number) {
-  let previousPoint = points[0];
+  let previousPoint = points[0]!;
   const newPoints = [previousPoint];
   let point: Coord | undefined;
 
   for (let index = 1, length_ = points.length; index < length_; index += 1) {
-    point = points[index];
+    point = points[index]!;
 
     if (getSqDistance(point, previousPoint) > sqTolerance) {
       newPoints.push(point);
@@ -72,9 +72,9 @@ function simplifyDPStep(
 
   for (let index_ = first + 1; index_ < last; index_ += 1) {
     const sqDistance = getSqSegDistance(
-      points[index_],
-      points[first],
-      points[last],
+      points[index_]!,
+      points[first]!,
+      points[last]!,
     );
 
     if (sqDistance > maxSqDistance) {
@@ -87,7 +87,7 @@ function simplifyDPStep(
     if (index! - first > 1) {
       simplifyDPStep(points, first, index!, sqTolerance, simplified);
     }
-    simplified.push(points[index!]);
+    simplified.push(points[index!]!);
     if (last - index! > 1) {
       simplifyDPStep(points, index!, last, sqTolerance, simplified);
     }
@@ -98,9 +98,9 @@ function simplifyDPStep(
 function simplifyDouglasPeucker(points: Coord[], sqTolerance: number) {
   const last = points.length - 1;
 
-  const simplified = [points[0]];
+  const simplified = [points[0]!];
   simplifyDPStep(points, 0, last, sqTolerance, simplified);
-  simplified.push(points[last]);
+  simplified.push(points[last]!);
 
   return simplified;
 }

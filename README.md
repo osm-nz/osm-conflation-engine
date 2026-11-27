@@ -33,6 +33,8 @@ It handles all the complicated parts of conflation for you:
 
 [![](https://wiki.openstreetmap.org/w/images/5/53/LINZ_Address_Conflation_Flowchart.png?)](https://psg1rwze8tq6.feishu.cn/wiki/GxmZw1lG2i0IOkkzRKglVEEhgue?openbrd=1&doc_app_id=501&blockId=HXU9dz5FFocakqx1I5SlBQIjgR2&blockType=whiteboard&blockToken=LThTwNalYhBFxRbvfhulTOW5g3f#HXU9dz5FFocakqx1I5SlBQIjgR2)
 
+_(click the image to open a translated/localised version of the flowchart)_
+
 ## History
 
 - This project started in 2021, but at the time it was only usable for [a few import projects in New Zealand](https://osm.wiki/LINZ/Address_Import).

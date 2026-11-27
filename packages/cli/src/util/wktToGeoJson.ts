@@ -1,6 +1,8 @@
-import { chunk } from '../../../common/index.js';
-import type { Coord, GeoJsonCoords } from '../../../types.js';
+import type { Geometry, GeometryCollection } from 'geojson';
+import type { Vec2 as Coord } from '@osm-conflation-engine/cli';
+import { IS_UNIT_TEST } from '../constants/defaults.js';
 import { simplify } from './simplify-geometry.js';
+import { chunk } from './object.js';
 
 /** point | line | area/multipolygon-with-1-outer-way | mutlipolygon with multiple outer ways */
 type CoordArray = Coord | Coord[] | Coord[][] | Coord[][][];
@@ -22,12 +24,13 @@ const TYPES = <const>{
 };
 
 /** from https://api.openstreetmap.org/api/0.6/capabilities */
-const MAX_WAY_LENGTH = process.env.NODE_ENV === 'test' ? 6 : 2000;
+const MAX_WAY_LENGTH = IS_UNIT_TEST ? 6 : 2000;
 /**
  * if we have to split a way >MAX_WAY_LENGTH, we will create several chunks
  * of this length. See opennewzealand/linz2osm#10 for why we use 495
+ * https://github.com/opennewzealand/linz2osm/issues/10
  */
-const CHUNKED_WAY_LENGTH = process.env.NODE_ENV === 'test' ? 4 : 495;
+const CHUNKED_WAY_LENGTH = IS_UNIT_TEST ? 4 : 495;
 
 /** tolerance for https://mourner.github.io/simplify-js */
 const WAY_SIMPLIFICATION = 0.00003;
@@ -55,16 +58,46 @@ const fixAntiMeridian = (coords: CoordArray): CoordArray => {
   return coords; // will never happen
 };
 
+export namespace wktToGeoJson {
+  export interface Options {
+    /**
+     * if true, longitudes >180 will be replaced with valid modulo'd values
+     * @default false
+     */
+    shouldFixAntiMeridian?: boolean;
+
+    /**
+     * if true, excessive coordinate precision will be removed
+     * @default false
+     */
+    shouldSimplify?: boolean;
+
+    /**
+     * if true, LineStrings are reversed
+     * @default false
+     */
+    flipWays?: boolean;
+
+    /**
+     * if true, warnings about invalid geometry will not be logged
+     * @default false
+     */
+    silenceWarnings?: boolean;
+  }
+}
+
 /**
  * Converts {@link https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry WKT} to geojson
  */
-export const wktToGeoJson = (
+export function wktToGeoJson(
   wkt: string,
-  layerName?: string,
-  shouldSimplify?: boolean,
-  dontFlipWays?: boolean,
-  silenceWarnings?: boolean,
-): GeoJsonCoords => {
+  {
+    shouldFixAntiMeridian,
+    shouldSimplify,
+    flipWays,
+    silenceWarnings,
+  }: wktToGeoJson.Options = {},
+): Exclude<Geometry, GeometryCollection> {
   let type = TYPES[wkt.match(/^\w+( Z)?/)![0] as keyof typeof TYPES];
 
   let coordinates = JSON.parse(
@@ -97,7 +130,7 @@ export const wktToGeoJson = (
   }
 
   if (type === 'MultiLineString' || type === 'MultiPoint') {
-    throw new Error(`Cannot handle complex ${type} in ${layerName}`);
+    throw new Error(`Cannot handle complex ${type}`);
   }
 
   // simplify multipolygons that only have one member (the outer way)
@@ -145,13 +178,13 @@ export const wktToGeoJson = (
   // coastline, cliff, emabankment, landslide, antarctic_depForm,
   // were all facing the wrong way, so we reverse the way
   // BUT water_race, ice_stream, melt_stream need to remain in their original direction!
-  if (type === 'LineString' && !dontFlipWays) {
+  if (type === 'LineString' && flipWays) {
     coordinates.reverse();
   }
 
   // RapiD doesn't support multipolygons of unclosed ways yet.
   if (type === 'LineString' && coordinates.length > MAX_WAY_LENGTH) {
-    console.warn(`${layerName} has a way with >${MAX_WAY_LENGTH} nodes`);
+    console.warn(`has a way with >${MAX_WAY_LENGTH} nodes`);
   }
 
   // convert huge Polygons into MultiPolygons with multiple outer ways
@@ -177,15 +210,13 @@ export const wktToGeoJson = (
     !silenceWarnings
   ) {
     // this is non trivial to fix
-    console.warn(
-      `${layerName} has a MultiPolygon with >${MAX_WAY_LENGTH} nodes`,
-    );
+    console.warn(`has a MultiPolygon with >${MAX_WAY_LENGTH} nodes`);
   }
 
   // for performance reasons, only apply this to hydrographic layers
-  if (layerName?.slice(0, 4) === 'sea/') {
+  if (shouldFixAntiMeridian) {
     coordinates = fixAntiMeridian(coordinates);
   }
 
   return { type, coordinates };
-};
+}
