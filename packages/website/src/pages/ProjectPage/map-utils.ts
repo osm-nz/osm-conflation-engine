@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import maplibregl, {
-  type ExpressionSpecification,
-  type StyleSpecification,
-} from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
+import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import type { FeatureCollection } from 'geojson';
+
+maplibregl.setWorkerUrl(workerUrl);
 
 const STYLE: StyleSpecification = {
   version: 8,

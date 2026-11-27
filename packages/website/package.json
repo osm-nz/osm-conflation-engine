@@ -22,7 +22,7 @@
     "@nivo/sankey": "^0.99.0",
     "@tabler/icons-react": "^3.41.1",
     "get-region": "^1.0.0",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.19.0",
     "messageformat": "^4.0.0",
     "osm-api": "catalog:",
     "react": "catalog:",

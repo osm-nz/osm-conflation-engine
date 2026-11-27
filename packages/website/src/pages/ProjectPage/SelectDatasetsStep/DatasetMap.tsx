@@ -1,7 +1,7 @@
 import { use, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Text } from '@mantine/core';
-import type maplibregl from 'maplibre-gl';
+import type * as maplibregl from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import { LocaleContext } from '../../../context/LocaleContext.js';
 import {
