@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.15.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.14.0...cli-v3.15.0) (2026-11-27)
+
+
+### Features
+
+* **cli:** add various static utils for consumers ([e5eaa6c](https://github.com/osm-nz/osm-conflation-engine/commit/e5eaa6c81d6ce777920f4b024e67b7bab462fba9))
+
 ## [3.14.0](https://github.com/osm-nz/osm-conflation-engine/compare/cli-v3.13.0...cli-v3.14.0) (2026-11-10)
 
 
